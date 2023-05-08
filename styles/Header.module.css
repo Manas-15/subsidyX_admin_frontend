@@ -1,0 +1,26 @@
+.header {
+  /* width: 1134px; */
+  height: 65px;
+  top: 0px;
+  background: #ebe6e6;
+}
+.header_name_a {
+  /* width: 215.61px; */
+  height: 30px;
+  margin-left: 35px;
+  top: 15px;
+  color: #161616;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 30px;
+}
+.header_name_b {
+  width: 238.92px;
+  height: 21px;
+  margin-right: 40px;
+  top: 20px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: #333333;
+}
