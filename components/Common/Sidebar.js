@@ -7,13 +7,20 @@ import {
   MdOutlineKeyboardArrowRight,
   MdOutlineKeyboardArrowLeft,
 } from "react-icons/md";
+import { selectedCategory } from "../../redux/Slices/sidebarSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const sideBarItems = [
-  { name: "Industry Category", href: "/", icon: MdDashboard },
-  { name: "Industry Sectors", href: "/dashboard", icon: MdDashboard },
-  { name: "Questions", href: "/about", icon: MdDashboard },
-  { name: "State Management", href: "/about", icon: MdDashboard },
-  { name: "Taluka Management", href: "/about", icon: MdDashboard },
+  { name: "Industry Category", href: "/industry_category", icon: MdDashboard },
+  { name: "Industry Sectors", href: "/industry_sector", icon: MdDashboard },
+  { name: "Questions", href: "/questions", icon: MdDashboard },
+  { name: "State Management", href: "/state_management", icon: MdDashboard },
+  {
+    name: "District Management",
+    href: "/district_management",
+    icon: MdDashboard,
+  },
+  { name: "Taluka Management", href: "about", icon: MdDashboard },
   { name: "Department Management", href: "/about", icon: MdDashboard },
   { name: "Subsidy Management", href: "/about", icon: MdDashboard },
   { name: "Report management", href: "/about", icon: MdDashboard },
@@ -28,10 +35,15 @@ const sideBarItems = [
 ];
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toogleSidebar = () => {
     setIsCollapsed((prevState) => !prevState);
+  };
+
+  const handleSelect = (name) => {
+    dispatch(selectedCategory(name));
   };
   return (
     <div className="sidebar_wrapper">
@@ -54,10 +66,14 @@ const Sidebar = () => {
           <p className="sidebar_logo_name">SubsidyX</p>
         </div>
         <ul className="sidebar_list">
-          {sideBarItems?.map(({ name, href, icon: Icon }) => {
+          {sideBarItems?.map(({ name, href, icon: Icon }, index) => {
             return (
-              <li className="sidebar_item" key={name}>
-                <Link href={href} className="sidebar_link">
+              <li className="sidebar_item" key={index}>
+                <Link
+                  className="sidebar_link"
+                  href={href}
+                  onClick={() => handleSelect(name)}
+                >
                   <span className="sidebar_icon">
                     <Icon />
                   </span>

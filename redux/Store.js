@@ -2,13 +2,19 @@ import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "./Slices/userSlice";
 import industryCategorySlice from "./Slices/industrySlice";
 import industrySectorSlice from "./Slices/industrySectorSlice";
+import stateManagementSlice from "./Slices/stateManagementSlice";
+import districtManagementSlice from "./Slices/districtManagementSlice";
+import sidebarSlice from "./Slices/sidebarSlice";
 
 const persistedState = loadFromLocalStorage();
 export const store = configureStore({
   reducer: {
     users: userSlice,
+    sidebar: sidebarSlice,
     industryCategory: industryCategorySlice,
     industrySector: industrySectorSlice,
+    stateManagement: stateManagementSlice,
+    districtManagement: districtManagementSlice,
   },
   persistedState,
 });

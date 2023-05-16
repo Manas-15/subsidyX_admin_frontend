@@ -26,7 +26,9 @@ function ForgotPassword() {
           <div className={styles.login_form_container}>
             <div className={styles.input_container}>
               <h4 className={`fw-bold`}>Forgot Password</h4>
-              <p className={styles.login_span}>Don't remember your password ?</p>
+              <p className={styles.login_span}>
+                Don't remember your password ?
+              </p>
               <Form>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                   <Form.Control type="email" placeholder="Email" />

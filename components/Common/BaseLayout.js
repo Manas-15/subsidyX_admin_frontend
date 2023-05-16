@@ -5,12 +5,13 @@ import { useRouter } from "next/router";
 
 function BaseLayout({ children }) {
   const router = useRouter();
-  console.log("routerrouterrouterrouter", router.pathname);
   return (
     <>
       {router.pathname === "/" ||
       router.pathname === "/login" ||
-      router.pathname === "/forgotpassword" ? (
+      router.pathname === "/forgotpassword" ||
+      router.pathname === "/resetpassword" ||
+      router.pathname === "/changepassword" ? (
         <div className="base_layout">{children}</div>
       ) : (
         <div className="base_layout">

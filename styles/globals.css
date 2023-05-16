@@ -132,9 +132,24 @@ a:hover {
 [data-collapse="true"] .sidebar_logo_name {
   display: none;
 }
-.content {
-  background-color: #ffffff;
+/* Custom Modal Start */
+.modal-header {
+  border-bottom: none !important;
 }
+.modal-body {
+  padding: 25px 30px !important;
+}
+.modal-footer {
+  border-top: none !important;
+}
+/* Custom Modal End */
+
+/* Formik Start */
+label {
+  display: block !important;
+}
+/* Formik End */
+
 ::-webkit-scrollbar {
   width: 0px;
   height: 8px;

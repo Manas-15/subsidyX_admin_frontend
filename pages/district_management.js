@@ -5,65 +5,53 @@ import {
   ExportButton,
   FilterButton,
 } from "../components/Common/CustomButton";
-import { HiEye } from "react-icons/hi";
-import { BsShareFill } from "react-icons/bs";
 import { MdModeEdit } from "react-icons/md";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
-import { IndustrySectorModal } from "../components/Common/Modal";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { getIndustrySectorLists } from "../redux/Actions/industrySectorAction";
+import { getStateManagementLists } from "../redux/Actions/stateManagementAction";
+import { DistrictManagementModal } from "../components/Common/Modal";
+import { getDistrictManagementLists } from "../redux/Actions/districtManagementAction";
 
-function IndustrySector() {
+function DistrictManagement() {
   const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false);
   const [type, setType] = useState("");
-  const [action, setAction] = useState({});
+  const [action, setAction] = useState(0);
 
-  const actions = [
-    { icon: BsShareFill },
-    { icon: HiEye },
-    { icon: MdModeEdit },
-    { icon: RiDeleteBin5Fill },
-  ];
-  const industrySector = useSelector((state) => state?.industrySector);
+  const actions = [{ icon: MdModeEdit }, { icon: RiDeleteBin5Fill }];
+  const districtManagement = useSelector((state) => state?.districtManagement);
+  console.log(districtManagement);
 
-  const addNewIndustrySector = () => {
+  const addNewDistrict = () => {
     setModalShow(true);
     setType("add");
   };
 
   useEffect(() => {
-    dispatch(getIndustrySectorLists());
-  }, [industrySector?.isCreated, industrySector?.isDeleted]);
+    dispatch(getDistrictManagementLists());
+  }, [districtManagement?.isCreated, districtManagement?.isDeleted]);
 
-  const handleClick = (data, idx) => {
-    console.log(data, idx);
+  const handleClick = (e, ID, idx) => {
+    console.log(e.target.value, ID, idx);
     if (idx === 0) {
-      console.log("Shared");
-    } else if (idx === 1) {
-      console.log("viewed");
-    } else if (idx === 2) {
       console.log("Edited");
-      setModalShow(true);
-      setType("edit");
-      setAction(data);
     } else {
       setModalShow(true);
       setType("delete");
-      setAction(data?.id);
+      setAction(ID);
     }
   };
 
   return (
     <div className={styles.container}>
       {modalShow && (
-        <IndustrySectorModal
+        <DistrictManagementModal
           type={type}
           action={action}
           show={modalShow}
-          setmodalshow={setModalShow}
+          setModalShow={setModalShow}
           onHide={() => setModalShow(false)}
         />
       )}
@@ -79,19 +67,17 @@ function IndustrySector() {
               <input
                 type="text"
                 className={styles.search_bar}
-                placeholder="Search Industry Sector"
+                placeholder="Search District"
               />
             </div>
-
-            <FilterButton name="Filter" />
           </div>
           <div className="d-flex">
             <div className={styles.add_new_btn}>
               <CustomButton
-                name="Add New Industry Sector"
+                name="Add New District"
                 bgColor="#4682E3"
                 color="#FFFFFF"
-                onClick={addNewIndustrySector}
+                onClick={addNewDistrict}
               />
             </div>
 
@@ -103,33 +89,36 @@ function IndustrySector() {
             <thead>
               <tr>
                 <th scope="col">ID</th>
-                <th scope="col">Sector</th>
-                <th scope="col">Category</th>
+                <th scope="col">District</th>
+                <th scope="col"></th>
                 <th scope="col"></th>
                 <th scope="col"> </th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {industrySector?.industrySectorData?.sectors?.map(
+              {districtManagement?.districtManagementData?.district?.map(
                 (data, index) => {
                   return (
                     <tr key={index}>
                       <th scope="row">{data?.id}</th>
                       <td>{data?.name}</td>
-                      <td>{data?.industry}</td>
-                      <td>{data?.createdDt}</td>
-                      <td>{data?.category}</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                       <td>
-                        <ul className="d-flex justify-content-between">
+                        <ul className="d-flex justify-content-end">
                           {actions?.map(({ icon: Icon }, idx) => {
                             return (
                               <li
                                 key={idx}
-                                onClick={() => handleClick(data, idx)}
+                                onClick={(e) => handleClick(e, data?.id, idx)}
                               >
-                                {idx}
-                                <Icon color="#FA6130" size="18px" />
+                                <Icon
+                                  color="#FA6130"
+                                  size="18px"
+                                  className="ms-2"
+                                />
                               </li>
                             );
                           })}
@@ -147,4 +136,4 @@ function IndustrySector() {
   );
 }
 
-export default IndustrySector;
+export default DistrictManagement;

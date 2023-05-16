@@ -5,43 +5,41 @@ import {
   ExportButton,
   FilterButton,
 } from "../components/Common/CustomButton";
-import { HiEye } from "react-icons/hi";
-import { BsShareFill } from "react-icons/bs";
 import { MdModeEdit } from "react-icons/md";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
-import { IndustrySectorModal } from "../components/Common/Modal";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { getIndustrySectorLists } from "../redux/Actions/industrySectorAction";
+import { getStateManagementLists } from "../redux/Actions/stateManagementAction";
+import { StateManagementModal } from "../components/Common/Modal";
 
-function IndustrySector() {
+function StateManagement() {
   const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false);
   const [type, setType] = useState("");
   const [action, setAction] = useState(0);
 
   const actions = [{ icon: MdModeEdit }, { icon: RiDeleteBin5Fill }];
-  const industrySector = useSelector((state) => state?.industrySector);
+  const stateManagement = useSelector((state) => state?.stateManagement);
+  console.log(stateManagement);
 
-  const addNewIndustrySector = () => {
+  const addNewState = () => {
     setModalShow(true);
     setType("add");
     // toast("Wow so easy!");
   };
 
   useEffect(() => {
-    dispatch(getIndustrySectorLists());
-  }, [industrySector?.isCreated, industrySector?.isDeleted]);
+    dispatch(getStateManagementLists());
+  }, [stateManagement?.isCreated, stateManagement?.isDeleted]);
 
   const handleClick = (e, ID, idx) => {
     console.log(e.target.value, ID, idx);
     if (idx === 0) {
-      console.log("Shared");
-    } else if (idx === 1) {
-      console.log("viewed");
-    } else if (idx === 2) {
       console.log("Edited");
+      setModalShow(true);
+      setType("edit");
+        setAction(ID);
     } else {
       setModalShow(true);
       setType("delete");
@@ -52,7 +50,7 @@ function IndustrySector() {
   return (
     <div className={styles.container}>
       {modalShow && (
-        <IndustrySectorModal
+        <StateManagementModal
           type={type}
           action={action}
           show={modalShow}
@@ -82,7 +80,7 @@ function IndustrySector() {
                 name="Add New State"
                 bgColor="#4682E3"
                 color="#FFFFFF"
-                onClick={addNewIndustrySector}
+                onClick={addNewState}
               />
             </div>
 
@@ -102,38 +100,35 @@ function IndustrySector() {
               </tr>
             </thead>
             <tbody>
-              {console.log(industrySector?.industrySectorData?.sectors)}
-              {industrySector?.industrySectorData?.sectors?.map(
-                (data, index) => {
-                  return (
-                    <tr key={index}>
-                      <th scope="row">{data?.id}</th>
-                      <td>{data?.name}</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <ul className="d-flex justify-content-end">
-                          {actions?.map(({ icon: Icon }, idx) => {
-                            return (
-                              <li
-                                key={idx}
-                                onClick={(e) => handleClick(e, data?.id, idx)}
-                              >
-                                <Icon
-                                  color="#FA6130"
-                                  size="18px"
-                                  className="ms-2"
-                                />
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
+              {stateManagement?.stateManagementData?.map((data, index) => {
+                return (
+                  <tr key={index}>
+                    <th scope="row">{data?.id}</th>
+                    <td>{data?.name}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                      <ul className="d-flex justify-content-end">
+                        {actions?.map(({ icon: Icon }, idx) => {
+                          return (
+                            <li
+                              key={idx}
+                              onClick={(e) => handleClick(data, idx)}
+                            >
+                              <Icon
+                                color="#FA6130"
+                                size="18px"
+                                className="ms-2"
+                              />
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -142,4 +137,4 @@ function IndustrySector() {
   );
 }
 
-export default IndustrySector;
+export default StateManagement;

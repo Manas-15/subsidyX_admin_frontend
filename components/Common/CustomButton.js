@@ -4,16 +4,26 @@ import { TfiExport } from "react-icons/tfi";
 import { BiFilter } from "react-icons/bi";
 import Dropdown from "react-bootstrap/Dropdown";
 
-export const CustomButton = ({ name, bgColor, color, width, height, onClick }) => {
+export const CustomButton = ({
+  name,
+  type,
+  bgColor,
+  color,
+  width,
+  height,
+  onClick,
+  border,
+}) => {
   return (
     <>
       <button
-        type="button"
+        type={type}
         style={{
           color: color,
           backgroundColor: bgColor,
           width: width,
           height: height,
+          border: border,
         }}
         onClick={onClick}
         className={`btn ${styles.add_btn_name}`}
@@ -28,7 +38,7 @@ export const ExportButton = ({ name }) => {
   return (
     <>
       <div className={`mx-2 ${styles.export_btn}`}>
-        <button type="button" class="btn btn-light">
+        <button type="button" className="btn btn-light">
           <TfiExport /> {name}
         </button>
       </div>
@@ -41,10 +51,6 @@ export const FilterButton = ({ name }) => {
       <div
         className={`d-flex align-items-center justify-content-center ${styles.filter_bar}`}
       >
-        {/* <button type="button" class="btn btn-light">
-          
-        </button> */}
-
         <Dropdown>
           <Dropdown.Toggle variant="light" id="dropdown-basic">
             <BiFilter className="fs-4 me-1" /> {name}

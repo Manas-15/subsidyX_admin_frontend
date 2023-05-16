@@ -30,6 +30,25 @@ export const createIndustrySector = createAsyncThunk(
   }
 );
 
+export const editIndustrySector = createAsyncThunk(
+  "industry_sector/edit",
+  async (iData,id, { rejectWithValue }) => {
+    try {
+      console.log(iData);
+      const { data } = await api.patch(
+        `industry/edit?industry_id=${1}`,
+        iData,
+        {
+          headers: authHeader(),
+        }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const deleteIndustrySector = createAsyncThunk(
   "industry_sector/delete",
   async (ID, { rejectWithValue }) => {
