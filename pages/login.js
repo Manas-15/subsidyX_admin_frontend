@@ -16,7 +16,7 @@ function Login() {
   const [showPassword, toggleShowPassword] = useState(false);
 
   const user = useSelector((state) => state?.users);
-
+  console.log(user?.user?.access_token);
   useEffect(() => {
     if (user?.user?.access_token !== undefined) {
       router.push("/dashboard");

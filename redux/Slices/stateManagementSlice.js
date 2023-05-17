@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   getStateManagementLists,
   createStateManagement,
+  editStateManagement,
   deleteStateManagement,
 } from "../Actions/stateManagementAction";
 
@@ -9,6 +10,7 @@ const initialState = {
   stateManagementData: [],
   isCreated: false,
   isDeleted: false,
+  isUpdated: false,
   isLoading: false,
   isSuccess: false,
   errorMessage: "",
@@ -47,6 +49,23 @@ const stateManagementSlice = createSlice({
       state.isCreated = false;
       state.errorMessage = payload;
     },
+
+    [editStateManagement.pending]: (state) => {
+      state.isLoading = true;
+      state.isUpdated = false;
+    },
+    [editStateManagement.fulfilled]: (state, { payload }) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isUpdated = true;
+    },
+    [editStateManagement.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      state.isSuccess = false;
+      state.isUpdated = false;
+      state.errorMessage = payload;
+    },
+
     [deleteStateManagement.pending]: (state) => {
       state.isLoading = true;
       state.isDeleted = false;

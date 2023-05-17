@@ -16,19 +16,37 @@ export const getDistrictManagementLists = createAsyncThunk(
   }
 );
 
-// export const createStateManagement = createAsyncThunk(
-//   "state/create",
-//   async (sData, { rejectWithValue }) => {
-//     try {
-//       const { data } = await api.post(`state/create`, sData, {
-//         headers: authHeader(),
-//       });
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
+export const createDistrictManagement = createAsyncThunk(
+  "district/create",
+  async (districtData, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post(`district/create`, districtData, {
+        headers: authHeader(),
+      });
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const editDistrictManagement = createAsyncThunk(
+  "district/edit",
+  async ({ id, editData }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.patch(
+        `/district/?district_id=${id}`,
+        editData,
+        {
+          headers: authHeader(),
+        }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 // export const deleteStateManagement = createAsyncThunk(
 //   "industry/delete",

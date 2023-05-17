@@ -17,11 +17,10 @@ function StateManagement() {
   const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false);
   const [type, setType] = useState("");
-  const [action, setAction] = useState(0);
+  const [action, setAction] = useState({});
 
   const actions = [{ icon: MdModeEdit }, { icon: RiDeleteBin5Fill }];
   const stateManagement = useSelector((state) => state?.stateManagement);
-  console.log(stateManagement);
 
   const addNewState = () => {
     setModalShow(true);
@@ -31,19 +30,22 @@ function StateManagement() {
 
   useEffect(() => {
     dispatch(getStateManagementLists());
-  }, [stateManagement?.isCreated, stateManagement?.isDeleted]);
+  }, [
+    stateManagement?.isCreated,
+    stateManagement?.isUpdated,
+    stateManagement?.isDeleted,
+  ]);
 
-  const handleClick = (e, ID, idx) => {
-    console.log(e.target.value, ID, idx);
+  const handleClick = (e, item, idx) => {
+    console.log(e, item, idx);
     if (idx === 0) {
-      console.log("Edited");
       setModalShow(true);
       setType("edit");
-        setAction(ID);
+      setAction(item);
     } else {
       setModalShow(true);
       setType("delete");
-      setAction(ID);
+      setAction(item?.id);
     }
   };
 
@@ -114,7 +116,7 @@ function StateManagement() {
                           return (
                             <li
                               key={idx}
-                              onClick={(e) => handleClick(data, idx)}
+                              onClick={(e) => handleClick(e, data, idx)}
                             >
                               <Icon
                                 color="#FA6130"

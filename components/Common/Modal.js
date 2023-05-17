@@ -22,7 +22,13 @@ import { useEffect } from "react";
 import {
   createStateManagement,
   deleteStateManagement,
+  editStateManagement,
+  getStateManagementLists,
 } from "../../redux/Actions/stateManagementAction";
+import {
+  createDistrictManagement,
+  editDistrictManagement,
+} from "../../redux/Actions/districtManagementAction";
 
 export const IndustryCategoryModal = (props) => {
   const dispatch = useDispatch();
@@ -130,12 +136,9 @@ export const IndustrySectorModal = (props) => {
   );
 
   const handleIndustrySectorChange = (e) => {
-    console.log("HHHHHHHHHHHHHHHHHHHH", e.target.value);
-
     setState(e.target.value);
   };
   const editIndustrySectorChange = (e) => {
-    console.log("EDITTTTTTTTTTTTTTTTTT", e.target.value);
     setState(e.target.value);
   };
   const industrySectorSubmit = () => {
@@ -143,7 +146,6 @@ export const IndustrySectorModal = (props) => {
       name: state,
       industry_id: selectedCategory,
     };
- 
 
     props.action.id
       ? dispatch(editIndustrySector(data, selectedCategory))
@@ -267,9 +269,9 @@ export const IndustrySectorModal = (props) => {
 };
 
 export const StateManagementModal = (props) => {
+  console.log(props);
   const dispatch = useDispatch();
   const [state, setState] = useState("");
-  // const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleSelect = (key, event) => {
     setSelectedCategory({ key, value: event.target.value });
@@ -278,11 +280,24 @@ export const StateManagementModal = (props) => {
   const handleStateManagementChange = (e) => {
     setState(e.target.value);
   };
+  const editIndustrySectorChange = (e) => {
+    setState(e.target.value);
+  };
   const stateManagementSubmit = () => {
     const data = {
       state_name: state,
     };
-    dispatch(createStateManagement(data));
+    if (props?.action?.id) {
+      const id = props?.action?.id;
+      dispatch(
+        editStateManagement({
+          id: id,
+          editData: data,
+        })
+      );
+    } else {
+      dispatch(createStateManagement(data));
+    }
     props.setModalShow(false);
   };
   const stateManagementDelete = () => {
@@ -315,9 +330,14 @@ export const StateManagementModal = (props) => {
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Control
                 type="text"
-                placeholder="Add new state"
+                placeholder={props.action.id ? "Edit State" : "Add new state"}
                 autoFocus
-                onChange={(e) => handleStateManagementChange(e)}
+                defaultValue={props?.action?.id ? props?.action?.name : ""}
+                onChange={
+                  props.action.id
+                    ? (e) => editIndustrySectorChange(e)
+                    : (e) => handleStateManagementChange(e)
+                }
               />
             </Form.Group>
           </Form>
@@ -352,12 +372,23 @@ export const StateManagementModal = (props) => {
             />
           </>
         ) : (
-          <CustomButton
-            name="Cancel"
-            color="#FFFFFF"
-            bgColor="#FA6130"
-            onClick={() => stateManagementSubmit()}
-          />
+          props.type === "edit" && (
+            <>
+              <CustomButton
+                name="Update"
+                color="#FFFFFF"
+                bgColor="#FA6130"
+                onClick={() => stateManagementSubmit()}
+              />
+              <CustomButton
+                name="Cancel"
+                color="#000000"
+                bgColor="#FFFFFF"
+                border="1px solid #000000"
+                onClick={() => stateManagementCancel()}
+              />
+            </>
+          )
         )}
       </Modal.Footer>
     </Modal>
@@ -365,31 +396,55 @@ export const StateManagementModal = (props) => {
 };
 
 export const DistrictManagementModal = (props) => {
+  console.log(props.action);
   const dispatch = useDispatch();
-  const [state, setState] = useState("");
+  const [districtName, setDistrictName] = useState("");
   const [selectedState, setSelectedState] = useState(null);
 
-  const handleSelect = (key, event) => {
-    setSelectedState({ key, value: event.target.value });
-  };
+  useEffect(() => {
+    dispatch(getStateManagementLists());
+  }, []);
 
-  const handleStateManagementChange = (e) => {
-    setState(e.target.value);
-  };
-  const stateManagementSubmit = () => {
+  const allStates = useSelector((state) => state.stateManagement);
+
+  console.log(selectedState, districtName);
+  const districtManagementSubmit = () => {
     const data = {
-      state_name: state,
+      name: districtName,
+      state_id: selectedState,
     };
-    dispatch(createStateManagement(data));
+    console.log(data, "::::::::::::::::::::::::::::::::::::::::::");
+    if (props?.action?.id) {
+      const id = props?.action?.id;
+      dispatch(
+        editDistrictManagement({
+          id: id,
+          editData: data,
+        })
+      );
+    } else {
+      dispatch(createDistrictManagement(data));
+    }
     props.setModalShow(false);
   };
-  const stateManagementDelete = () => {
+  const districtManagementDelete = () => {
     dispatch(deleteStateManagement(props.action));
     props.setModalShow(false);
   };
-  const stateManagementCancel = () => {
+  const districtManagementCancel = () => {
     props.setModalShow(false);
   };
+  const handleSelectDistrictChange = (e) => {
+    const stateID = e.target.value;
+    setSelectedState(stateID);
+  };
+  const handleDistrictChange = (e) => {
+    setDistrictName(e.target.value);
+  };
+  const editIndustrySectorChange = (e) => {
+    setDistrictName(e.target.value);
+  };
+
   return (
     <Modal
       {...props}
@@ -410,31 +465,37 @@ export const DistrictManagementModal = (props) => {
       <Modal.Body>
         {props.type === "add" || props.type === "edit" ? (
           <Form>
-            <Dropdown className="">
-              <Dropdown.Toggle
-                variant="light"
-                id="dropdown-basic"
-                className="w-100"
-                onSelect={() => setSelectedState(category?.id)}
-                title={selectedState || "Select Category"}
-              >
-                Select State
-              </Dropdown.Toggle>
+            <select
+              onChange={handleSelectDistrictChange}
+              className="form-control mb-3"
+            >
+              <option value="none">
+                {props.action?.id ? props.action?.state_name : "Select State"}
+              </option>
+              {allStates?.stateManagementData?.map((state, index) => {
+                return (
+                  <option
+                    className="form-control"
+                    key={index}
+                    value={state?.id}
+                  >
+                    {state?.name}
+                  </option>
+                );
+              })}
+            </select>
 
-              <Dropdown.Menu className="w-100">
-                {industryCategory?.map((category, index) => {
-                  return (
-                    <Dropdown.Item key={index}>{category?.name}</Dropdown.Item>
-                  );
-                })}
-              </Dropdown.Menu>
-            </Dropdown>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Control
                 type="text"
-                placeholder="Add new district"
+                placeholder="Add new District"
                 autoFocus
-                onChange={(e) => handleStateManagementChange(e)}
+                defaultValue={props.action.id ? props.action.name : ""}
+                onChange={
+                  props.action.id
+                    ? (e) => editIndustrySectorChange(e)
+                    : (e) => handleDistrictChange(e)
+                }
               />
             </Form.Group>
           </Form>
@@ -450,7 +511,7 @@ export const DistrictManagementModal = (props) => {
             name="Submit"
             color="#FFFFFF"
             bgColor="#FA6130"
-            onClick={() => stateManagementSubmit()}
+            onClick={() => districtManagementSubmit()}
           />
         ) : props.type === "delete" ? (
           <>
@@ -458,23 +519,34 @@ export const DistrictManagementModal = (props) => {
               name="Delete"
               color="#FFFFFF"
               bgColor="#FA6130"
-              onClick={() => stateManagementDelete()}
+              onClick={() => districtManagementDelete()}
             />
             <CustomButton
               name="Cancel"
               color="#000000"
               bgColor="#FFFFFF"
               border="1px solid #000000"
-              onClick={() => stateManagementCancel()}
+              onClick={() => districtManagementCancel()}
             />
           </>
         ) : (
-          <CustomButton
-            name="Cancel"
-            color="#FFFFFF"
-            bgColor="#FA6130"
-            onClick={() => stateManagementSubmit()}
-          />
+          props.type === "edit" && (
+            <>
+              <CustomButton
+                name="Submit"
+                color="#FFFFFF"
+                bgColor="#FA6130"
+                onClick={() => districtManagementSubmit()}
+              />
+              <CustomButton
+                name="Cancel"
+                color="#000000"
+                bgColor="#FFFFFF"
+                border="1px solid #000000"
+                onClick={() => districtManagementCancel()}
+              />
+            </>
+          )
         )}
       </Modal.Footer>
     </Modal>

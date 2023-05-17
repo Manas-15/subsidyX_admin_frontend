@@ -30,11 +30,29 @@ export const createStateManagement = createAsyncThunk(
   }
 );
 
+export const editStateManagement = createAsyncThunk(
+  "state/edit",
+  async ({ id, editData }, { rejectWithValue }) => {
+    try {
+      console.log(id, editData);
+      const { data } = await api.patch(
+        `state/update?state_id=${id}`,
+        editData,
+        {
+          headers: authHeader(),
+        }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const deleteStateManagement = createAsyncThunk(
   "industry/delete",
   async (ID, { rejectWithValue }) => {
     try {
-      console.log(ID);
       const { data } = await api.delete(`state/delete?state_id=${ID}`, {
         headers: authHeader(),
       });
