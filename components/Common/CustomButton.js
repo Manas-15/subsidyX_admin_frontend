@@ -26,7 +26,7 @@ export const CustomButton = ({
           border: border,
         }}
         onClick={onClick}
-        className={`btn ${styles.add_btn_name}`}
+        className={`btn mx-2`}
       >
         {name}
       </button>

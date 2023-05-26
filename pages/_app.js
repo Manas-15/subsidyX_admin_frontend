@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps }) {
       <Provider store={store}>
         <BaseLayout>
           <Component {...pageProps} />
-          {/* <ToastContainer /> */}
+          <ToastContainer theme="colored" />
         </BaseLayout>
       </Provider>
     </>

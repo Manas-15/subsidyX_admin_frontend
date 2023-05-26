@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api";
 import { authHeader } from "../authHeader";
 
-export const getIndustryLists = createAsyncThunk(
+export const getIndustryCategoryLists = createAsyncThunk(
   "industry/industries",
   async (iData, { rejectWithValue }) => {
     try {
@@ -23,6 +23,24 @@ export const createIndustryCategory = createAsyncThunk(
       const { data } = await api.post(`industry/create`, iData, {
         headers: authHeader(),
       });
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const editIndustryCategory = createAsyncThunk(
+  "industry/update",
+  async ({ id, state }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.patch(
+        `industry/edit?industry_id=${id}`,
+        state,
+        {
+          headers: authHeader(),
+        }
+      );
       return data;
     } catch (error) {
       return rejectWithValue(error.message);

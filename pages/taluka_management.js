@@ -10,35 +10,32 @@ import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { getStateManagementLists } from "../redux/Actions/stateManagementAction";
-import { DistrictManagementModal } from "../components/Common/Modal";
-import { getDistrictManagementLists } from "../redux/Actions/districtManagementAction";
+import { getTalukaManagementLists } from "../redux/Actions/talukaManagementAction";
+import { TalukaManagementModal } from "../components/Common/Modal";
 
-function DistrictManagement() {
+function TalukaManagement() {
   const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false);
   const [type, setType] = useState("");
   const [action, setAction] = useState({});
 
   const actions = [{ icon: MdModeEdit }, { icon: RiDeleteBin5Fill }];
-  const districtManagement = useSelector((state) => state?.districtManagement);
+  const talukaManagement = useSelector((state) => state?.talukaManagement);
 
-
-  const addNewDistrict = () => {
+  const addNewTaluka = () => {
     setModalShow(true);
     setType("add");
   };
 
   useEffect(() => {
-    dispatch(getDistrictManagementLists());
+    dispatch(getTalukaManagementLists());
   }, [
-    districtManagement?.isCreated,
-    districtManagement?.isUpdated,
-    districtManagement?.isDeleted,
+    talukaManagement?.isCreated,
+    talukaManagement?.isUpdated,
+    talukaManagement?.isDeleted,
   ]);
 
-  const handleClick = (e, item, idx) => {
-    console.log(e, item, idx);
+  const handleClick = (item, idx) => {
     if (idx === 0) {
       setModalShow(true);
       setType("edit");
@@ -53,11 +50,11 @@ function DistrictManagement() {
   return (
     <div className={styles.container}>
       {modalShow && (
-        <DistrictManagementModal
+        <TalukaManagementModal
           type={type}
           action={action}
           show={modalShow}
-          setModalShow={setModalShow}
+          toggleModalshow={setModalShow}
           onHide={() => setModalShow(false)}
         />
       )}
@@ -73,17 +70,17 @@ function DistrictManagement() {
               <input
                 type="text"
                 className={styles.search_bar}
-                placeholder="Search District"
+                placeholder="Search Taluka"
               />
             </div>
           </div>
           <div className="d-flex">
             <div className={styles.add_new_btn}>
               <CustomButton
-                name="Add New District"
+                name="Add New Taluka"
                 bgColor="#4682E3"
                 color="#FFFFFF"
-                onClick={addNewDistrict}
+                onClick={addNewTaluka}
               />
             </div>
 
@@ -94,23 +91,23 @@ function DistrictManagement() {
           <table className="table table-hover">
             <thead>
               <tr>
-                <th scope="col">ID</th>
+                <th scope="col">Taluka ID</th>
+                <th scope="col">Taluka Name</th>
                 <th scope="col">District</th>
                 <th scope="col">State</th>
-                <th scope="col"></th>
                 <th scope="col"> </th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {districtManagement?.districtManagementData?.district?.map(
+              {talukaManagement?.talukaManagementData?.talukas?.map(
                 (data, index) => {
                   return (
                     <tr key={index}>
                       <th scope="row">{data?.id}</th>
+                      <td>{data?.name}</td>
                       <td>{data?.district}</td>
                       <td>{data?.state}</td>
-                      <td></td>
                       <td></td>
                       <td>
                         <ul className="d-flex justify-content-end">
@@ -118,7 +115,7 @@ function DistrictManagement() {
                             return (
                               <li
                                 key={idx}
-                                onClick={(e) => handleClick(e, data, idx)}
+                                onClick={() => handleClick(data, idx)}
                               >
                                 <Icon
                                   color="#FA6130"
@@ -142,4 +139,4 @@ function DistrictManagement() {
   );
 }
 
-export default DistrictManagement;
+export default TalukaManagement;

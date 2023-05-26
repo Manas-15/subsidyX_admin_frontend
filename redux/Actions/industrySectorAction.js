@@ -4,11 +4,15 @@ import { authHeader } from "../authHeader";
 
 export const getIndustrySectorLists = createAsyncThunk(
   "industry/industry_sector",
-  async (iData, { rejectWithValue }) => {
+  async (ID, { rejectWithValue }) => {
     try {
-      const { data } = await api.get(`industry_sector/?page=1&page_size=10`, {
-        headers: authHeader(),
-      });
+      let params = ID ? "&industry_category_id=" + ID : "";
+      const { data } = await api.get(
+        `industry_sector/?page=1&page_size=10${params}`,
+        {
+          headers: authHeader(),
+        }
+      );
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -32,12 +36,11 @@ export const createIndustrySector = createAsyncThunk(
 
 export const editIndustrySector = createAsyncThunk(
   "industry_sector/edit",
-  async (iData,id, { rejectWithValue }) => {
+  async ({ id, industrySectorData }, { rejectWithValue }) => {
     try {
-      console.log(iData);
       const { data } = await api.patch(
-        `industry/edit?industry_id=${1}`,
-        iData,
+        `industry/edit?industry_id=${id}`,
+        industrySectorData,
         {
           headers: authHeader(),
         }

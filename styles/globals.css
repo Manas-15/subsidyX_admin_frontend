@@ -97,7 +97,7 @@ td {
   width: 100%;
   list-style: none;
   padding: 0;
-  height: 500px;
+  height: 530px;
   overflow-y: scroll;
 }
 .sidebar_link {
@@ -111,6 +111,9 @@ td {
   border-radius: 0.8rem;
 }
 a:active {
+  background-color: #fa6130 !important;
+}
+a:focus {
   background-color: #fa6130 !important;
 }
 a:hover {

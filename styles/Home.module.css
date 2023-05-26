@@ -1,12 +1,10 @@
 .container {
   background-color: #ffffff;
-  /* width: 1134px; */
-  height: calc(100% - 40px);
 }
 .tablee {
   margin: 30px;
-  /* width: 1074px; */
   height: 501px;
+  overflow-y: scroll;
   left: 262px;
   top: 93px;
   background: #ebe6e6;
@@ -15,12 +13,10 @@
 }
 .tableHeader {
   height: 50px;
-  /* border: 1px solid red; */
   margin: 20px 30px;
 }
 .tableBody {
   height: 450px;
-  /* border: 1px solid green; */
 }
 .search_box {
   position: relative;
@@ -29,21 +25,18 @@
   background: #ffffff;
   mix-blend-mode: normal;
   border: 1px solid #817a7a;
-  /* box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.03); */
   border-radius: 5px;
 }
 .search_icon {
   position: absolute;
   top: 5px;
   left: 5px;
-  /* border: 1px solid red; */
 }
 .search_bar {
   border: none;
   width: 233px;
   height: 38px;
   padding-left: 25px;
-  /* border: 1px solid orangered; */
 }
 
 .filter_bar {
@@ -52,7 +45,6 @@
 }
 
 .add_new_btn {
-  /* width: 201px; */
   border-radius: 10px;
   text-align: center;
   color: #ffffff;
@@ -60,10 +52,7 @@
   font-weight: 300;
 }
 .export_btn {
-  /* width: 120px;
-  height: 40px; */
   text-align: center;
-  /* border: 1px solid #3c3838; */
   border-radius: 10px;
 }
 .export_name {

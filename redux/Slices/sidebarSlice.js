@@ -1,8 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { userLogin, getUserList, createUserList } from "../Actions/userAction";
 
 const initialState = {
-  selectedItem: "Industry Category",
+  selectedItem: " ",
   isLoading: false,
   isSuccess: false,
   errorMessage: "",

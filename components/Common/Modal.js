@@ -8,6 +8,7 @@ import { BiFilter } from "react-icons/bi";
 import {
   createIndustryCategory,
   deleteIndustryCategory,
+  editIndustryCategory,
   getIndustryLists,
 } from "../../redux/Actions/industryCategoryAction";
 
@@ -17,6 +18,7 @@ import {
   createIndustrySector,
   deleteIndustrySector,
   editIndustrySector,
+  getIndustrySectorLists,
 } from "../../redux/Actions/industrySectorAction";
 import { useEffect } from "react";
 import {
@@ -27,8 +29,15 @@ import {
 } from "../../redux/Actions/stateManagementAction";
 import {
   createDistrictManagement,
+  deleteDistrictManagement,
   editDistrictManagement,
+  getDistrictManagementLists,
 } from "../../redux/Actions/districtManagementAction";
+import {
+  createTalukaManagement,
+  deleteTalukaManagement,
+  editTalukaManagement,
+} from "../../redux/Actions/talukaManagementAction";
 
 export const IndustryCategoryModal = (props) => {
   const dispatch = useDispatch();
@@ -38,11 +47,15 @@ export const IndustryCategoryModal = (props) => {
     setState({ name: e.target.value });
   };
   const industryCategorySubmit = () => {
-    dispatch(createIndustryCategory(state));
+    if (props?.action?.id) {
+      const id = props?.action?.id;
+      dispatch(editIndustryCategory({ id, state }));
+    } else {
+      dispatch(createIndustryCategory(state));
+    }
     props.setModalShow(false);
   };
   const industryCategoryDelete = () => {
-    console.log(props.action);
     dispatch(deleteIndustryCategory(props.action));
     props.setModalShow(false);
   };
@@ -67,12 +80,13 @@ export const IndustryCategoryModal = (props) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {props.type === "add" ? (
+        {props.type === "add" || props.type === "edit" ? (
           <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Control
                 type="text"
                 placeholder="Add new Category"
+                defaultValue={props.action.id ? props?.action?.name : ""}
                 autoFocus
                 onChange={(e) => handleIndustryCategoryChange(e)}
               />
@@ -109,12 +123,23 @@ export const IndustryCategoryModal = (props) => {
             />
           </>
         ) : (
-          <CustomButton
-            name="Cancel"
-            color="#FFFFFF"
-            bgColor="#FA6130"
-            onClick={() => industryCategorySubmit()}
-          />
+          props.type === "edit" && (
+            <>
+              <CustomButton
+                name="Update"
+                color="#FFFFFF"
+                bgColor="#FA6130"
+                onClick={() => industryCategorySubmit()}
+              />
+              <CustomButton
+                name="Cancel"
+                color="#000000"
+                bgColor="#FFFFFF"
+                border="1px solid #000000"
+                onClick={() => industryCategoryCancel()}
+              />
+            </>
+          )
         )}
       </Modal.Footer>
     </Modal>
@@ -122,13 +147,12 @@ export const IndustryCategoryModal = (props) => {
 };
 
 export const IndustrySectorModal = (props) => {
-  console.log(props.action);
   const dispatch = useDispatch();
   const [state, setState] = useState("");
   const [selectedCategory, setSelectedCategory] = useState();
 
   useEffect(() => {
-    dispatch(getIndustryLists());
+    dispatch(getIndustrySectorLists());
   }, []);
 
   const industryCategory = useSelector(
@@ -142,15 +166,18 @@ export const IndustrySectorModal = (props) => {
     setState(e.target.value);
   };
   const industrySectorSubmit = () => {
-    const data = {
+    const industrySectorData = {
       name: state,
       industry_id: selectedCategory,
     };
 
-    props.action.id
-      ? dispatch(editIndustrySector(data, selectedCategory))
-      : dispatch(createIndustrySector(data));
-
+    if (props?.action?.id) {
+      const id = props?.action?.id;
+      console.log("::::::::::::::::::", id, industrySectorData);
+      // dispatch(editIndustrySector({ id, industrySectorData }));
+    } else {
+      dispatch(createIndustrySector(industrySectorData));
+    }
     props.setmodalshow(false);
   };
   const industrySectorDelete = () => {
@@ -269,7 +296,7 @@ export const IndustrySectorModal = (props) => {
 };
 
 export const StateManagementModal = (props) => {
-  console.log(props);
+  // console.log(props);
   const dispatch = useDispatch();
   const [state, setState] = useState("");
 
@@ -396,7 +423,6 @@ export const StateManagementModal = (props) => {
 };
 
 export const DistrictManagementModal = (props) => {
-  console.log(props.action);
   const dispatch = useDispatch();
   const [districtName, setDistrictName] = useState("");
   const [selectedState, setSelectedState] = useState(null);
@@ -407,13 +433,12 @@ export const DistrictManagementModal = (props) => {
 
   const allStates = useSelector((state) => state.stateManagement);
 
-  console.log(selectedState, districtName);
   const districtManagementSubmit = () => {
     const data = {
       name: districtName,
       state_id: selectedState,
     };
-    console.log(data, "::::::::::::::::::::::::::::::::::::::::::");
+
     if (props?.action?.id) {
       const id = props?.action?.id;
       dispatch(
@@ -428,7 +453,7 @@ export const DistrictManagementModal = (props) => {
     props.setModalShow(false);
   };
   const districtManagementDelete = () => {
-    dispatch(deleteStateManagement(props.action));
+    dispatch(deleteDistrictManagement(props.action));
     props.setModalShow(false);
   };
   const districtManagementCancel = () => {
@@ -544,6 +569,193 @@ export const DistrictManagementModal = (props) => {
                 bgColor="#FFFFFF"
                 border="1px solid #000000"
                 onClick={() => districtManagementCancel()}
+              />
+            </>
+          )
+        )}
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
+export const TalukaManagementModal = (props) => {
+  const dispatch = useDispatch();
+  const [talukaName, setTalukaName] = useState("");
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+
+  useEffect(() => {
+    dispatch(getStateManagementLists());
+    if (selectedState !== null) {
+      dispatch(getDistrictManagementLists(selectedState));
+    }
+  }, [selectedState]);
+
+  const allStates = useSelector((state) => state.stateManagement);
+  const allDistricts = useSelector((state) => state.districtManagement);
+
+  const talukaManagementSubmit = () => {
+    const data = {
+      name: talukaName,
+      district_id: selectedDistrict,
+      state_id: selectedState,
+    };
+
+    if (props?.action?.id) {
+      const id = props?.action?.id;
+      dispatch(
+        editTalukaManagement({
+          id: id,
+          editData: data,
+        })
+      );
+    } else {
+      dispatch(createTalukaManagement(data));
+    }
+    props.toggleModalshow(false);
+  };
+  const talukaManagementDelete = () => {
+    dispatch(deleteTalukaManagement(props.action));
+    props.toggleModalshow(false);
+  };
+  const talukaManagementCancel = () => {
+    props.toggleModalshow(false);
+  };
+  const handleSelectStateChange = (e) => {
+    const stateID = e.target.value;
+    setSelectedState(stateID);
+  };
+  const handleSelectDistrictChange = (e) => {
+    const districtID = e.target.value;
+    setSelectedDistrict(districtID);
+  };
+  const handleTalukaChange = (e) => {
+    setTalukaName(e.target.value);
+  };
+  const editTalukaChange = (e) => {
+    setTalukaName(e.target.value);
+  };
+
+  return (
+    <Modal
+      {...props}
+      size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      backdrop="static"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          {props.type === "add"
+            ? "Add New Taluka"
+            : props.type === "delete"
+            ? "Delete Taluka"
+            : props.type === "edit" && "Edit Taluka"}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {props.type === "add" || props.type === "edit" ? (
+          <Form>
+            <select
+              onChange={handleSelectStateChange}
+              className="form-control mb-3"
+            >
+              <option value="none">
+                {props.action?.id ? props.action?.state : "Select State"}
+              </option>
+              {allStates?.stateManagementData?.map((state, index) => {
+                return (
+                  <option
+                    className="form-control"
+                    key={index}
+                    value={state?.id}
+                  >
+                    {state?.name}
+                  </option>
+                );
+              })}
+            </select>
+            <select
+              onChange={handleSelectDistrictChange}
+              className="form-control mb-3"
+            >
+              <option value="none">
+                {props.action?.id ? props.action?.district : "Select District"}
+              </option>
+              {allDistricts?.districtManagementData?.district?.map(
+                (district, index) => {
+                  return (
+                    <option
+                      className="form-control"
+                      key={index}
+                      value={district?.id}
+                    >
+                      {district?.district}
+                    </option>
+                  );
+                }
+              )}
+            </select>
+
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Control
+                type="text"
+                placeholder="Add new Taluka"
+                autoFocus
+                defaultValue={props.action.id ? props.action.name : ""}
+                onChange={
+                  props.action.id
+                    ? (e) => editTalukaChange(e)
+                    : (e) => handleTalukaChange(e)
+                }
+              />
+            </Form.Group>
+          </Form>
+        ) : props.type === "delete" ? (
+          "Do you want to delete this taluka, this can't be undone, taluka will removed from list."
+        ) : (
+          "Edit Taluka"
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        {props.type === "add" ? (
+          <CustomButton
+            name="Submit"
+            color="#FFFFFF"
+            bgColor="#FA6130"
+            onClick={() => talukaManagementSubmit()}
+          />
+        ) : props.type === "delete" ? (
+          <>
+            <CustomButton
+              name="Delete"
+              color="#FFFFFF"
+              bgColor="#FA6130"
+              onClick={() => talukaManagementDelete()}
+            />
+            <CustomButton
+              name="Cancel"
+              color="#000000"
+              bgColor="#FFFFFF"
+              border="1px solid #000000"
+              onClick={() => talukaManagementCancel()}
+            />
+          </>
+        ) : (
+          props.type === "edit" && (
+            <>
+              <CustomButton
+                name="Update"
+                color="#FFFFFF"
+                bgColor="#FA6130"
+                onClick={() => talukaManagementSubmit()}
+              />
+              <CustomButton
+                name="Cancel"
+                color="#000000"
+                bgColor="#FFFFFF"
+                border="1px solid #000000"
+                onClick={() => talukaManagementCancel()}
               />
             </>
           )

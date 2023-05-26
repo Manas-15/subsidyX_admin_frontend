@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styles from "../styles/Login.module.css";
-import Button from "react-bootstrap/Button";
-// import Form from "react-bootstrap/Form";
 import { CustomButton } from "../components/Common/CustomButton";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -9,6 +7,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { LoginSchema } from "../components/Common/Validation";
 import { userLogin } from "../redux/Actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 function Login() {
   const router = useRouter();
@@ -16,11 +15,24 @@ function Login() {
   const [showPassword, toggleShowPassword] = useState(false);
 
   const user = useSelector((state) => state?.users);
-  console.log(user?.user?.access_token);
+  console.log(user);
+
   useEffect(() => {
     if (user?.user?.access_token !== undefined) {
-      router.push("/dashboard");
+      toast("User LoggedIn Successfully", {
+        hideProgressBar: true,
+        autoClose: 4000,
+        type: "success",
+      });
+      router.push("/industry_category");
     } else {
+      if (user?.errorMessage !== "") {
+        toast(user?.errorMessage, {
+          hideProgressBar: true,
+          autoClose: 4000,
+          type: "error",
+        });
+      }
       router.push("/");
     }
   }, [user?.user?.access_token]);

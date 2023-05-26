@@ -45,7 +45,6 @@ function IndustrySector() {
     } else if (idx === 1) {
       console.log("viewed");
     } else if (idx === 2) {
-      console.log("Edited");
       setModalShow(true);
       setType("edit");
       setAction(data);
@@ -128,7 +127,6 @@ function IndustrySector() {
                                 key={idx}
                                 onClick={() => handleClick(data, idx)}
                               >
-                                {idx}
                                 <Icon color="#FA6130" size="18px" />
                               </li>
                             );

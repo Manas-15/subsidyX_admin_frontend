@@ -4,9 +4,10 @@ import { authHeader } from "../authHeader";
 
 export const getDistrictManagementLists = createAsyncThunk(
   "district/",
-  async (iData, { rejectWithValue }) => {
+  async (ID, { rejectWithValue }) => {
     try {
-      const { data } = await api.get(`district/`, {
+      let params = ID ? "?state_id=" + ID : "";
+      const { data } = await api.get(`district/${params}`, {
         headers: authHeader(),
       });
       return data;
@@ -48,17 +49,17 @@ export const editDistrictManagement = createAsyncThunk(
   }
 );
 
-// export const deleteStateManagement = createAsyncThunk(
-//   "industry/delete",
-//   async (ID, { rejectWithValue }) => {
-//     try {
-//       console.log(ID);
-//       const { data } = await api.delete(`state/delete?state_id=${ID}`, {
-//         headers: authHeader(),
-//       });
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );
+export const deleteDistrictManagement = createAsyncThunk(
+  "district/delete",
+  async (ID, { rejectWithValue }) => {
+    try {
+      console.log(ID);
+      const { data } = await api.delete(`district/?district_id=${ID}`, {
+        headers: authHeader(),
+      });
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);

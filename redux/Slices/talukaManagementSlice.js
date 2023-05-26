@@ -1,14 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  getDistrictManagementLists,
-  createDistrictManagement,
-  editDistrictManagement,
-  deleteStateManagement,
-  deleteDistrictManagement,
-} from "../Actions/districtManagementAction";
+  getTalukaManagementLists,
+  createTalukaManagement,
+  deleteTalukaManagement,
+  editTalukaManagement,
+} from "../Actions/talukaManagementAction";
 
 const initialState = {
-  districtManagementData: [],
+  talukaManagementData: [],
   isCreated: false,
   isDeleted: false,
   isUpdated: false,
@@ -17,64 +16,66 @@ const initialState = {
   errorMessage: "",
 };
 
-const districtManagementSlice = createSlice({
-  name: "districtManagement",
+const talukaManagementSlice = createSlice({
+  name: "talukaManagement",
   initialState,
   extraReducers: {
-    [getDistrictManagementLists.pending]: (state) => {
+    [getTalukaManagementLists.pending]: (state) => {
       state.isLoading = true;
     },
-    [getDistrictManagementLists.fulfilled]: (state, { payload }) => {
+    [getTalukaManagementLists.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.isSuccess = true;
-      state.districtManagementData = payload;
+      state.talukaManagementData = payload;
     },
-    [getDistrictManagementLists.rejected]: (state, { payload }) => {
+    [getTalukaManagementLists.rejected]: (state, { payload }) => {
       state.isLoading = false;
       state.isSuccess = false;
       state.errorMessage = payload;
     },
 
-    [createDistrictManagement.pending]: (state) => {
+    [createTalukaManagement.pending]: (state) => {
       state.isLoading = true;
       state.isCreated = false;
     },
-    [createDistrictManagement.fulfilled]: (state, { payload }) => {
+    [createTalukaManagement.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.isSuccess = true;
       state.isCreated = true;
     },
-    [createDistrictManagement.rejected]: (state, { payload }) => {
+    [createTalukaManagement.rejected]: (state, { payload }) => {
       state.isLoading = false;
       state.isSuccess = false;
       state.isCreated = false;
       state.errorMessage = payload;
     },
-    [editDistrictManagement.pending]: (state) => {
+
+    [editTalukaManagement.pending]: (state) => {
       state.isLoading = true;
       state.isUpdated = false;
     },
-    [editDistrictManagement.fulfilled]: (state, { payload }) => {
+    [editTalukaManagement.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.isSuccess = true;
       state.isUpdated = true;
     },
-    [editDistrictManagement.rejected]: (state, { payload }) => {
+    [editTalukaManagement.rejected]: (state, { payload }) => {
       state.isLoading = false;
       state.isSuccess = false;
       state.isUpdated = false;
       state.errorMessage = payload;
     },
-    [deleteDistrictManagement.pending]: (state) => {
+
+    [deleteTalukaManagement.pending]: (state) => {
       state.isLoading = true;
       state.isDeleted = false;
     },
-    [deleteDistrictManagement.fulfilled]: (state, { payload }) => {
+    [deleteTalukaManagement.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.isSuccess = true;
       state.isDeleted = true;
     },
-    [deleteDistrictManagement.rejected]: (state, { payload }) => {
+    [deleteTalukaManagement.rejected]: (state, { payload }) => {
       state.isLoading = false;
       state.isSuccess = false;
       state.isDeleted = false;
@@ -83,4 +84,4 @@ const districtManagementSlice = createSlice({
   },
 });
 
-export default districtManagementSlice.reducer;
+export default talukaManagementSlice.reducer;

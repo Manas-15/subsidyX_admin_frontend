@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import Image from "next/image";
-import logo from "../../public/logo.png";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   MdDashboard,
@@ -9,8 +7,14 @@ import {
 } from "react-icons/md";
 import { selectedCategory } from "../../redux/Slices/sidebarSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 const sideBarItems = [
+  {
+    name: "Adminstrative Management",
+    href: "/adminstrative_management",
+    icon: MdDashboard,
+  },
   { name: "Industry Category", href: "/industry_category", icon: MdDashboard },
   { name: "Industry Sectors", href: "/industry_sector", icon: MdDashboard },
   { name: "Questions", href: "/questions", icon: MdDashboard },
@@ -22,19 +26,24 @@ const sideBarItems = [
   },
   { name: "Taluka Management", href: "/taluka_management", icon: MdDashboard },
   { name: "Department Management", href: "/about", icon: MdDashboard },
-  // { name: "Subsidy Management", href: "/about", icon: MdDashboard },
-  // { name: "Report management", href: "/about", icon: MdDashboard },
-  // { name: "Employee Management", href: "/about", icon: MdDashboard },
-  // { name: "Client Management", href: "/about", icon: MdDashboard },
-  // { name: "Operational Partner Management", href: "/about", icon: MdDashboard },
-  // { name: "Channel Partner Management", href: "/about", icon: MdDashboard },
-  // { name: "Application Management", href: "/about", icon: MdDashboard },
-  // { name: "Quatation Management", href: "/about", icon: MdDashboard },
-  // { name: "Generate Form", href: "/about", icon: MdDashboard },
-  // { name: "Membership", href: "/about", icon: MdDashboard },
+  {
+    name: "Subsidy Management",
+    href: "/subsidy_management",
+    icon: MdDashboard,
+  },
+  { name: "Report management", href: "/about", icon: MdDashboard },
+  { name: "Employee Management", href: "/about", icon: MdDashboard },
+  { name: "Client Management", href: "/about", icon: MdDashboard },
+  { name: "Operational Partner Management", href: "/about", icon: MdDashboard },
+  { name: "Channel Partner Management", href: "/about", icon: MdDashboard },
+  { name: "Application Management", href: "/about", icon: MdDashboard },
+  { name: "Quatation Management", href: "/about", icon: MdDashboard },
+  { name: "Generate Form", href: "/about", icon: MdDashboard },
+  { name: "Membership", href: "/about", icon: MdDashboard },
 ];
 
 const Sidebar = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -42,9 +51,21 @@ const Sidebar = () => {
     setIsCollapsed((prevState) => !prevState);
   };
 
-  const handleSelect = (name) => {
-    dispatch(selectedCategory(name));
-  };
+  useEffect(() => {
+    const pathName = router?.pathname
+      .toLowerCase()
+      .replace(/[^\w-]+/g, "")
+      .replace("_", " ")
+      .split(" ");
+    const item = pathName
+      .map((item) => {
+        return item.charAt(0).toUpperCase() + item.slice(1);
+      })
+      .join(" ");
+
+    dispatch(selectedCategory(item));
+  }, [router?.pathname]);
+
   return (
     <div className="sidebar_wrapper">
       <button className="sidebar_btn" onClick={toogleSidebar}>
@@ -69,11 +90,7 @@ const Sidebar = () => {
           {sideBarItems?.map(({ name, href, icon: Icon }, index) => {
             return (
               <li className="sidebar_item" key={index}>
-                <Link
-                  className="sidebar_link"
-                  href={href}
-                  onClick={() => handleSelect(name)}
-                >
+                <Link className="sidebar_link" href={href}>
                   <span className="sidebar_icon">
                     <Icon />
                   </span>

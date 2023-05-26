@@ -8,6 +8,7 @@ import {
 const initialState = {
   industrySectorData: [],
   isCreated: false,
+  isUpdated: false,
   isDeleted: false,
   isLoading: false,
   isSuccess: false,

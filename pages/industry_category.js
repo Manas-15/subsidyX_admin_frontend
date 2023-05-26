@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { IndustryCategoryModal } from "../components/Common/Modal";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { getIndustryLists } from "../redux/Actions/industryCategoryAction";
+import { getIndustryCategoryLists } from "../redux/Actions/industryCategoryAction";
 
 function IndustryCategory() {
   const dispatch = useDispatch();
@@ -29,29 +29,40 @@ function IndustryCategory() {
   ];
   const industryCategory = useSelector((state) => state?.industryCategory);
 
-  const addNewIndustry = () => {
+  const addNewIndustryCategory = () => {
     setModalShow(true);
     setType("add");
-    // toast("Wow so easy!");
   };
 
   useEffect(() => {
-    dispatch(getIndustryLists());
-  }, [industryCategory?.isCreated, industryCategory?.isDeleted]);
+    dispatch(getIndustryCategoryLists());
+    if (industryCategory?.successMessage !== "") {
+      toast(industryCategory?.successMessage, {
+        hideProgressBar: false,
+        autoClose: 3000,
+        type: "success",
+      });
+    }
+  }, [
+    industryCategory?.isCreated,
+    industryCategory?.isUpdated,
+    industryCategory?.isDeleted,
+  ]);
 
-  const handleClick = (ID, idx) => {
-    console.log(ID, idx);
+  const handleClick = (item, idx) => {
+    console.log(item, idx);
     if (idx === 0) {
       console.log("Shared");
     } else if (idx === 1) {
       console.log("viewed");
     } else if (idx === 2) {
-      console.log("Edited");
+      setModalShow(true);
+      setType("edit");
+      setAction(item);
     } else {
-      console.log("deleted");
       setModalShow(true);
       setType("delete");
-      setAction(ID);
+      setAction(item?.id);
     }
   };
 
@@ -90,7 +101,7 @@ function IndustryCategory() {
                 name="Add New Industry Category"
                 bgColor="#4682E3"
                 color="#FFFFFF"
-                onClick={addNewIndustry}
+                onClick={addNewIndustryCategory}
               />
             </div>
 
@@ -124,7 +135,7 @@ function IndustryCategory() {
                           return (
                             <li
                               key={idx}
-                              onClick={() => handleClick(data?.id, idx)}
+                              onClick={() => handleClick(data, idx)}
                             >
                               <Icon color="#FA6130" size="18px" />
                             </li>
