@@ -1,64 +1,109 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../api";
-import { authHeader } from "../authHeader";
+import { alertActions } from "./alertAction";
+import { industryCategoryConstants } from "../Constants/industryCategoryConstants";
+import { industryCategoryService } from "../Services/industryCategoryService";
 
-export const getIndustryCategoryLists = createAsyncThunk(
-  "industry/industries",
-  async (iData, { rejectWithValue }) => {
-    try {
-      const { data } = await api.get(`industry/industries`, {
-        headers: authHeader(),
-      });
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+export const industryCategoryActions = {
+  getCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+};
+function getCategories() {
+  return (dispatch) => {
+    dispatch(request());
+    industryCategoryService.getCategories().then(
+      (res) => {
+        console.log(res);
+        dispatch(success(res));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+  function request() {
+    return { type: industryCategoryConstants.GET_CATEGORY_REQUEST };
   }
-);
+  function success(data) {
+    return { type: industryCategoryConstants.GET_CATEGORY_SUCCESS, data };
+  }
+  function failure(error) {
+    return { type: industryCategoryConstants.GET_CATEGORY_FAILURE, error };
+  }
+}
 
-export const createIndustryCategory = createAsyncThunk(
-  "industry/create",
-  async (iData, { rejectWithValue }) => {
-    try {
-      const { data } = await api.post(`industry/create`, iData, {
-        headers: authHeader(),
-      });
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+function createCategory(iData) {
+  return (dispatch) => {
+    dispatch(request({ iData }));
+    industryCategoryService.createCategory(iData).then(
+      (res) => {
+        dispatch(success(res));
+        dispatch(alertActions.success("Industry Category Created"));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+  function request() {
+    return { type: industryCategoryConstants.CREATE_CATEGORY_REQUEST };
   }
-);
+  function success(data) {
+    return { type: industryCategoryConstants.CREATE_CATEGORY_SUCCESS, data };
+  }
+  function failure(error) {
+    return { type: industryCategoryConstants.CREATE_CATEGORY_FAILURE, error };
+  }
+}
 
-export const editIndustryCategory = createAsyncThunk(
-  "industry/update",
-  async ({ id, state }, { rejectWithValue }) => {
-    try {
-      const { data } = await api.patch(
-        `industry/edit?industry_id=${id}`,
-        state,
-        {
-          headers: authHeader(),
-        }
-      );
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+function updateCategory({ id, state }) {
+  return (dispatch) => {
+    dispatch(request({ id, state }));
+    industryCategoryService.updateCategory({ id, state }).then(
+      (res) => {
+        dispatch(success(res));
+        dispatch(alertActions.success("Industry Category Updated"));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+  function request() {
+    return { type: industryCategoryConstants.UPDATE_CATEGORY_REQUEST };
   }
-);
+  function success(data) {
+    return { type: industryCategoryConstants.UPDATE_CATEGORY_SUCCESS, data };
+  }
+  function failure(error) {
+    return { type: industryCategoryConstants.UPDATE_CATEGORY_FAILURE, error };
+  }
+}
 
-export const deleteIndustryCategory = createAsyncThunk(
-  "industry/delete",
-  async (ID, { rejectWithValue }) => {
-    try {
-      console.log(ID);
-      const { data } = await api.delete(`industry/delete?industry_id=${ID}`, {
-        headers: authHeader(),
-      });
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+function deleteCategory(id) {
+  return (dispatch) => {
+    dispatch(request({ id }));
+    industryCategoryService.deleteCategory(id).then(
+      (res) => {
+        dispatch(success(res));
+        dispatch(alertActions.success("Industry Category Deleted"));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+  function request() {
+    return { type: industryCategoryConstants.DELETE_CATEGORY_REQUEST };
   }
-);
+  function success(data) {
+    return { type: industryCategoryConstants.DELETE_CATEGORY_SUCCESS, data };
+  }
+  function failure(error) {
+    return { type: industryCategoryConstants.DELETE_CATEGORY_FAILURE, error };
+  }
+}
