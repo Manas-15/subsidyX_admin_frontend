@@ -17,38 +17,38 @@ export function question(
     case questionConstants.GET_QUESTION_FAILURE:
       return { isSuccess: false };
 
-    // case questionConstants.CREATE_CATEGORY_REQUEST:
-    //   return {
-    //     isCreated: false,
-    //   };
-    // case questionConstants.CREATE_CATEGORY_SUCCESS:
-    //   return {
-    //     isCreated: true,
-    //   };
-    // case questionConstants.CREATE_CATEGORY_FAILURE:
-    //   return { isCreated: false };
+    case questionConstants.CREATE_QUESTION_REQUEST:
+      return {
+        isCreated: false,
+      };
+    case questionConstants.CREATE_QUESTION_SUCCESS:
+      return {
+        isCreated: true,
+      };
+    case questionConstants.CREATE_QUESTION_FAILURE:
+      return { isCreated: false };
 
-    // case questionConstants.UPDATE_CATEGORY_REQUEST:
+    // case questionConstants.UPDATE_QUESTION_REQUEST:
     //   return {
     //     isUpdated: false,
     //   };
-    // case questionConstants.UPDATE_CATEGORY_SUCCESS:
+    // case questionConstants.UPDATE_QUESTION_SUCCESS:
     //   return {
     //     isUpdated: true,
     //   };
-    // case questionConstants.UPDATE_CATEGORY_FAILURE:
+    // case questionConstants.UPDATE_QUESTION_FAILURE:
     //   return { isUpdated: false };
 
-    // case questionConstants.DELETE_CATEGORY_REQUEST:
-    //   return {
-    //     isDeleted: false,
-    //   };
-    // case questionConstants.DELETE_CATEGORY_SUCCESS:
-    //   return {
-    //     isDeleted: true,
-    //   };
-    // case questionConstants.DELETE_CATEGORY_FAILURE:
-    //   return { isDeleted: false };
+    case questionConstants.DELETE_QUESTION_REQUEST:
+      return {
+        isDeleted: false,
+      };
+    case questionConstants.DELETE_QUESTION_SUCCESS:
+      return {
+        isDeleted: true,
+      };
+    case questionConstants.DELETE_QUESTION_FAILURE:
+      return { isDeleted: false };
 
     default:
       return state;

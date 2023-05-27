@@ -3,9 +3,9 @@ import { authHeader } from "../authHeader";
 
 export const questionService = {
   getQuestions,
-  //   createQuestion,
+  createQuestion,
   //   updateQuestion,
-  //   deleteQuestion,
+  deleteQuestion,
 };
 
 async function getQuestions() {
@@ -14,11 +14,11 @@ async function getQuestions() {
   });
 }
 
-// async function createCategory(iData) {
-//   return await api.post(`industry/create`, iData, {
-//     headers: authHeader(),
-//   });
-// }
+async function createQuestion(questionData) {
+  return await api.post(`question/Create`, questionData, {
+    headers: authHeader(),
+  });
+}
 
 // async function updateCategory({ id, state }) {
 //   return await api.patch(`industry/edit?industry_id=${id}`, state, {
@@ -26,8 +26,8 @@ async function getQuestions() {
 //   });
 // }
 
-// async function deleteCategory(ID) {
-//   return await api.delete(`industry/delete?industry_id=${ID}`, {
-//     headers: authHeader(),
-//   });
-// }
+async function deleteQuestion(ID) {
+  return await api.delete(`question/?question_id=${ID}`, {
+    headers: authHeader(),
+  });
+}

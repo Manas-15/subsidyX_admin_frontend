@@ -4,7 +4,7 @@ import GeneralQuestion from "./general_question";
 import CategoryQuestion from "./category_question";
 
 function AddQuestion({ setModalShow }) {
-  const [questionType, setQuestionType] = useState("2");
+  const [questionType, setQuestionType] = useState("1");
 
   const handleRadioClick = (e) => {
     setQuestionType(e.target.value);

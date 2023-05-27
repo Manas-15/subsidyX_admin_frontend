@@ -1,16 +1,12 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../api";
-import { authHeader } from "../authHeader";
-
 import { alertActions } from "./alertAction";
 import { questionService } from "../Services/questionService";
 import { questionConstants } from "../Constants/questionConstants";
 
 export const questionActions = {
   getQuestions,
-  // createQuestion,
-  // updateQuestion,
-  // deleteQuestion,
+  createQuestion,
+  // updateQuestion
+  deleteQuestion,
 };
 function getQuestions() {
   return (dispatch) => {
@@ -36,31 +32,77 @@ function getQuestions() {
   }
 }
 
-export const createQuestion = createAsyncThunk(
-  "questions/create",
-  async (questionData, { rejectWithValue }) => {
-    try {
-      console.log("create Question", questionData);
-      const { data } = await api.post(`question/Create`, questionData, {
-        headers: authHeader(),
-      });
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+function createQuestion(iData) {
+  return (dispatch) => {
+    dispatch(request({ iData }));
+    questionService.createQuestion(iData).then(
+      (res) => {
+        dispatch(success(res));
+        dispatch(alertActions.success("Question Created"));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+  function request() {
+    return { type: questionConstants.CREATE_QUESTION_REQUEST };
   }
-);
+  function success(data) {
+    return { type: questionConstants.CREATE_QUESTION_SUCCESS, data };
+  }
+  function failure(error) {
+    return { type: questionConstants.CREATE_QUESTION_FAILURE, error };
+  }
+}
 
-export const deleteQuestionManagement = createAsyncThunk(
-  "question/delete",
-  async (ID, { rejectWithValue }) => {
-    try {
-      const { data } = await api.delete(`question/?question_id=${ID}`, {
-        headers: authHeader(),
-      });
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+// function updateQuestion({ id, editData }) {
+//   return (dispatch) => {
+//     dispatch(request({ id, editData }));
+//     questionService.updateQuestion({ id, editData }).then(
+//       (res) => {
+//         dispatch(success(res));
+//         dispatch(alertActions.success("Question Updated"));
+//       },
+//       (error) => {
+//         dispatch(failure(error.toString()));
+//         dispatch(alertActions.error(error.toString()));
+//       }
+//     );
+//   };
+//   function request() {
+//     return { type: questionConstants.UPDATE_QUESTION_REQUEST };
+//   }
+//   function success(data) {
+//     return { type: questionConstants.UPDATE_QUESTION_SUCCESS, data };
+//   }
+//   function failure(error) {
+//     return { type: questionConstants.UPDATE_QUESTION_FAILURE, error };
+//   }
+// }
+
+function deleteQuestion(id) {
+  return (dispatch) => {
+    dispatch(request({ id }));
+    questionService.deleteQuestion(id).then(
+      (res) => {
+        dispatch(success(res));
+        dispatch(alertActions.success("Question Deleted"));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+  function request() {
+    return { type: questionConstants.DELETE_QUESTION_REQUEST };
   }
-);
+  function success(data) {
+    return { type: questionConstants.DELETE_QUESTION_SUCCESS, data };
+  }
+  function failure(error) {
+    return { type: questionConstants.DELETE_QUESTION_FAILURE, error };
+  }
+}

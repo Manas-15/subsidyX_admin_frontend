@@ -12,11 +12,18 @@ import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import AddQuestion from "../components/add_questions";
-import { getQuestionLists } from "../redux/Actions/questionsAction";
+import {
+  getQuestionLists,
+  questionActions,
+} from "../redux/Actions/questionsAction";
+import { QuestionManagementModal } from "../components/Common/Modal";
 
 function Questions() {
   const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false);
+  const [addQuestion, setAddQuestion] = useState(false);
+  const [type, setType] = useState("");
+  const [action, setAction] = useState({});
 
   const actions = [
     { icon: BsShareFill },
@@ -24,15 +31,16 @@ function Questions() {
     { icon: MdModeEdit },
     { icon: RiDeleteBin5Fill },
   ];
-  const questions = useSelector((state) => state?.questions);
+  const questions = useSelector((state) => state?.question);
 
   const addNewQuestionList = () => {
-    setModalShow(true);
+    setAddQuestion(true);
+    setType("add");
   };
 
   useEffect(() => {
-    dispatch(getQuestionLists());
-  }, []);
+    dispatch(questionActions?.getQuestions());
+  }, [questions?.isCreated, questions?.isDeleted]);
 
   const handleClick = (data, idx) => {
     console.log(data, idx);
@@ -53,10 +61,19 @@ function Questions() {
 
   return (
     <>
-      {true ? (
+      {addQuestion ? (
         <AddQuestion setModalShow={setModalShow} />
       ) : (
         <div className={styles.container}>
+          {type === "delete" && (
+            <QuestionManagementModal
+              type={type}
+              action={action}
+              show={modalShow}
+              setModalShow={setModalShow}
+              onHide={() => setModalShow(false)}
+            />
+          )}
           <div className={styles.tablee}>
             <div
               className={`d-flex justify-content-between align-items-center ${styles.tableHeader}`}

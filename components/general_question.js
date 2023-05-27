@@ -5,7 +5,11 @@ import { MdCancel } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { CustomButton } from "./Common/CustomButton";
-import { createQuestion } from "../redux/Actions/questionsAction";
+import {
+  createQuestion,
+  questionActions,
+} from "../redux/Actions/questionsAction";
+import { BsFileEarmarkTextFill } from "react-icons/bs";
 
 const GeneralQuestion = ({ setModalShow }) => {
   const dispatch = useDispatch();
@@ -61,7 +65,7 @@ const GeneralQuestion = ({ setModalShow }) => {
     const data = {
       questions: inputList,
     };
-    dispatch(createQuestion(data));
+    dispatch(questionActions?.createQuestion(data));
     setModalShow(false);
   };
 
@@ -276,7 +280,12 @@ const GeneralQuestion = ({ setModalShow }) => {
                   </>
                 )}
 
-                {item?.field_type_id === "4" && "Fileupload"}
+                {item?.field_type_id === "4" && (
+                  <div className="ms-3 mb-3">
+                    <BsFileEarmarkTextFill size="20px" />
+                    File Upload
+                  </div>
+                )}
               </>
             );
           })}
