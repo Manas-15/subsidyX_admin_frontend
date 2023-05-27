@@ -1,60 +1,109 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../api";
-import { authHeader } from "../authHeader";
+import { talukaManagementConstants } from "../Constants/talukaManagementConstants";
+import { talukaManagementService } from "../Services/talukaManagementService";
+import { alertActions } from "./alertAction";
 
-export const getTalukaManagementLists = createAsyncThunk(
-  "state/get",
-  async (tData, { rejectWithValue }) => {
-    try {
-      const { data } = await api.get(`taluka/`, {
-        headers: authHeader(),
-      });
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+export const talukaManagementAction = {
+  getTalukas,
+  createTaluka,
+  updateTaluka,
+  deleteTaluka,
+};
+function getTalukas() {
+  return (dispatch) => {
+    dispatch(request());
+    talukaManagementService.getTalukas().then(
+      (res) => {
+        console.log(res);
+        dispatch(success(res));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+  function request() {
+    return { type: talukaManagementConstants.GET_TALUKA_REQUEST };
   }
-);
+  function success(data) {
+    return { type: talukaManagementConstants.GET_TALUKA_SUCCESS, data };
+  }
+  function failure(error) {
+    return { type: talukaManagementConstants.GET_TALUKA_FAILURE, error };
+  }
+}
 
-export const createTalukaManagement = createAsyncThunk(
-  "taluka/create",
-  async (talukaData, { rejectWithValue }) => {
-    try {
-      const { data } = await api.post(`taluka/create`, talukaData, {
-        headers: authHeader(),
-      });
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+function createTaluka(iData) {
+  return (dispatch) => {
+    dispatch(request({ iData }));
+    talukaManagementService.createTaluka(iData).then(
+      (res) => {
+        dispatch(success(res));
+        dispatch(alertActions.success("Taluka Created"));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+  function request() {
+    return { type: talukaManagementConstants.CREATE_TALUKA_REQUEST };
   }
-);
+  function success(data) {
+    return { type: talukaManagementConstants.CREATE_TALUKA_SUCCESS, data };
+  }
+  function failure(error) {
+    return { type: talukaManagementConstants.CREATE_TALUKA_FAILURE, error };
+  }
+}
 
-export const editTalukaManagement = createAsyncThunk(
-  "taluka/edit",
-  async ({ id, editData }, { rejectWithValue }) => {
-    try {
-      console.log(id, editData);
-      const { data } = await api.patch(`taluka/?taluka_id=${id}`, editData, {
-        headers: authHeader(),
-      });
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+function updateTaluka({ id, editData }) {
+  return (dispatch) => {
+    dispatch(request({ id, editData }));
+    talukaManagementService.updateTaluka({ id, editData }).then(
+      (res) => {
+        dispatch(success(res));
+        dispatch(alertActions.success("Taluka Updated"));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+  function request() {
+    return { type: talukaManagementConstants.UPDATE_TALUKA_REQUEST };
   }
-);
+  function success(data) {
+    return { type: talukaManagementConstants.UPDATE_TALUKA_SUCCESS, data };
+  }
+  function failure(error) {
+    return { type: talukaManagementConstants.UPDATE_TALUKA_FAILURE, error };
+  }
+}
 
-export const deleteTalukaManagement = createAsyncThunk(
-  "taluka/delete",
-  async (ID, { rejectWithValue }) => {
-    try {
-      const { data } = await api.delete(`taluka/?taluka_id=${ID}`, {
-        headers: authHeader(),
-      });
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+function deleteTaluka(id) {
+  return (dispatch) => {
+    dispatch(request({ id }));
+    talukaManagementService.deleteTaluka(id).then(
+      (res) => {
+        dispatch(success(res));
+        dispatch(alertActions.success("Taluka Deleted"));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+  function request() {
+    return { type: talukaManagementConstants.DELETE_TALUKA_REQUEST };
   }
-);
+  function success(data) {
+    return { type: talukaManagementConstants.DELETE_TALUKA_SUCCESS, data };
+  }
+  function failure(error) {
+    return { type: talukaManagementConstants.DELETE_TALUKA_FAILURE, error };
+  }
+}
