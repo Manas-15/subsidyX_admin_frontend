@@ -11,9 +11,12 @@ import { MdModeEdit } from "react-icons/md";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import { IndustrySectorModal } from "../components/Common/Modal";
-import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { getIndustrySectorLists } from "../redux/Actions/industrySectorAction";
+import {
+  getIndustrySectorLists,
+  industryCategoryActions,
+  industrySectorActions,
+} from "../redux/Actions/industrySectorAction";
 
 function IndustrySector() {
   const dispatch = useDispatch();
@@ -35,7 +38,7 @@ function IndustrySector() {
   };
 
   useEffect(() => {
-    dispatch(getIndustrySectorLists());
+    dispatch(industrySectorActions?.getSectors());
   }, [industrySector?.isCreated, industrySector?.isDeleted]);
 
   const handleClick = (data, idx) => {

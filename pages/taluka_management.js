@@ -10,7 +10,10 @@ import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { getTalukaManagementLists } from "../redux/Actions/talukaManagementAction";
+import {
+  getTalukaManagementLists,
+  talukaManagementAction,
+} from "../redux/Actions/talukaManagementAction";
 import { TalukaManagementModal } from "../components/Common/Modal";
 
 function TalukaManagement() {
@@ -20,7 +23,7 @@ function TalukaManagement() {
   const [action, setAction] = useState({});
 
   const actions = [{ icon: MdModeEdit }, { icon: RiDeleteBin5Fill }];
-  const talukaManagement = useSelector((state) => state?.talukaManagement);
+  const talukaManagement = useSelector((state) => state?.taluka);
 
   const addNewTaluka = () => {
     setModalShow(true);
@@ -28,7 +31,7 @@ function TalukaManagement() {
   };
 
   useEffect(() => {
-    dispatch(getTalukaManagementLists());
+    dispatch(talukaManagementAction?.getTalukas());
   }, [
     talukaManagement?.isCreated,
     talukaManagement?.isUpdated,

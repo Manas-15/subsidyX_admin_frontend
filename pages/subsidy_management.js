@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { getSubsidyManagementLists } from "../redux/Actions/industryCategoryAction";
 import AddQuestion from "../components/add_questions";
-import AddSubsidy from "../components/Common/add_subsidy";
+import AddSubsidy from "../components/add_subsidy";
 
 function SubsidyManagement() {
   const dispatch = useDispatch();

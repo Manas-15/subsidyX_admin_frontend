@@ -15,7 +15,8 @@ const Header = () => {
           {selectedCategory.selectedItem}
         </div>
         <div className={styles.header_name_b}>
-          Subsidy <IoIosArrowForward /> {selectedCategory.selectedItem}
+          Subsidy <IoIosArrowForward />
+          {selectedCategory.selectedItem}
         </div>
       </div>
     </>

@@ -9,7 +9,9 @@ import {
   createIndustryCategory,
   deleteIndustryCategory,
   editIndustryCategory,
+  getIndustryCategoryLists,
   getIndustryLists,
+  industryCategoryActions,
 } from "../../redux/Actions/industryCategoryAction";
 
 import { useState } from "react";
@@ -19,6 +21,7 @@ import {
   deleteIndustrySector,
   editIndustrySector,
   getIndustrySectorLists,
+  industrySectorActions,
 } from "../../redux/Actions/industrySectorAction";
 import { useEffect } from "react";
 import {
@@ -26,10 +29,12 @@ import {
   deleteStateManagement,
   editStateManagement,
   getStateManagementLists,
+  stateManagementAction,
 } from "../../redux/Actions/stateManagementAction";
 import {
   createDistrictManagement,
   deleteDistrictManagement,
+  districtManagementAction,
   editDistrictManagement,
   getDistrictManagementLists,
 } from "../../redux/Actions/districtManagementAction";
@@ -37,7 +42,12 @@ import {
   createTalukaManagement,
   deleteTalukaManagement,
   editTalukaManagement,
+  talukaManagementAction,
 } from "../../redux/Actions/talukaManagementAction";
+import {
+  deleteQuestionManagement,
+  questionActions,
+} from "../../redux/Actions/questionsAction";
 
 export const IndustryCategoryModal = (props) => {
   const dispatch = useDispatch();
@@ -49,14 +59,14 @@ export const IndustryCategoryModal = (props) => {
   const industryCategorySubmit = () => {
     if (props?.action?.id) {
       const id = props?.action?.id;
-      dispatch(editIndustryCategory({ id, state }));
+      dispatch(industryCategoryActions?.updateCategory({ id, state }));
     } else {
-      dispatch(createIndustryCategory(state));
+      dispatch(industryCategoryActions?.createCategory(state));
     }
     props.setModalShow(false);
   };
   const industryCategoryDelete = () => {
-    dispatch(deleteIndustryCategory(props.action));
+    dispatch(industryCategoryActions?.deleteCategory(props.action));
     props.setModalShow(false);
   };
   const industryCategoryCancel = () => {
@@ -152,7 +162,7 @@ export const IndustrySectorModal = (props) => {
   const [selectedCategory, setSelectedCategory] = useState();
 
   useEffect(() => {
-    dispatch(getIndustrySectorLists());
+    dispatch(industryCategoryActions?.getCategories());
   }, []);
 
   const industryCategory = useSelector(
@@ -173,15 +183,14 @@ export const IndustrySectorModal = (props) => {
 
     if (props?.action?.id) {
       const id = props?.action?.id;
-      console.log("::::::::::::::::::", id, industrySectorData);
-      // dispatch(editIndustrySector({ id, industrySectorData }));
+      dispatch(industrySectorActions?.updateSector({ id, industrySectorData }));
     } else {
-      dispatch(createIndustrySector(industrySectorData));
+      dispatch(industrySectorActions?.createSector(industrySectorData));
     }
     props.setmodalshow(false);
   };
   const industrySectorDelete = () => {
-    dispatch(deleteIndustrySector(props.action));
+    dispatch(industrySectorActions?.deleteSector(props.action));
     props.setmodalshow(false);
   };
   const industryCategoryCancel = () => {
@@ -317,18 +326,18 @@ export const StateManagementModal = (props) => {
     if (props?.action?.id) {
       const id = props?.action?.id;
       dispatch(
-        editStateManagement({
+        stateManagementAction?.updateState({
           id: id,
           editData: data,
         })
       );
     } else {
-      dispatch(createStateManagement(data));
+      dispatch(stateManagementAction?.createState(data));
     }
     props.setModalShow(false);
   };
   const stateManagementDelete = () => {
-    dispatch(deleteStateManagement(props.action));
+    dispatch(stateManagementAction?.deleteState(props.action));
     props.setModalShow(false);
   };
   const stateManagementCancel = () => {
@@ -428,10 +437,10 @@ export const DistrictManagementModal = (props) => {
   const [selectedState, setSelectedState] = useState(null);
 
   useEffect(() => {
-    dispatch(getStateManagementLists());
+    dispatch(stateManagementAction?.getStates());
   }, []);
 
-  const allStates = useSelector((state) => state.stateManagement);
+  const allStates = useSelector((state) => state.state);
 
   const districtManagementSubmit = () => {
     const data = {
@@ -442,18 +451,18 @@ export const DistrictManagementModal = (props) => {
     if (props?.action?.id) {
       const id = props?.action?.id;
       dispatch(
-        editDistrictManagement({
+        districtManagementAction?.updateDistrict({
           id: id,
           editData: data,
         })
       );
     } else {
-      dispatch(createDistrictManagement(data));
+      dispatch(districtManagementAction?.createDistrict(data));
     }
     props.setModalShow(false);
   };
   const districtManagementDelete = () => {
-    dispatch(deleteDistrictManagement(props.action));
+    dispatch(districtManagementAction?.deleteDistrict(props.action));
     props.setModalShow(false);
   };
   const districtManagementCancel = () => {
@@ -585,14 +594,14 @@ export const TalukaManagementModal = (props) => {
   const [selectedDistrict, setSelectedDistrict] = useState(null);
 
   useEffect(() => {
-    dispatch(getStateManagementLists());
+    dispatch(stateManagementAction?.getStates());
     if (selectedState !== null) {
-      dispatch(getDistrictManagementLists(selectedState));
+      dispatch(districtManagementAction?.getDistricts(selectedState));
     }
   }, [selectedState]);
 
-  const allStates = useSelector((state) => state.stateManagement);
-  const allDistricts = useSelector((state) => state.districtManagement);
+  const allStates = useSelector((state) => state.state);
+  const allDistricts = useSelector((state) => state.district);
 
   const talukaManagementSubmit = () => {
     const data = {
@@ -604,18 +613,18 @@ export const TalukaManagementModal = (props) => {
     if (props?.action?.id) {
       const id = props?.action?.id;
       dispatch(
-        editTalukaManagement({
+        talukaManagementAction?.updateTaluka({
           id: id,
           editData: data,
         })
       );
     } else {
-      dispatch(createTalukaManagement(data));
+      dispatch(talukaManagementAction?.createTaluka(data));
     }
     props.toggleModalshow(false);
   };
   const talukaManagementDelete = () => {
-    dispatch(deleteTalukaManagement(props.action));
+    dispatch(talukaManagementAction?.deleteTaluka(props.action));
     props.toggleModalshow(false);
   };
   const talukaManagementCancel = () => {
@@ -759,6 +768,57 @@ export const TalukaManagementModal = (props) => {
               />
             </>
           )
+        )}
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
+export const QuestionManagementModal = (props) => {
+  const dispatch = useDispatch();
+
+  const questionManagementDelete = () => {
+    dispatch(questionActions?.deleteQuestion(props.action));
+    // props.toggleModalshow(false);
+  };
+  const questionManagementCancel = () => {
+    // props.toggleModalshow(false);
+  };
+
+  return (
+    <Modal
+      {...props}
+      size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      backdrop="static"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Delete Question
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {props.type === "delete" &&
+          "Do you want to delete this question, this can't be undone, question will removed from list."}
+      </Modal.Body>
+      <Modal.Footer>
+        {props.type === "delete" && (
+          <>
+            <CustomButton
+              name="Delete"
+              color="#FFFFFF"
+              bgColor="#FA6130"
+              onClick={() => questionManagementDelete()}
+            />
+            <CustomButton
+              name="Cancel"
+              color="#000000"
+              bgColor="#FFFFFF"
+              border="1px solid #000000"
+              onClick={() => questionManagementCancel()}
+            />
+          </>
         )}
       </Modal.Footer>
     </Modal>

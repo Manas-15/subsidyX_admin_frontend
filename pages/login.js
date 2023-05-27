@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { LoginSchema } from "../components/Common/Validation";
-import { userLogin } from "../redux/Actions/userAction";
+import { userActions } from "../redux/Actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -14,31 +14,31 @@ function Login() {
   const dispatch = useDispatch();
   const [showPassword, toggleShowPassword] = useState(false);
 
-  const user = useSelector((state) => state?.users);
+  const user = useSelector((state) => state?.user);
   console.log(user);
 
   useEffect(() => {
     if (user?.user?.access_token !== undefined) {
-      toast("User LoggedIn Successfully", {
-        hideProgressBar: true,
-        autoClose: 4000,
-        type: "success",
-      });
+      // toast("User LoggedIn Successfully", {
+      //   hideProgressBar: true,
+      //   autoClose: 4000,
+      //   type: "success",
+      // });
       router.push("/industry_category");
     } else {
-      if (user?.errorMessage !== "") {
-        toast(user?.errorMessage, {
-          hideProgressBar: true,
-          autoClose: 4000,
-          type: "error",
-        });
-      }
+      // if (user?.errorMessage !== "") {
+      //   toast(user?.errorMessage, {
+      //     hideProgressBar: true,
+      //     autoClose: 4000,
+      //     type: "error",
+      //   });
+      // }
       router.push("/");
     }
   }, [user?.user?.access_token]);
 
   const submit = (values) => {
-    dispatch(userLogin(values));
+    dispatch(userActions.login(values));
   };
   return (
     <div>

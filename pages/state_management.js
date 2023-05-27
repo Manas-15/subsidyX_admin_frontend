@@ -10,7 +10,10 @@ import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { getStateManagementLists } from "../redux/Actions/stateManagementAction";
+import {
+  getStateManagementLists,
+  stateManagementAction,
+} from "../redux/Actions/stateManagementAction";
 import { StateManagementModal } from "../components/Common/Modal";
 
 function StateManagement() {
@@ -20,16 +23,15 @@ function StateManagement() {
   const [action, setAction] = useState({});
 
   const actions = [{ icon: MdModeEdit }, { icon: RiDeleteBin5Fill }];
-  const stateManagement = useSelector((state) => state?.stateManagement);
+  const stateManagement = useSelector((state) => state?.state);
 
   const addNewState = () => {
     setModalShow(true);
     setType("add");
-    // toast("Wow so easy!");
   };
 
   useEffect(() => {
-    dispatch(getStateManagementLists());
+    dispatch(stateManagementAction?.getStates());
   }, [
     stateManagement?.isCreated,
     stateManagement?.isUpdated,
@@ -102,6 +104,7 @@ function StateManagement() {
               </tr>
             </thead>
             <tbody>
+              {console.log(stateManagement)}
               {stateManagement?.stateManagementData?.map((data, index) => {
                 return (
                   <tr key={index}>

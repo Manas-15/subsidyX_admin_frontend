@@ -12,7 +12,10 @@ import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { getStateManagementLists } from "../redux/Actions/stateManagementAction";
 import { DistrictManagementModal } from "../components/Common/Modal";
-import { getDistrictManagementLists } from "../redux/Actions/districtManagementAction";
+import {
+  districtManagementAction,
+  getDistrictManagementLists,
+} from "../redux/Actions/districtManagementAction";
 
 function DistrictManagement() {
   const dispatch = useDispatch();
@@ -21,8 +24,7 @@ function DistrictManagement() {
   const [action, setAction] = useState({});
 
   const actions = [{ icon: MdModeEdit }, { icon: RiDeleteBin5Fill }];
-  const districtManagement = useSelector((state) => state?.districtManagement);
-
+  const districtManagement = useSelector((state) => state?.district);
 
   const addNewDistrict = () => {
     setModalShow(true);
@@ -30,7 +32,7 @@ function DistrictManagement() {
   };
 
   useEffect(() => {
-    dispatch(getDistrictManagementLists());
+    dispatch(districtManagementAction?.getDistricts());
   }, [
     districtManagement?.isCreated,
     districtManagement?.isUpdated,

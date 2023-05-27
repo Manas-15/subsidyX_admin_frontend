@@ -13,7 +13,10 @@ import { useEffect, useState } from "react";
 import { IndustryCategoryModal } from "../components/Common/Modal";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { getIndustryCategoryLists } from "../redux/Actions/industryCategoryAction";
+import {
+  getIndustryCategoryLists,
+  industryCategoryActions,
+} from "../redux/Actions/industryCategoryAction";
 
 function IndustryCategory() {
   const dispatch = useDispatch();
@@ -35,14 +38,7 @@ function IndustryCategory() {
   };
 
   useEffect(() => {
-    dispatch(getIndustryCategoryLists());
-    if (industryCategory?.successMessage !== "") {
-      toast(industryCategory?.successMessage, {
-        hideProgressBar: false,
-        autoClose: 3000,
-        type: "success",
-      });
-    }
+    dispatch(industryCategoryActions?.getCategories());
   }, [
     industryCategory?.isCreated,
     industryCategory?.isUpdated,

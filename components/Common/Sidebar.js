@@ -5,9 +5,9 @@ import {
   MdOutlineKeyboardArrowRight,
   MdOutlineKeyboardArrowLeft,
 } from "react-icons/md";
-import { selectedCategory } from "../../redux/Slices/sidebarSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
+import { sidebarActions } from "../../redux/Actions/sidebarAction";
 
 const sideBarItems = [
   {
@@ -63,7 +63,7 @@ const Sidebar = () => {
       })
       .join(" ");
 
-    dispatch(selectedCategory(item));
+    dispatch(sidebarActions.selectedCategory(item));
   }, [router?.pathname]);
 
   return (
