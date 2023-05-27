@@ -5,6 +5,7 @@ import styles from "../styles/Home.module.css";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  adminstativeAction,
   editAdminstativeLable,
   getAdminstativeLable,
 } from "../redux/Actions/adminstativeAction";
@@ -13,13 +14,13 @@ const AdminstrativeManagement = () => {
   const dispatch = useDispatch();
   const [adminstative, setAdminstative] = useState();
 
-  const adminstativeLabel = useSelector((state) => state.adminstativeLabel);
+  const adminstativeLabel = useSelector((state) => state.adminstative);
   useEffect(() => {
     setAdminstative(adminstativeLabel?.adminstativeLabelData);
   }, [adminstativeLabel]);
 
   useEffect(() => {
-    dispatch(getAdminstativeLable());
+    dispatch(adminstativeAction?.getAdminstative());
   }, [adminstativeLabel?.isUpdated]);
 
   const handleAdminstativeChange = (e) => {
@@ -27,7 +28,7 @@ const AdminstrativeManagement = () => {
   };
   const adminstativeUpdate = (e) => {
     e.preventDefault();
-    dispatch(editAdminstativeLable(adminstative));
+    dispatch(adminstativeAction?.updateAdminstative(adminstative));
     // console.log(adminstative);
   };
   return (

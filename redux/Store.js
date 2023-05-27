@@ -1,29 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userSlice from "./Slices/userSlice";
-import industryCategorySlice from "./Slices/industryCategorySlice";
-import industrySectorSlice from "./Slices/industrySectorSlice";
-import stateManagementSlice from "./Slices/stateManagementSlice";
-import districtManagementSlice from "./Slices/districtManagementSlice";
-import sidebarSlice from "./Slices/sidebarSlice";
-import talukaManagementSlice from "./Slices/talukaManagementSlice";
-import adminstativeLabelSlice from "./Slices/adminstativeSlice";
-import questionsSlice from "./Slices/questionsSlice";
+import { applyMiddleware, createStore } from "redux";
+import thunkMiddleware from "redux-thunk";
+import { createLogger } from "redux-logger";
+import rootReducer from "./rootReducers";
 
+const loggerMiddleware = createLogger();
 const persistedState = loadFromLocalStorage();
-export const store = configureStore({
-  reducer: {
-    users: userSlice,
-    sidebar: sidebarSlice,
-    adminstativeLabel: adminstativeLabelSlice,
-    industryCategory: industryCategorySlice,
-    industrySector: industrySectorSlice,
-    questions: questionsSlice,
-    stateManagement: stateManagementSlice,
-    districtManagement: districtManagementSlice,
-    talukaManagement: talukaManagementSlice,
-  },
+
+export const store = createStore(
+  rootReducer,
   persistedState,
-});
+  applyMiddleware(thunkMiddleware)
+);
 
 function saveToLocalStorage(state) {
   try {
