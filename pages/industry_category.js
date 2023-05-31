@@ -39,11 +39,7 @@ function IndustryCategory() {
 
   useEffect(() => {
     dispatch(industryCategoryActions?.getCategories());
-  }, [
-    industryCategory?.isCreated,
-    industryCategory?.isUpdated,
-    industryCategory?.isDeleted,
-  ]);
+  }, [dispatch]);
 
   const handleClick = (item, idx) => {
     console.log(item, idx);

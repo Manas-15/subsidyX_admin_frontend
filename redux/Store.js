@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { applyMiddleware, createStore } from "redux";
 import thunkMiddleware from "redux-thunk";
 import { createLogger } from "redux-logger";
 import rootReducer from "./rootReducers";
@@ -7,11 +6,11 @@ import rootReducer from "./rootReducers";
 const loggerMiddleware = createLogger();
 const persistedState = loadFromLocalStorage();
 
-export const store = createStore(
-  rootReducer,
-  persistedState,
-  applyMiddleware(thunkMiddleware)
-);
+export const store = configureStore({
+  reducer: rootReducer,
+  preloadedState: persistedState,
+  middleware: [thunkMiddleware],
+});
 
 function saveToLocalStorage(state) {
   try {

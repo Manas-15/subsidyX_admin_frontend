@@ -7,48 +7,38 @@ export function industryCategory(
   switch (action.type) {
     case industryCategoryConstants.GET_CATEGORY_REQUEST:
       return {
+        ...state,
         isSuccess: false,
       };
     case industryCategoryConstants.GET_CATEGORY_SUCCESS:
       return {
+        ...state,
         isSuccess: true,
         industryCategoryData: action?.data?.data,
       };
     case industryCategoryConstants.GET_CATEGORY_FAILURE:
-      return { isSuccess: false };
+      return { ...state, isSuccess: false };
 
     case industryCategoryConstants.CREATE_CATEGORY_REQUEST:
-      return {
-        isCreated: false,
-      };
+      return { ...state, isSuccess: false };
     case industryCategoryConstants.CREATE_CATEGORY_SUCCESS:
-      return {
-        isCreated: true,
-      };
+      return { ...state, isSuccess: true };
     case industryCategoryConstants.CREATE_CATEGORY_FAILURE:
-      return { isCreated: false };
+      return { ...state, isSuccess: false };
 
     case industryCategoryConstants.UPDATE_CATEGORY_REQUEST:
-      return {
-        isUpdated: false,
-      };
+      return { ...state, isSuccess: false };
     case industryCategoryConstants.UPDATE_CATEGORY_SUCCESS:
-      return {
-        isUpdated: true,
-      };
+      return { ...state, isSuccess: true };
     case industryCategoryConstants.UPDATE_CATEGORY_FAILURE:
-      return { isUpdated: false };
+      return { ...state, isSuccess: false };
 
     case industryCategoryConstants.DELETE_CATEGORY_REQUEST:
-      return {
-        isDeleted: false,
-      };
+      return { ...state, isSuccess: false };
     case industryCategoryConstants.DELETE_CATEGORY_SUCCESS:
-      return {
-        isDeleted: true,
-      };
+      return { ...state, isSuccess: true };
     case industryCategoryConstants.DELETE_CATEGORY_FAILURE:
-      return { isDeleted: false };
+      return { ...state, isSuccess: false };
 
     default:
       return state;

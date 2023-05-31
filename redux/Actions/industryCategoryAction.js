@@ -39,6 +39,7 @@ function createCategory(iData) {
     industryCategoryService.createCategory(iData).then(
       (res) => {
         dispatch(success(res));
+        dispatch(industryCategoryActions?.getCategories());
         dispatch(alertActions.success("Industry Category Created"));
       },
       (error) => {
@@ -64,6 +65,7 @@ function updateCategory({ id, state }) {
     industryCategoryService.updateCategory({ id, state }).then(
       (res) => {
         dispatch(success(res));
+        dispatch(industryCategoryActions?.getCategories());
         dispatch(alertActions.success("Industry Category Updated"));
       },
       (error) => {
@@ -89,6 +91,7 @@ function deleteCategory(id) {
     industryCategoryService.deleteCategory(id).then(
       (res) => {
         dispatch(success(res));
+        dispatch(industryCategoryActions?.getCategories());
         dispatch(alertActions.success("Industry Category Deleted"));
       },
       (error) => {
