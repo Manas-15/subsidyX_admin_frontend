@@ -8,10 +8,10 @@ export const talukaManagementAction = {
   updateTaluka,
   deleteTaluka,
 };
-function getTalukas() {
+function getTalukas(ID) {
   return (dispatch) => {
-    dispatch(request());
-    talukaManagementService.getTalukas().then(
+    dispatch(request(ID));
+    talukaManagementService.getTalukas(ID).then(
       (res) => {
         console.log(res);
         dispatch(success(res));

@@ -8,8 +8,9 @@ export const talukaManagementService = {
   deleteTaluka,
 };
 
-async function getTalukas() {
-  return await api.get(`taluka/`, {
+async function getTalukas(ID) {
+  let params = ID ? "&district_id=" + ID : "";
+  return await api.get(`taluka/?page=1&page_size=10${params}`, {
     headers: authHeader(),
   });
 }
