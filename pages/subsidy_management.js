@@ -6,16 +6,12 @@ import {
   FilterButton,
 } from "../components/Common/CustomButton";
 import { HiEye } from "react-icons/hi";
-import { BsShareFill } from "react-icons/bs";
 import { MdModeEdit } from "react-icons/md";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
-import { SubsidyManagementModal } from "../components/Common/Modal";
-import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { getSubsidyManagementLists } from "../redux/Actions/industryCategoryAction";
-import AddQuestion from "../components/add_questions";
 import AddSubsidy from "../components/add_subsidy";
+import { subsidyManagementAction } from "../redux/Actions/subsidyManagementAction";
 
 function SubsidyManagement() {
   const dispatch = useDispatch();
@@ -28,27 +24,16 @@ function SubsidyManagement() {
     { icon: MdModeEdit },
     { icon: RiDeleteBin5Fill },
   ];
-  const industryCategory = useSelector((state) => state?.industryCategory);
+  const subsidyList = useSelector((state) => state?.subsidy);
 
   const addNewSubsidyManagement = () => {
     setModalShow(true);
     setType("add");
   };
 
-  //   useEffect(() => {
-  //     dispatch(getSubsidyManagementLists());
-  //     if (industryCategory?.successMessage !== "") {
-  //       toast(industryCategory?.successMessage, {
-  //         hideProgressBar: false,
-  //         autoClose: 3000,
-  //         type: "success",
-  //       });
-  //     }
-  //   }, [
-  //     industryCategory?.isCreated,
-  //     industryCategory?.isUpdated,
-  //     industryCategory?.isDeleted,
-  //   ]);
+  useEffect(() => {
+    dispatch(subsidyManagementAction?.getSubsidyList());
+  }, [dispatch]);
 
   const handleClick = (item, idx) => {
     console.log(item, idx);
@@ -70,7 +55,7 @@ function SubsidyManagement() {
   return (
     <>
       {true ? (
-        <AddSubsidy />
+        <AddSubsidy setModalShow={setModalShow} />
       ) : (
         <div className={styles.container}>
           <div className={styles.tablee}>
@@ -118,38 +103,33 @@ function SubsidyManagement() {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* {industryCategory?.industryCategoryData?.map((data, index) => {
-                return ( */}
-                  <tr>
-                    <td scope="row">Name 1</td>
-                    <td>Texttile</td>
-                    <td>Sector 1</td>
-                    <td>Gujurat</td>
-                    <td>Tarapur</td>
-                    <td>What is ur gender</td>
+                  {subsidyList?.subsidyManagementData?.map((data, index) => {
+                    return (
+                      <tr key={index}>
+                        <td scope="row">{data?.subsidy_name}</td>
+                        <td>{data?.industry_category}</td>
+                        <td>{data?.industry_sector}</td>
+                        <td>{data?.state}</td>
+                        <td>{data?.taluka}</td>
 
-                    {/* <td scope="row">{data?.id}</td>
-                    <td>{data?.name}</td>
-                    <td>{data?.companyOwnerName}</td>
-                    <td>{data?.createdDt}</td>
-                    <td>{data?.category}</td> */}
-                    <td>
-                      <ul className="d-flex justify-content-between">
-                        {actions?.map(({ icon: Icon }, idx) => {
-                          return (
-                            <li
-                              key={idx}
-                              onClick={() => handleClick(data, idx)}
-                            >
-                              <Icon color="#FA6130" size="18px" />
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </td>
-                  </tr>
-                  {/* );
-              })} */}
+                        <td>{data?.questions[0].question_name}</td>
+                        <td>
+                          <ul className="d-flex justify-content-between">
+                            {actions?.map(({ icon: Icon }, idx) => {
+                              return (
+                                <li
+                                  key={idx}
+                                  onClick={() => handleClick(data, idx)}
+                                >
+                                  <Icon color="#FA6130" size="18px" />
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
