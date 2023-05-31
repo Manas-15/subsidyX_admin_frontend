@@ -12,11 +12,17 @@ export const LoginSchema = Yup.object().shape({
 
 export const SubsidySchema = Yup.object().shape({
   subsidy: Yup.string().required("Subsidy is required"),
-  categoryID: Yup.string().required("CategoryID is required"),
-  sectorID: Yup.string().required("SectorID is required"),
-  stateID: Yup.string().required("StateID is required"),
-  districtID: Yup.string().required("DistrictID is required"),
-  talukaID: Yup.string().required("TalukaID is required"),
+  industry: Yup.array(
+    Yup.object({
+      categoryID: Yup.number().required("Category ID is required"),
+      sectorID: Yup.number().required("Category ID is required"),
+    })
+  ),
+  stateID: Yup.number().required("StateID is required"),
+  districtID: Yup.number().required("DistrictID is required"),
+  talukaID: Yup.array(
+    Yup.object({ name: Yup.string().required("TalukaID is required") })
+  ),
   questionID: Yup.string().required("QuestionID is required"),
   notes: Yup.string().required("Notes is required"),
   reflink: Yup.string().required("Reflink is required"),

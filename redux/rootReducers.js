@@ -9,6 +9,7 @@ import { state } from "./Reducers/stateManagementReducer";
 import { district } from "./Reducers/districtManagementReducer";
 import { taluka } from "./Reducers/talukaManagementReducer";
 import { adminstative } from "./Reducers/adminstativeReducer";
+import { subsidy } from "./Reducers/subsidyManagementReducer";
 
 import { userConstants } from "./Constants/userConstants";
 
@@ -23,6 +24,7 @@ const MainReducer = combineReducers({
   state,
   district,
   taluka,
+  subsidy,
 });
 
 const rootReducer = (state, action) => {

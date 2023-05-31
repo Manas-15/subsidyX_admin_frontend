@@ -63,3 +63,24 @@
   text-align: right;
   color: #04032b;
 }
+
+.startDate {
+  position: absolute;
+}
+.startDateIcon {
+  position: relative;
+  top: -32px;
+  right: -197px;
+  font-size: 20px;
+  color: #fa6130;
+}
+.endDate {
+  position: absolute;
+}
+.endDateIcon {
+  position: relative;
+  top: -32px;
+  right: -197px;
+  font-size: 20px;
+  color: #fa6130;
+}

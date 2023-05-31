@@ -1,20 +1,17 @@
 import React from "react";
-import { Form, Row } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { CustomButton } from "../components/Common/CustomButton";
 import styles from "../styles/Home.module.css";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  adminstativeAction,
-  editAdminstativeLable,
-  getAdminstativeLable,
-} from "../redux/Actions/adminstativeAction";
+import { adminstativeAction } from "../redux/Actions/adminstativeAction";
 
 const AdminstrativeManagement = () => {
   const dispatch = useDispatch();
   const [adminstative, setAdminstative] = useState();
 
   const adminstativeLabel = useSelector((state) => state.adminstative);
+
   useEffect(() => {
     setAdminstative(adminstativeLabel?.adminstativeLabelData);
   }, [adminstativeLabel]);
@@ -29,7 +26,6 @@ const AdminstrativeManagement = () => {
   const adminstativeUpdate = (e) => {
     e.preventDefault();
     dispatch(adminstativeAction?.updateAdminstative(adminstative));
-    // console.log(adminstative);
   };
   return (
     <>

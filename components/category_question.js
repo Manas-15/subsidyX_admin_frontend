@@ -6,7 +6,10 @@ import { BsFileEarmarkTextFill } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { useEffect } from "react";
-import { getIndustrySectorLists } from "../redux/Actions/industrySectorAction";
+import {
+  getIndustrySectorLists,
+  industrySectorActions,
+} from "../redux/Actions/industrySectorAction";
 import { CustomButton } from "./Common/CustomButton";
 import {
   getIndustryCategoryLists,
@@ -44,7 +47,7 @@ const CategoryQuestion = ({ setModalShow }) => {
   const handleSelectIndustry = (e) => {
     const { name, value } = e.target;
     if (name === "industryCategory") {
-      dispatch(getIndustrySectorLists(value));
+      dispatch(industrySectorActions?.getSectors(value));
     }
     setIndustryType({ ...industryType, [name]: value });
     const list = [...inputList];

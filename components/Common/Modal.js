@@ -56,6 +56,7 @@ export const IndustryCategoryModal = (props) => {
   const handleIndustryCategoryChange = (e) => {
     setState({ name: e.target.value });
   };
+
   const industryCategorySubmit = () => {
     if (props?.action?.id) {
       const id = props?.action?.id;
@@ -162,7 +163,9 @@ export const IndustrySectorModal = (props) => {
   const [selectedCategory, setSelectedCategory] = useState();
 
   useEffect(() => {
-    dispatch(industryCategoryActions?.getCategories());
+    if (props.type === "add") {
+      dispatch(industryCategoryActions?.getCategories());
+    }
   }, []);
 
   const industryCategory = useSelector(
