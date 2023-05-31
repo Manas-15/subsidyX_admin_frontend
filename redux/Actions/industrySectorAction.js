@@ -39,6 +39,7 @@ function createSector(iData) {
     industrySectorService.createSector(iData).then(
       (res) => {
         dispatch(success(res));
+        dispatch(industrySectorActions?.getSectors());
         dispatch(alertActions.success("Industry Sector Created"));
       },
       (error) => {
@@ -64,6 +65,8 @@ function updateSector({ id, industrySectorData }) {
     industrySectorService.updateSector({ id, industrySectorData }).then(
       (res) => {
         dispatch(success(res));
+        dispatch(industrySectorActions?.getSectors());
+
         dispatch(alertActions.success("Industry Category Updated"));
       },
       (error) => {
@@ -89,6 +92,8 @@ function deleteSector(id) {
     industrySectorService.deleteSector(id).then(
       (res) => {
         dispatch(success(res));
+        dispatch(industrySectorActions?.getSectors());
+
         dispatch(alertActions.success("Industry Sector Deleted"));
       },
       (error) => {

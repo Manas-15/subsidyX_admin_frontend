@@ -39,7 +39,7 @@ function IndustrySector() {
 
   useEffect(() => {
     dispatch(industrySectorActions?.getSectors());
-  }, [industrySector?.isCreated, industrySector?.isDeleted]);
+  }, []);
 
   const handleClick = (data, idx) => {
     console.log(data, idx);
