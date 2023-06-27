@@ -177,3 +177,7 @@ label {
     background: black;
   }
 }
+
+.details-page-content-head{
+  font-weight: bold;
+}

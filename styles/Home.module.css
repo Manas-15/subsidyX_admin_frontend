@@ -11,6 +11,16 @@
   border-radius: 20px;
   border: 1px solid #ebe6e6;
 }
+.report_tablee {
+  margin: 30px;
+  /* height: 501px; */
+  overflow-y: scroll;
+  left: 262px;
+  top: 93px;
+  background: #ebe6e6;
+  border-radius: 20px;
+  border: 1px solid #ebe6e6;
+}
 .tableHeader {
   height: 50px;
   margin: 20px 30px;

@@ -12,20 +12,28 @@ export const LoginSchema = Yup.object().shape({
 
 export const SubsidySchema = Yup.object().shape({
   subsidy: Yup.string().required("Subsidy is required"),
-  industry: Yup.array(
-    Yup.object({
-      categoryID: Yup.number().required("Category ID is required"),
-      sectorID: Yup.number().required("Category ID is required"),
-    })
-  ),
+  // industry: Yup.array(
+  //   Yup.object({
+  //     categoryID: Yup.number().required("Category ID is required"),
+  //     sectorID: Yup.number().required("Category ID is required"),
+  //   })
+  // ),
+  categoryID: Yup.number().required("Category ID is required"),
+  sectorID: Yup.number().required("Category ID is required"),
   stateID: Yup.number().required("StateID is required"),
   districtID: Yup.number().required("DistrictID is required"),
   talukaID: Yup.array(
     Yup.object({ name: Yup.string().required("TalukaID is required") })
   ),
-  questionID: Yup.string().required("QuestionID is required"),
+  // questionID: Yup.number().required("QuestionID is required"),
+  questions: Yup.array(
+    Yup.object({
+      questionID: Yup.number().required("Question ID is required"),
+    })
+  ),
   notes: Yup.string().required("Notes is required"),
   reflink: Yup.string().required("Reflink is required"),
   startDate: Yup.string().required("StartDate is required"),
   endDate: Yup.string().required("EndDate is required"),
+  parentSubsidyID: Yup.number().required("Parent subsidy is required"),
 });

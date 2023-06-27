@@ -8,6 +8,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { sidebarActions } from "../../redux/Actions/sidebarAction";
+import { userActions } from "../../redux/Actions/userAction";
 
 const sideBarItems = [
   {
@@ -28,7 +29,7 @@ const sideBarItems = [
   { name: "Department Management", href: "/about", icon: MdDashboard },
   {
     name: "Subsidy Management",
-    href: "/subsidy_management",
+    href: "/subsidy/subsidy_management",
     icon: MdDashboard,
   },
   { name: "Report management", href: "/about", icon: MdDashboard },
@@ -40,6 +41,7 @@ const sideBarItems = [
   { name: "Quatation Management", href: "/about", icon: MdDashboard },
   { name: "Generate Form", href: "/about", icon: MdDashboard },
   { name: "Membership", href: "/about", icon: MdDashboard },
+  { name: "Logout", href: "/login", icon: MdDashboard },
 ];
 
 const Sidebar = () => {
@@ -66,6 +68,12 @@ const Sidebar = () => {
     dispatch(sidebarActions.selectedCategory(item));
   }, [router?.pathname]);
 
+  const handleClick = (name) => {
+    if (name === "Logout") {
+      dispatch(userActions.logout());
+    }
+  };
+
   return (
     <div className="sidebar_wrapper">
       <button className="sidebar_btn" onClick={toogleSidebar}>
@@ -90,7 +98,11 @@ const Sidebar = () => {
           {sideBarItems?.map(({ name, href, icon: Icon }, index) => {
             return (
               <li className="sidebar_item" key={index}>
-                <Link className="sidebar_link" href={href}>
+                <Link
+                  className="sidebar_link"
+                  href={href}
+                  onClick={() => handleClick(name)}
+                >
                   <span className="sidebar_icon">
                     <Icon />
                   </span>

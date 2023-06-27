@@ -48,6 +48,8 @@ import {
   deleteQuestionManagement,
   questionActions,
 } from "../../redux/Actions/questionsAction";
+import { subsidyManagementAction } from "../../redux/Actions/subsidyManagementAction";
+import { RxCross2 } from "react-icons/rx";
 
 export const IndustryCategoryModal = (props) => {
   const dispatch = useDispatch();
@@ -66,6 +68,7 @@ export const IndustryCategoryModal = (props) => {
     }
     props.setModalShow(false);
   };
+
   const industryCategoryDelete = () => {
     dispatch(industryCategoryActions?.deleteCategory(props.action));
     props.setModalShow(false);
@@ -308,7 +311,6 @@ export const IndustrySectorModal = (props) => {
 };
 
 export const StateManagementModal = (props) => {
-  // console.log(props);
   const dispatch = useDispatch();
   const [state, setState] = useState("");
 
@@ -590,17 +592,30 @@ export const DistrictManagementModal = (props) => {
   );
 };
 
+const categories = [
+  { name: "Category 1", id: 1 },
+  { name: "Category 2", id: 2 },
+  { name: "Category 3", id: 3 },
+];
+
 export const TalukaManagementModal = (props) => {
+  console.log(props.action);
   const dispatch = useDispatch();
-  const [talukaName, setTalukaName] = useState("");
-  const [selectedState, setSelectedState] = useState(null);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [talukaName, setTalukaName] = useState(
+    props.action?.name ? props.action?.name : ""
+  );
+  const [selectedState, setSelectedState] = useState(
+    props.action?.state_id ? props.action?.state_id : null
+  );
+  const [selectedDistrict, setSelectedDistrict] = useState(
+    props.action?.district_id ? props.action?.district_id : null
+  );
+  const [selectedCategoryID, setSelectedCategoryID] = useState(
+    props.action?.category_id ? props.action?.category_id : 1
+  );
 
   useEffect(() => {
     dispatch(stateManagementAction?.getStates());
-    if (selectedState !== null) {
-      dispatch(districtManagementAction?.getDistricts(selectedState));
-    }
   }, [selectedState]);
 
   const allStates = useSelector((state) => state.state);
@@ -609,8 +624,9 @@ export const TalukaManagementModal = (props) => {
   const talukaManagementSubmit = () => {
     const data = {
       name: talukaName,
-      district_id: selectedDistrict,
-      state_id: selectedState,
+      district_id: parseInt(selectedDistrict),
+      state_id: parseInt(selectedState),
+      category_id: parseInt(selectedCategoryID),
     };
 
     if (props?.action?.id) {
@@ -635,6 +651,7 @@ export const TalukaManagementModal = (props) => {
   };
   const handleSelectStateChange = (e) => {
     const stateID = e.target.value;
+    dispatch(districtManagementAction?.getDistricts(stateID));
     setSelectedState(stateID);
   };
   const handleSelectDistrictChange = (e) => {
@@ -643,6 +660,11 @@ export const TalukaManagementModal = (props) => {
   };
   const handleTalukaChange = (e) => {
     setTalukaName(e.target.value);
+  };
+
+  const handleSelectCategoryIDChange = (e) => {
+    const categoryID = e.target.value;
+    setSelectedCategoryID(categoryID);
   };
   const editTalukaChange = (e) => {
     setTalukaName(e.target.value);
@@ -702,7 +724,7 @@ export const TalukaManagementModal = (props) => {
                       key={index}
                       value={district?.id}
                     >
-                      {district?.district}
+                      {district?.name}
                     </option>
                   );
                 }
@@ -722,6 +744,27 @@ export const TalukaManagementModal = (props) => {
                 }
               />
             </Form.Group>
+            <select
+              onChange={handleSelectCategoryIDChange}
+              className="form-control mb-3"
+            >
+              <option value="none">
+                {props.action?.id
+                  ? props.action?.category_id === 1
+                    ? "Category 1"
+                    : props.action?.category_id === 2
+                    ? "Category 2"
+                    : "Category 3"
+                  : "Select Category"}
+              </option>
+              {categories?.map((cat, index) => {
+                return (
+                  <option className="form-control" key={index} value={cat?.id}>
+                    {cat?.name}
+                  </option>
+                );
+              })}
+            </select>
           </Form>
         ) : props.type === "delete" ? (
           "Do you want to delete this taluka, this can't be undone, taluka will removed from list."
@@ -823,6 +866,492 @@ export const QuestionManagementModal = (props) => {
             />
           </>
         )}
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
+export const UserInputManagementModal = (props) => {
+  const dispatch = useDispatch();
+  const [userInput, setUserInput] = useState({
+    fieldName: "",
+    fieldType: null,
+    fieldTypeId: null,
+  });
+
+  const subsidyDetails = useSelector((state) => state?.subsidy);
+
+
+
+  const mergedData =
+    subsidyDetails?.user_input_field_names !== undefined
+      ? [
+          ...subsidyDetails?.user_input_field_names?.questions,
+          ...subsidyDetails?.user_input_field_names?.reports,
+        ]
+      : [];
+
+  useEffect(() => {
+    dispatch(
+      subsidyManagementAction?.getUserInputFieldNames(
+        subsidyDetails?.subsidy_details?.id
+      )
+    );
+  }, [subsidyDetails?.subsidy_details?.id]);
+
+  const handleSelect = (e) => {
+    const { name, value } = e.target;
+    const selectedOption = e.target.options[e.target.selectedIndex];
+
+    if (name === "fieldName") {
+      let list = { ...userInput };
+      list = {
+        ...list,
+        fieldName: selectedOption?.text,
+        fieldType: selectedOption?.value,
+      };
+      setUserInput(list);
+    }
+
+    if (name === "fieldTypeId") {
+      let list = { ...userInput };
+      list = {
+        ...list,
+        fieldTypeId: selectedOption?.value,
+      };
+      setUserInput(list);
+    }
+    // setUserInput((prevState) => ({
+    //   ...prevState,
+    //   [name]: selectedOption?.text,
+    // }));
+  };
+
+  const addUserInputManagement = () => {
+    const data = {
+      user_input_list: [
+        {
+          display_name: userInput?.fieldName,
+          field_name: userInput?.fieldName,
+          field_type: parseInt(userInput?.fieldType),
+          filed_type_id: parseInt(userInput?.fieldTypeId),
+        },
+      ],
+      scheme_id: subsidyDetails?.subsidy_details?.id,
+    };
+
+    dispatch(subsidyManagementAction.createUserInputs(data));
+    setUserInput({
+      fieldName: "",
+      fieldType: "",
+      fieldTypeId: "",
+    });
+    props.setModalShow(false);
+  };
+
+  // useEffect(() => {
+  //   dispatch(subsidyManagementAction.getConstant());
+  // }, []);
+  // useEffect(() => {
+  //   setAllConstantList(allList);
+  // }, [allList]);
+
+  // const constantSearch = (value) => {
+  //   console.log(value?.length, previousQuery?.length);
+  //   console.log(value);
+  //   if (value.trim() === "") {
+  //     setAllConstantList(allList);
+  //   } else if (value?.length <= previousQuery?.length) {
+  //     console.log(value, "LLLLLLLLLLLLL");
+  //     const filteredResults = allConstantList?.filter(
+  //       (item) =>
+  //         item?.name?.toLowerCase().includes(value?.toLowerCase()) ||
+  //         item?.value?.toLowerCase().includes(value?.toLowerCase())
+  //     );
+  //     console.log(filteredResults);
+  //     // setAllConstantList(filteredResults);
+  //     // setPreviousQuery(value);
+  //   } else {
+  //     const filteredResults = allConstantList?.filter(
+  //       (item) =>
+  //         item?.name?.toLowerCase().includes(value?.toLowerCase()) ||
+  //         item?.value?.toLowerCase().includes(value?.toLowerCase())
+  //     );
+  //     setAllConstantList(filteredResults);
+  //     setPreviousQuery(value);
+  //   }
+  // };
+
+  // const handleItemClick = (item) => {
+  //   if (selectedItems?.some((selectedItem) => selectedItem.id === item.id)) {
+  //     setSelectedItems(
+  //       selectedItems?.filter((selectedItem) => selectedItem?.id !== item?.id)
+  //     );
+  //   } else {
+  //     setSelectedItems([...selectedItems, item]);
+  //   }
+  // };
+
+  // const removeSelectedItem = (item) => {
+  //   setSelectedItems(
+  //     selectedItems?.filter(
+  //       (selectedItem, idx) => selectedItem?.id !== item?.id
+  //     )
+  //   );
+  // };
+
+  const userInputManagementCancel = () => {
+    props.setModalShow(false);
+  };
+
+  return (
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      backdrop="static"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">User Input</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div className="row">
+          <div className="col-sm-6">
+            {/* <h5>Search Input</h5> */}
+            <select
+              name="fieldName"
+              className="form-control"
+              onChange={(e) => handleSelect(e)}
+            >
+              <option value="none">Select Field Name</option>
+              {mergedData?.map((queName, idx) => {
+                return <option value={queName?.id}>{queName?.name}</option>;
+              })}
+            </select>
+          </div>
+          <div className="col-sm-6">
+            {/* <h5>Search Input</h5> */}
+            <select
+              name="fieldTypeId"
+              className="form-control"
+              onChange={(e) => handleSelect(e)}
+            >
+              <option value="none">Select Field Type</option>
+              <option value="1">String</option>
+              <option value="2">Integer</option>
+              <option value="3">Float</option>
+            </select>
+          </div>
+          {/* {allConstantList?.length > 0 && ( */}
+          {/* <div>
+            <ul className="form-control">
+              {allConstantList?.map((constant, index) => {
+                return (
+              <>
+                <li>
+                  <input
+                    type="checkbox"
+                    readonly
+                    className="me-2"
+                    checked={selectedItems?.some(
+                      (selectedItem) => selectedItem.id === constant?.id
+                    )}
+                    onClick={() => handleItemClick(constant)}
+                  />
+                  {constant?.name} = {constant?.value}
+                </li>
+              </>
+             );
+              })}
+            </ul>
+          </div> */}
+          {/* )} */}
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <>
+          <div className="d-flex">
+            {/* {selectedItems?.map((item, index) => {
+              return (
+                <div
+                  style={{
+                    border: "1px solid black",
+                    borderRadius: "10px",
+                    marginRight: "10px",
+                    padding: "5px",
+                    position: "relative",
+                  }}
+                >
+                  {item?.name}
+                  <RxCross2
+                    onClick={() => removeSelectedItem(item)}
+                    style={{
+                      position: "absolute",
+                      top: "-15px",
+                      right: "-4px",
+                    }}
+                  />
+                </div>
+              );
+            })} */}
+          </div>
+          <CustomButton
+            name="Add"
+            color="#FFFFFF"
+            bgColor="#FA6130"
+            onClick={() => addUserInputManagement()}
+          />
+          <CustomButton
+            name="Cancel"
+            color="#000000"
+            bgColor="#FFFFFF"
+            border="1px solid #000000"
+            onClick={() => userInputManagementCancel()}
+          />
+        </>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
+export const ConstantManagementModal = (props) => {
+  const dispatch = useDispatch();
+  const [constant, setConstant] = useState({
+    constantName: "",
+    constantValue: "",
+    constantType: "",
+  });
+  const [allConstantList, setAllConstantList] = useState();
+  const [previousQuery, setPreviousQuery] = useState("");
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const constantList = useSelector((state) => state?.subsidy);
+  const allList =
+    constantList?.constant_list?.length > 0 ? constantList?.constant_list : [];
+  const subsidyDetails = useSelector(
+    (state) => state?.subsidy?.subsidy_details
+  );
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setConstant((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const createConstant = () => {
+    const data = {
+      name: constant?.constantName,
+      constant_value: constant?.constantValue,
+      constant_type: constant?.constantType,
+    };
+    dispatch(subsidyManagementAction.createConstant(data));
+    setConstant({
+      constantName: "",
+      constantValue: "",
+      constantType: "",
+    });
+  };
+
+  useEffect(() => {
+    dispatch(subsidyManagementAction.getConstant());
+  }, []);
+  useEffect(() => {
+    setAllConstantList(allList);
+  }, [allList]);
+
+  const constantSearch = (value) => {
+
+    if (value.trim() === "") {
+      setAllConstantList(allList);
+    } else if (value?.length <= previousQuery?.length) {
+ 
+      const filteredResults = allConstantList?.filter(
+        (item) =>
+          item?.name?.toLowerCase().includes(value?.toLowerCase()) ||
+          item?.value?.toLowerCase().includes(value?.toLowerCase())
+      );
+ 
+      // setAllConstantList(filteredResults);
+      // setPreviousQuery(value);
+    } else {
+      const filteredResults = allConstantList?.filter(
+        (item) =>
+          item?.name?.toLowerCase().includes(value?.toLowerCase()) ||
+          item?.value?.toLowerCase().includes(value?.toLowerCase())
+      );
+      setAllConstantList(filteredResults);
+      setPreviousQuery(value);
+    }
+  };
+
+  const handleItemClick = (item) => {
+    if (selectedItems?.some((selectedItem) => selectedItem.id === item.id)) {
+      setSelectedItems(
+        selectedItems?.filter((selectedItem) => selectedItem?.id !== item?.id)
+      );
+    } else {
+      setSelectedItems([...selectedItems, item]);
+    }
+  };
+
+  const removeSelectedItem = (item) => {
+    setSelectedItems(
+      selectedItems?.filter(
+        (selectedItem, idx) => selectedItem?.id !== item?.id
+      )
+    );
+  };
+
+  const constantManagementCancel = () => {
+    props.setModalShow(false);
+  };
+
+  const addConstantManagement = () => {
+    const data = {
+      constant_id_list: selectedItems?.map((item) => item.id),
+      scheme_id: subsidyDetails?.id,
+    };
+    dispatch(subsidyManagementAction.addConstantToSubsidy(data));
+    setSelectedItems([]);
+    props.setModalShow(false);
+  };
+
+  return (
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      backdrop="static"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Add Constants
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div className="row">
+          <div className="col-sm-3">
+            <input
+              type="text"
+              name="constantName"
+              value={constant?.constantName}
+              placeholder="Constant Name"
+              className="form-control"
+              onChange={(e) => handleChange(e)}
+            />
+          </div>
+          <div className="col-sm-3">
+            <input
+              type="number"
+              name="constantValue"
+              value={constant?.constantValue}
+              placeholder="Constant Value"
+              className="form-control"
+              onChange={(e) => handleChange(e)}
+            />
+          </div>
+          <div className="col-sm-3">
+            <select
+              name="constantType"
+              className="form-control"
+              onChange={(e) => handleChange(e)}
+              placeholder="Select Type"
+            >
+              <option value="none">Select Type</option>
+              <option value="1">Integer</option>
+              <option value="2">Percentage</option>
+            </select>
+          </div>
+          <div className="col-sm-3">
+            <CustomButton
+              name="Create"
+              color="#FFFFFF"
+              bgColor="#FA6130"
+              onClick={() => createConstant()}
+            />
+          </div>
+        </div>
+        <div className="row mt-3">
+          <div>
+            <h5>Search Constant</h5>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search"
+              onChange={(e) => constantSearch(e.target.value)}
+            />
+          </div>
+          {allConstantList?.length > 0 && (
+            <div>
+              <ul className="form-control">
+                {allConstantList?.map((constant, index) => {
+                  return (
+                    <>
+                      <li key={index}>
+                        <input
+                          type="checkbox"
+                          readonly
+                          className="me-2"
+                          checked={selectedItems?.some(
+                            (selectedItem) => selectedItem.id === constant?.id
+                          )}
+                          onClick={() => handleItemClick(constant)}
+                        />
+                        {constant?.name} = {constant?.value}
+                      </li>
+                    </>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <>
+          <div className="d-flex">
+            {selectedItems?.map((item, index) => {
+              return (
+                <div
+                  style={{
+                    border: "1px solid black",
+                    borderRadius: "10px",
+                    marginRight: "10px",
+                    padding: "5px",
+                    position: "relative",
+                  }}
+                >
+                  {item?.name}
+                  <RxCross2
+                    onClick={() => removeSelectedItem(item)}
+                    style={{
+                      position: "absolute",
+                      top: "-15px",
+                      right: "-4px",
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          <CustomButton
+            name="Add"
+            color="#FFFFFF"
+            bgColor="#FA6130"
+            onClick={() => addConstantManagement()}
+          />
+          <CustomButton
+            name="Cancel"
+            color="#000000"
+            bgColor="#FFFFFF"
+            border="1px solid #000000"
+            onClick={() => constantManagementCancel()}
+          />
+        </>
       </Modal.Footer>
     </Modal>
   );
