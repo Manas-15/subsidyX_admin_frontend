@@ -8,8 +8,15 @@ export const questionService = {
   deleteQuestion,
 };
 
-async function getQuestions() {
-  return await api.get(`question/`, {
+async function getQuestions(data) {
+  let params = data
+    ? "&indsutry_sector_id=" +
+      data.indsutry_sector_id +
+      "&industry_category_id=" +
+      data.industry_category_id
+    : "";
+
+  return await api.get(`question/?page=1&page_size=10${params}`, {
     headers: authHeader(),
   });
 }

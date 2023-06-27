@@ -8,10 +8,10 @@ export const questionActions = {
   // updateQuestion
   deleteQuestion,
 };
-function getQuestions() {
+function getQuestions(data) {
   return (dispatch) => {
-    dispatch(request());
-    questionService.getQuestions().then(
+    dispatch(request(data));
+    questionService.getQuestions(data).then(
       (res) => {
         dispatch(success(res));
       },

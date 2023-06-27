@@ -28,6 +28,7 @@ function TalukaManagement() {
   const addNewTaluka = () => {
     setModalShow(true);
     setType("add");
+    setAction({});
   };
 
   useEffect(() => {
@@ -96,6 +97,7 @@ function TalukaManagement() {
               <tr>
                 <th scope="col">Taluka ID</th>
                 <th scope="col">Taluka Name</th>
+                <th scope="col">Taluka Category</th>
                 <th scope="col">District</th>
                 <th scope="col">State</th>
                 <th scope="col"> </th>
@@ -109,6 +111,7 @@ function TalukaManagement() {
                     <tr key={index}>
                       <th scope="row">{data?.id}</th>
                       <td>{data?.name}</td>
+                      <td>{data?.category_id}</td>
                       <td>{data?.district}</td>
                       <td>{data?.state}</td>
                       <td></td>

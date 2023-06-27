@@ -1,23 +1,26 @@
-import styles from "../styles/Home.module.css";
+import styles from "../../styles/Home.module.css";
 import { CiSearch } from "react-icons/ci";
 import {
   CustomButton,
   ExportButton,
   FilterButton,
-} from "../components/Common/CustomButton";
+} from "../../components/Common/CustomButton";
 import { HiEye } from "react-icons/hi";
 import { MdModeEdit } from "react-icons/md";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import AddSubsidy from "../components/add_subsidy";
-import { subsidyManagementAction } from "../redux/Actions/subsidyManagementAction";
+import AddSubsidy from "../../components/add_subsidy";
+import { subsidyManagementAction } from "../../redux/Actions/subsidyManagementAction";
+import SubsidyDetailsPage from "./subsidy-details";
 
 function SubsidyManagement() {
   const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false);
+  const [detailsPage, setDetailsPage] = useState(false);
   const [type, setType] = useState("");
   const [action, setAction] = useState(0);
+  const [updatedData, setUpdatedData] = useState();
 
   const actions = [
     { icon: HiEye },
@@ -38,10 +41,9 @@ function SubsidyManagement() {
   const handleClick = (item, idx) => {
     console.log(item, idx);
     if (idx === 0) {
-      console.log("Shared");
+      setDetailsPage(true);
+      dispatch(subsidyManagementAction.getSubsidyDetails(item));
     } else if (idx === 1) {
-      console.log("viewed");
-    } else if (idx === 2) {
       setModalShow(true);
       setType("edit");
       setAction(item);
@@ -52,10 +54,30 @@ function SubsidyManagement() {
     }
   };
 
+  useEffect(() => {
+    const extractedSubSchemes = subsidyList?.subsidyManagementData?.reduce(
+      (result, item) => {
+        if (item.sub_scheme.length > 0) {
+          result.push(...item.sub_scheme);
+          item.sub_scheme = [];
+        }
+        return result;
+      },
+      []
+    );
+    // Concatenate the extracted sub_scheme objects with the original data
+    const modifiedData =
+      subsidyList?.subsidyManagementData.concat(extractedSubSchemes);
+
+    setUpdatedData(modifiedData);
+  }, [subsidyList?.subsidyManagementData]);
+
   return (
     <>
-      {true ? (
+      {modalShow ? (
         <AddSubsidy setModalShow={setModalShow} />
+      ) : detailsPage ? (
+        <SubsidyDetailsPage setDetailsPage={setDetailsPage} />
       ) : (
         <div className={styles.container}>
           <div className={styles.tablee}>
@@ -94,25 +116,31 @@ function SubsidyManagement() {
                 <thead>
                   <tr>
                     <th scope="col">Subsidy Name</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Sector</th>
+                    {/* <th scope="col">Category</th> */}
                     <th scope="col">State</th>
-                    <th scope="col">Taluka</th>
-                    <th scope="col">Question</th>
+                    <th scope="col">District</th>
+
+                    {/* <th scope="col">Taluka</th>
+                    <th scope="col">Question</th> */}
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {subsidyList?.subsidyManagementData?.map((data, index) => {
+                  {updatedData?.map((data, index) => {
                     return (
                       <tr key={index}>
-                        <td scope="row">{data?.subsidy_name}</td>
-                        <td>{data?.industry_category}</td>
-                        <td>{data?.industry_sector}</td>
+                        <td scope="row">
+                          {data?.subsidy_name !== undefined
+                            ? data?.subsidy_name
+                            : data?.name}
+                        </td>
+                        {/* <td>{data?.industry_sector}</td> */}
                         <td>{data?.state}</td>
-                        <td>{data?.taluka}</td>
+                        <td>{data?.district}</td>
 
-                        <td>{data?.questions[0].question_name}</td>
+                        {/* <td>{data?.taluka}</td> */}
+
+                        {/* <td>{data?.questions[0].question_name}</td> */}
                         <td>
                           <ul className="d-flex justify-content-between">
                             {actions?.map(({ icon: Icon }, idx) => {

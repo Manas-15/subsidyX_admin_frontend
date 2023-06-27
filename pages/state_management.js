@@ -104,7 +104,6 @@ function StateManagement() {
               </tr>
             </thead>
             <tbody>
-              {console.log(stateManagement)}
               {stateManagement?.stateManagementData?.map((data, index) => {
                 return (
                   <tr key={index}>

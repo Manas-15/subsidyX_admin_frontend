@@ -11,10 +11,10 @@ function login(data, from) {
     dispatch(request({ data }));
     userService.login(data).then(
       (res) => {
-        console.log(res);
         dispatch(success(res));
         const result = JSON.stringify(res?.data?.access_token);
         localStorage.setItem("accessToken", result);
+        console.log("login action called");
         dispatch(alertActions.success("User loggedin successfully"));
       },
       (error) => {
@@ -35,10 +35,10 @@ function login(data, from) {
 }
 
 function logout() {
-  toast("Logged out successfully", {
-    hideProgressBar: true,
-    autoClose: 4000,
-    type: "success",
-  });
+  // toast("Logged out successfully", {
+  //   hideProgressBar: true,
+  //   autoClose: 4000,
+  //   type: "success",
+  // });
   return { type: userConstants.LOGOUT };
 }

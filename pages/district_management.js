@@ -110,8 +110,8 @@ function DistrictManagement() {
                   return (
                     <tr key={index}>
                       <th scope="row">{data?.id}</th>
-                      <td>{data?.district}</td>
-                      <td>{data?.state}</td>
+                      <td>{data?.name}</td>
+                      <td>{data?.state_name}</td>
                       <td></td>
                       <td></td>
                       <td>

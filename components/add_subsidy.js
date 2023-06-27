@@ -27,11 +27,15 @@ import Multiselect from "multiselect-react-dropdown";
 import { MdCancel } from "react-icons/md";
 import { IoMdAddCircle } from "react-icons/io";
 import ReactMultiSelectCheckboxes from "react-multiselect-checkboxes";
+import { subsidyManagementAction } from "../redux/Actions/subsidyManagementAction";
 
 function AddSubsidy({ setModalShow }) {
   const dispatch = useDispatch();
   const [questionType, setQuestionType] = useState("1");
   const [isState, setIsState] = useState("1");
+  const [stateStatus, setStateStatus] = useState(true);
+  const [selectedCategoryID, setSelectedCategoryID] = useState(0);
+  const [isSubscheme, setIsSubscheme] = useState(false);
 
   const industryCategory = useSelector((state) => state?.industryCategory);
   const industrySector = useSelector((state) => state?.industrySector);
@@ -39,15 +43,11 @@ function AddSubsidy({ setModalShow }) {
   const districtManagement = useSelector((state) => state?.district);
   const talukaManagement = useSelector((state) => state?.taluka);
   const questions = useSelector((state) => state?.question);
+  const subsidyList = useSelector(
+    (state) => state?.subsidy?.subsidyManagementData
+  );
 
-  const industrysector = [
-    { id: 1, name: "Plastic" },
-    { id: 2, name: "Pharma" },
-    { id: 3, name: "Metal" },
-    { id: 4, name: "Paper" },
-    { id: 5, name: "Engineering" },
-    { id: 6, name: "Agriculture" },
-  ];
+  console.log(subsidyList);
 
   const handleRadioClick = (e) => {
     setQuestionType(e.target.value);
@@ -55,10 +55,11 @@ function AddSubsidy({ setModalShow }) {
 
   const handleStateClick = (e) => {
     setIsState(e.target.value);
+    setStateStatus(!stateStatus);
   };
   useEffect(() => {
-    // dispatch(industryCategoryActions?.getCategories());
-    // dispatch(stateManagementAction?.getStates());
+    dispatch(industryCategoryActions?.getCategories());
+    dispatch(stateManagementAction?.getStates());
     // dispatch(questionActions?.getQuestions());
   }, []);
   const handleAddNewIndustryBox = (e, index) => {
@@ -66,7 +67,15 @@ function AddSubsidy({ setModalShow }) {
   };
 
   const handleSelectedCategory = (id) => {
+    setSelectedCategoryID(id);
     dispatch(industrySectorActions?.getSectors(id));
+  };
+  const handleSelectedSector = (id) => {
+    const data = {
+      industry_category_id: selectedCategoryID,
+      indsutry_sector_id: id,
+    };
+    dispatch(questionActions?.getQuestions(data));
   };
   const handleSelectedState = (id) => {
     dispatch(districtManagementAction?.getDistricts(id));
@@ -79,6 +88,7 @@ function AddSubsidy({ setModalShow }) {
   };
 
   const handleCreateSubsidy = (values) => {
+    console.log(values);
     const data = {
       subsidy_name: values?.subsidy,
       refer_link: values?.reflink,
@@ -89,13 +99,17 @@ function AddSubsidy({ setModalShow }) {
       district_id: parseInt(values?.districtID),
       note: values?.notes,
       taluka_id_list: values?.talukaID?.map((taluka) => taluka?.id),
-      question_id_list: [parseInt(values?.questionID)],
+      question_id_list: values?.questions?.map((que) =>
+        parseInt(que?.questionID)
+      ),
       start_date: values?.startDate,
       end_date: values?.endDate,
+      is_subscheme: values?.isSubscheme,
+      parent_id: values?.isSubscheme ? parseInt(values?.parentSubsidyID) : 0,
     };
     if (data) {
       console.log(data);
-      // dispatch(subsidyManagementAction?.createSubsidy(data));
+      dispatch(subsidyManagementAction?.createSubsidy(data));
       setModalShow(false);
     }
   };
@@ -108,15 +122,19 @@ function AddSubsidy({ setModalShow }) {
             enableReinitialize
             initialValues={{
               subsidy: "",
-              industry: [{ categoryID: null, sectorID: null }],
+              categoryID: null,
+              sectorID: null,
+              // industry: [{ categoryID: null, sectorID: null }],
               stateID: null,
               districtID: null,
               talukaID: [],
-              questionID: "",
+              questions: [{ questionID: null }],
               notes: "",
               reflink: "",
               startDate: "",
               endDate: "",
+              isSubscheme: false,
+              parentSubsidyID: 0,
             }}
             validationSchema={SubsidySchema}
             onSubmit={(values, event) => {
@@ -153,11 +171,103 @@ function AddSubsidy({ setModalShow }) {
                       className="invalid-feedback"
                     />
                   </div>
-                  <FieldArray name="industry">
+                  <div className="row mt-3">
+                    <div className="form-group m-0 col-md-6">
+                      <Field
+                        name="categoryID"
+                        as="select"
+                        onChange={(e) => {
+                          handleSelectedCategory(e.target.value);
+                          setFieldValue("categoryID", e.target.value);
+                        }}
+                        className={
+                          "form-select" +
+                          (errors.categoryID && touched.categoryID
+                            ? " is-invalid"
+                            : "")
+                        }
+                      >
+                        <option value="">Industry Category</option>
+                        {industryCategory?.industryCategoryData?.map(
+                          (category, index) => (
+                            <option value={category?.id} key={index}>
+                              {category?.name}
+                            </option>
+                          )
+                        )}
+                      </Field>
+                      <ErrorMessage
+                        name="categoryID"
+                        component="div"
+                        className="invalid-feedback"
+                      />
+                    </div>
+                    <div className="form-group m-0 col-md-6">
+                      <>
+                        <Field
+                          name="sectorID"
+                          as="select"
+                          onChange={(e) => {
+                            handleSelectedSector(e.target.value);
+                            setFieldValue("sectorID", e.target.value);
+                          }}
+                          className={
+                            "form-select" +
+                            (errors.sectorID && touched.sectorID
+                              ? " is-invalid"
+                              : "")
+                          }
+                        >
+                          <>
+                            <option value="1">Industry Sector</option>
+
+                            {industrySector?.industrySectorData?.sectors?.map(
+                              (sector, index) => (
+                                <option value={sector?.id} key={index}>
+                                  {sector?.name}
+                                </option>
+                              )
+                            )}
+                          </>
+                        </Field>
+                        <ErrorMessage
+                          name="sectorID"
+                          component="div"
+                          className="invalid-feedback"
+                        />
+                      </>
+                    </div>
+                    {/* {values?.industry?.length !== 1 && (
+                      <div className="col-md-1">
+                        <MdCancel
+                          size="35px"
+                          color="#FA6130"
+                          onClick={(e) => remove(index)}
+                        />
+                      </div>
+                    )}
+                    {values?.industry?.length - 1 === index && (
+                      <>
+                        <div className="col-md-1">
+                          <IoMdAddCircle
+                            size="35px"
+                            color="#4682E3"
+                            onClick={(e) =>
+                              push({
+                                categoryID: null,
+                                sectorID: null,
+                              })
+                            }
+                          />
+                        </div>
+                      </>
+                    )} */}
+                  </div>
+                  {/* <FieldArray name="industry">
                     {({ push, remove }) => (
                       <>
                         {values?.industry?.map((_, index) => (
-                          <div className="row mt-3">
+                          <div key={index} className="row mt-3">
                             <div className="form-group m-0 col-md-5">
                               <Field
                                 name={`industry[${index}].categoryID`}
@@ -193,19 +303,40 @@ function AddSubsidy({ setModalShow }) {
                             </div>
                             <div className="form-group m-0 col-md-5">
                               <>
-                                {/* <ReactMultiSelectCheckboxes
-                                  options={[
-                                    { label: "All", value: "*" },
-                                    ...industrysector,
-                                  ]}
-                                  placeholderButtonLabel="Colors"
-                                  getDropdownButtonLabel={
-                                    getDropdownButtonLabel
+                                <Field
+                                  name={`industry[${index}].sectorID`}
+                                  as="select"
+                                  onChange={(e) => {
+                                    handleSelectedSector(e.target.value);
+                                    setFieldValue(
+                                      `industry[${index}].sectorID`,
+                                      e.target.value
+                                    );
+                                  }}
+                                  className={
+                                    "form-select" +
+                                    (errors.sectorID && touched.sectorID
+                                      ? " is-invalid"
+                                      : "")
                                   }
-                                  value={selectedOptions}
-                                  onChange={onChange}
-                                  setState={setSelectedOptions}
-                                /> */}
+                                >
+                                  <>
+                                    <option value="1">Industry Sector</option>
+
+                                    {industrySector?.industrySectorData?.sectors?.map(
+                                      (sector, index) => (
+                                        <option value={sector?.id} key={index}>
+                                          {sector?.name}
+                                        </option>
+                                      )
+                                    )}
+                                  </>
+                                </Field>
+                                <ErrorMessage
+                                  name={`industry[${index}].sectorID`}
+                                  component="div"
+                                  className="invalid-feedback"
+                                />
                                 <Field name="talukaID" className={`ml-3`}>
                                   {({ field, form: { setFieldValue } }) => {
                                     return (
@@ -230,33 +361,6 @@ function AddSubsidy({ setModalShow }) {
                                     );
                                   }}
                                 </Field>
-
-                                {/* <Field
-                                  name={`industry[${index}].sectorID`}
-                                  as="select"
-                                  className={
-                                    "form-select" +
-                                    (errors.sectorID && touched.sectorID
-                                      ? " is-invalid"
-                                      : "")
-                                  }
-                                >
-                                  <>
-                                    <option value="1">Industry Sector</option>
-
-                                  {industrySector?.industrySectorData?.sectors?.map(
-                                      (sector, index) => (
-                                      <option value={sector?.id} key={index}>
-                                        {sector?.name}
-                                      </option>
-                                    ))}
-                                  </>
-                                </Field> */}
-                                <ErrorMessage
-                                  name={`industry[${index}].sectorID`}
-                                  component="div"
-                                  className="invalid-feedback"
-                                />
                               </>
                             </div>
                             {values?.industry?.length !== 1 && (
@@ -288,7 +392,7 @@ function AddSubsidy({ setModalShow }) {
                         ))}
                       </>
                     )}
-                  </FieldArray>
+                  </FieldArray> */}
 
                   <div className="d-flex justify-content-space mt-4">
                     <div className="d-flex me-3">
@@ -322,132 +426,177 @@ function AddSubsidy({ setModalShow }) {
                     </div>
                   </div>
 
-                  <div className="row mt-3">
-                    <div className="form-group m-0 col-md-4">
-                      <Field
-                        name="stateID"
-                        as="select"
-                        disabled={isState === "2" ? true : false}
-                        onChange={(e) => {
-                          handleSelectedState(e.target.value);
-                          setFieldValue("stateID", e.target.value);
-                        }}
-                        className={
-                          "form-select" +
-                          (errors.stateID && touched.stateID
-                            ? " is-invalid"
-                            : "")
-                        }
-                      >
-                        <option value="">Select State</option>
-                        {stateManagement?.stateManagementData?.map(
-                          (state, index) => (
-                            <option value={state?.id} key={index}>
-                              {state?.name}
-                            </option>
-                          )
-                        )}
-                      </Field>
-                      <ErrorMessage
-                        name="stateID"
-                        component="div"
-                        className="invalid-feedback"
-                      />
+                  {stateStatus && (
+                    <div className="row mt-3">
+                      <div className="form-group m-0 col-md-4">
+                        <Field
+                          name="stateID"
+                          as="select"
+                          // disabled={isState === "2" ? true : false}
+                          onChange={(e) => {
+                            handleSelectedState(e.target.value);
+                            setFieldValue("stateID", e.target.value);
+                          }}
+                          className={
+                            "form-select" +
+                            (errors.stateID && touched.stateID
+                              ? " is-invalid"
+                              : "")
+                          }
+                        >
+                          <option value="">Select State</option>
+                          {stateManagement?.stateManagementData?.map(
+                            (state, index) => (
+                              <option value={state?.id} key={index}>
+                                {state?.name}
+                              </option>
+                            )
+                          )}
+                        </Field>
+                        <ErrorMessage
+                          name="stateID"
+                          component="div"
+                          className="invalid-feedback"
+                        />
+                      </div>
+                      <div className="form-group m-0 col-md-4">
+                        <Field
+                          name="districtID"
+                          as="select"
+                          // disabled={isState === "2" ? true : false}
+                          onChange={(e) => {
+                            handleSelectedDistrict(e.target.value);
+                            setFieldValue("districtID", e.target.value);
+                          }}
+                          className={
+                            "form-select" +
+                            (errors.districtID && touched.districtID
+                              ? " is-invalid"
+                              : "")
+                          }
+                        >
+                          <option value="">Select District</option>
+                          {districtManagement?.districtManagementData?.district?.map(
+                            (district, index) => (
+                              <option value={district?.id} key={index}>
+                                {district?.name}
+                              </option>
+                            )
+                          )}
+                        </Field>
+                        <ErrorMessage
+                          name="districtID"
+                          component="div"
+                          className="invalid-feedback"
+                        />
+                      </div>
+                      <div className="form-group m-0 col-md-4">
+                        <Field name="talukaID" className={`ml-3`}>
+                          {({ field, form: { setFieldValue } }) => {
+                            return (
+                              <Multiselect
+                                {...field}
+                                // disable={isState === "2" ? true : false}
+                                // showCheckbox
+                                placeholder="Select Taluks"
+                                className={
+                                  errors.talukaID && touched.talukaID
+                                    ? " is-invalid"
+                                    : ""
+                                }
+                                options={
+                                  talukaManagement?.talukaManagementData
+                                    ?.talukas
+                                }
+                                onSelect={(event) => {
+                                  setFieldValue(field.name, event);
+                                }}
+                                onRemove={(event) =>
+                                  setFieldValue(field.name, event)
+                                }
+                                displayValue="name"
+                              />
+                            );
+                          }}
+                        </Field>
+
+                        <ErrorMessage
+                          name="talukaID"
+                          component="div"
+                          className="invalid-feedback"
+                        />
+                      </div>
                     </div>
-                    <div className="form-group m-0 col-md-4">
-                      <Field
-                        name="districtID"
-                        as="select"
-                        disabled={isState === "2" ? true : false}
-                        onChange={(e) => {
-                          handleSelectedDistrict(e.target.value);
-                          setFieldValue("districtID", e.target.value);
-                        }}
-                        className={
-                          "form-select" +
-                          (errors.districtID && touched.districtID
-                            ? " is-invalid"
-                            : "")
-                        }
-                      >
-                        <option value="">Select District</option>
-                        {districtManagement?.districtManagementData?.district?.map(
-                          (district, index) => (
-                            <option value={district?.id} key={index}>
-                              {district?.district}
-                            </option>
-                          )
-                        )}
-                      </Field>
-                      <ErrorMessage
-                        name="districtID"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </div>
-                    <div className="form-group m-0 col-md-4">
-                      <Field name="talukaID" className={`ml-3`}>
-                        {({ field, form: { setFieldValue } }) => {
+                  )}
+
+                  {/* <FieldArray name="questions">
+                    {({ push, remove }) => (
+                      <>
+                        {values.questions.map((_, index) => {
                           return (
-                            <Multiselect
-                              {...field}
-                              disable={isState === "2" ? true : false}
-                              // showCheckbox
-                              placeholder="Select Taluks"
-                              className={
-                                errors.talukaID && touched.talukaID
-                                  ? " is-invalid"
-                                  : ""
-                              }
-                              options={
-                                talukaManagement?.talukaManagementData?.talukas
-                              }
-                              onSelect={(event) => {
-                                setFieldValue(field.name, event);
-                              }}
-                              onRemove={(event) =>
-                                setFieldValue(field.name, event)
-                              }
-                              displayValue="name"
-                            />
+                            <div key={index} className="row mt-3">
+                              {console.log(`questions[${index}].questionID`)}
+                              <div className="form-group m-0 col-md-10">
+                                <Field
+                                  // name="questionID"
+                                  name={`questions[${index}].questionID`}
+                                  as="select"
+                                  onChange={(e) => {
+                                    // handleSelectedQuestion(e.target.value);
+                                    setFieldValue(
+                                      `questions[${index}].questionID`,
+                                      e.target.value
+                                    );
+                                  }}
+                                  className={
+                                    "form-select" +
+                                    (errors.questionID && touched.questionID
+                                      ? " is-invalid"
+                                      : "")
+                                  }
+                                >
+                                  <option value="">Select Question</option>
+                                  {questions?.questionData?.questions?.map(
+                                    (question, idx) => (
+                                      <option value={question?.id} key={idx}>
+                                        {question?.name}
+                                      </option>
+                                    )
+                                  )}
+                                </Field>
+                                <ErrorMessage
+                                  name={`questions[${index}].questionID`}
+                                  component="div"
+                                  className="invalid-feedback"
+                                />
+                              </div>
+
+                              {values?.questionID?.length !== 1 && (
+                                <div className="col-md-1">
+                                  <MdCancel
+                                    size="35px"
+                                    color="#FA6130"
+                                    onClick={(e) => remove(index)}
+                                  />
+                                </div>
+                              )}
+                              {values?.questionID?.length - 1 === index && (
+                                <>
+                                  <div className="col-md-1">
+                                    <IoMdAddCircle
+                                      size="35px"
+                                      color="#4682E3"
+                                      onClick={(e) => push({})}
+                                    />
+                                  </div>
+                                </>
+                              )}
+                            </div>
                           );
-                        }}
-                      </Field>
-
-                      <ErrorMessage
-                        name="talukaID"
-                        component="div"
-                        className="invalid-feedback"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="form-group m-0 mt-3">
-                    <Field
-                      name="questionID"
-                      as="select"
-                      className={
-                        "form-select" +
-                        (errors.questionID && touched.questionID
-                          ? " is-invalid"
-                          : "")
-                      }
-                    >
-                      <option value="">Select Question</option>
-                      {questions?.questionData?.questions?.map(
-                        (question, index) => (
-                          <option value={question?.id} key={index}>
-                            {question?.name}
-                          </option>
-                        )
-                      )}
-                    </Field>
-                    <ErrorMessage
-                      name="questionID"
-                      component="div"
-                      className="invalid-feedback"
-                    />
-                  </div>
+                        })}
+                      </>
+                    )}
+                  </FieldArray> */}
 
                   <div className="form-group m-0 mt-3">
                     <Field
@@ -521,6 +670,125 @@ function AddSubsidy({ setModalShow }) {
                         <h6>Question Based On Category and Sector</h6>
                       </div>
                     </div>
+                  </div>
+
+                  <FieldArray name="questions">
+                    {({ push, remove }) => (
+                      <>
+                        {values?.questions?.map((_, index) => (
+                          <div key={index} className="row mt-3">
+                            <div className="form-group m-0 col-md-10">
+                              <Field
+                                name={`questions[${index}].questionID`}
+                                as="select"
+                                onChange={(e) => {
+                                  // handleSelectedCategory(e.target.value);
+                                  setFieldValue(
+                                    `questions[${index}].questionID`,
+                                    e.target.value
+                                  );
+                                }}
+                                className={
+                                  "form-select" +
+                                  (errors.questions &&
+                                  errors.questions[index] &&
+                                  errors.questions[index].questionID &&
+                                  touched.questions &&
+                                  touched.questions[index] &&
+                                  touched.questions[index].questionID
+                                    ? " is-invalid"
+                                    : "")
+                                }
+                              >
+                                <option value="">Select Question</option>
+                                {questions?.questionData?.questions?.map(
+                                  (category, index) => (
+                                    <option value={category?.id} key={index}>
+                                      {category?.name}
+                                    </option>
+                                  )
+                                )}
+                              </Field>
+                              <ErrorMessage
+                                name={`questions[${index}].questionID`}
+                                component="div"
+                                className="invalid-feedback"
+                              />
+                            </div>
+
+                            {values?.questions?.length !== 1 && (
+                              <div className="col-md-1">
+                                <MdCancel
+                                  size="35px"
+                                  color="#FA6130"
+                                  onClick={(e) => remove(index)}
+                                />
+                              </div>
+                            )}
+                            {values?.questions?.length - 1 === index && (
+                              <>
+                                <div className="col-md-1">
+                                  <IoMdAddCircle
+                                    size="35px"
+                                    color="#4682E3"
+                                    onClick={(e) =>
+                                      push({
+                                        questionID: null,
+                                      })
+                                    }
+                                  />
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        ))}
+                      </>
+                    )}
+                  </FieldArray>
+
+                  <div>
+                    <h6 className="my-3 d-flex">
+                      <input
+                        name="isSubscheme"
+                        type="checkbox"
+                        onChange={(e) => {
+                          setIsSubscheme(e.target.checked);
+                          setFieldValue("isSubscheme", e.target.checked);
+                        }}
+                      />
+                      &nbsp; <span>Is Subscheme</span>
+                    </h6>
+                    {isSubscheme && (
+                      <>
+                        <Field
+                          name="parentSubsidyID"
+                          as="select"
+                          onChange={(e) => {
+                            setFieldValue("parentSubsidyID", e.target.value);
+                          }}
+                          className={
+                            "form-select" +
+                            (errors.parentSubsidyID && touched.parentSubsidyID
+                              ? " is-invalid"
+                              : "")
+                          }
+                        >
+                          <option value="none">Select Subsidy</option>
+                          {subsidyList?.map((sub, idx) => {
+                            return (
+                              <option value={sub?.id}>
+                                {sub?.subsidy_name}
+                              </option>
+                            );
+                          })}
+                        </Field>
+                        <ErrorMessage
+                          name="parentSubsidyID"
+                          component="div"
+                          className="invalid-feedback"
+                        />
+                      </>
+                    )}
                   </div>
 
                   <div>
@@ -638,7 +906,7 @@ function AddSubsidy({ setModalShow }) {
                       onClick={(e) => handleSubsidyCancel(e)}
                     />
                   </div>
-                  <pre>{JSON.stringify({ values, errors }, null, 4)}</pre>
+                  {/* <pre>{JSON.stringify({ values, errors }, null, 4)}</pre> */}
                 </Form>
               </>
             )}

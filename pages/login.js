@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import styles from "../styles/Login.module.css";
 import { CustomButton } from "../components/Common/CustomButton";
 import Link from "next/link";
@@ -17,31 +17,27 @@ function Login() {
   const user = useSelector((state) => state?.user);
   console.log(user);
 
+  const accessToken = useMemo(
+    () => user?.user?.access_token,
+    [user?.user?.access_token]
+  );
+
   useEffect(() => {
-    if (user?.user?.access_token !== undefined) {
-      // toast("User LoggedIn Successfully", {
-      //   hideProgressBar: true,
-      //   autoClose: 4000,
-      //   type: "success",
-      // });
+    if (accessToken !== undefined) {
       router.push("/industry_category");
     } else {
-      // if (user?.errorMessage !== "") {
-      //   toast(user?.errorMessage, {
-      //     hideProgressBar: true,
-      //     autoClose: 4000,
-      //     type: "error",
-      //   });
-      // }
       router.push("/");
     }
-  }, [user?.user?.access_token]);
+  }, [accessToken]);
 
   const submit = (values) => {
     dispatch(userActions.login(values));
+    console.log("login submit");
   };
+
   return (
     <div>
+      {console.log("I am login")}
       <div className={styles.login}>
         <div className={styles.login_img}>
           <div className="text-light mx-auto">SubsidyX</div>
