@@ -5,7 +5,7 @@ import { questionConstants } from "../Constants/questionConstants";
 export const questionActions = {
   getQuestions,
   createQuestion,
-  // updateQuestion
+  updateQuestion,
   deleteQuestion,
 };
 function getQuestions(data) {
@@ -57,30 +57,30 @@ function createQuestion(iData) {
   }
 }
 
-// function updateQuestion({ id, editData }) {
-//   return (dispatch) => {
-//     dispatch(request({ id, editData }));
-//     questionService.updateQuestion({ id, editData }).then(
-//       (res) => {
-//         dispatch(success(res));
-//         dispatch(alertActions.success("Question Updated"));
-//       },
-//       (error) => {
-//         dispatch(failure(error.toString()));
-//         dispatch(alertActions.error(error.toString()));
-//       }
-//     );
-//   };
-//   function request() {
-//     return { type: questionConstants.UPDATE_QUESTION_REQUEST };
-//   }
-//   function success(data) {
-//     return { type: questionConstants.UPDATE_QUESTION_SUCCESS, data };
-//   }
-//   function failure(error) {
-//     return { type: questionConstants.UPDATE_QUESTION_FAILURE, error };
-//   }
-// }
+function updateQuestion({ id, data }) {
+  return (dispatch) => {
+    dispatch(request({ id, data }));
+    questionService.updateQuestion({ id, data }).then(
+      (res) => {
+        dispatch(success(res));
+        dispatch(alertActions.success("Question Updated"));
+      },
+      (error) => {
+        dispatch(failure(error.toString()));
+        dispatch(alertActions.error(error.toString()));
+      }
+    );
+  };
+  function request() {
+    return { type: questionConstants.UPDATE_QUESTION_REQUEST };
+  }
+  function success(data) {
+    return { type: questionConstants.UPDATE_QUESTION_SUCCESS, data };
+  }
+  function failure(error) {
+    return { type: questionConstants.UPDATE_QUESTION_FAILURE, error };
+  }
+}
 
 function deleteQuestion(id) {
   return (dispatch) => {

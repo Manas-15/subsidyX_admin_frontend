@@ -4,7 +4,7 @@ import { authHeader } from "../authHeader";
 export const questionService = {
   getQuestions,
   createQuestion,
-  //   updateQuestion,
+  updateQuestion,
   deleteQuestion,
 };
 
@@ -27,11 +27,11 @@ async function createQuestion(questionData) {
   });
 }
 
-// async function updateCategory({ id, state }) {
-//   return await api.patch(`industry/edit?industry_id=${id}`, state, {
-//     headers: authHeader(),
-//   });
-// }
+async function updateQuestion({ id, data }) {
+  return await api.patch(`question/update?question_id=${id}`, data, {
+    headers: authHeader(),
+  });
+}
 
 async function deleteQuestion(ID) {
   return await api.delete(`question/?question_id=${ID}`, {
