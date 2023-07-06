@@ -18,6 +18,9 @@ ul {
   list-style: none;
   padding: 0;
 }
+.tr_border {
+  border: 1px solid dark !important;
+}
 th {
   width: 61px;
   font-weight: 600;
@@ -178,6 +181,10 @@ label {
   }
 }
 
-.details-page-content-head{
+.details-page-content-head {
   font-weight: bold;
+}
+
+.action_icon {
+  cursor: pointer;
 }

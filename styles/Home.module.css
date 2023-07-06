@@ -1,5 +1,6 @@
 .container {
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
+  position: relative;
 }
 .tablee {
   margin: 30px;
@@ -11,6 +12,21 @@
   border-radius: 20px;
   border: 1px solid #ebe6e6;
 }
+.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.overlay {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: rgb(182 184 185 / 55%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
 .report_tablee {
   margin: 30px;
   /* height: 501px; */
