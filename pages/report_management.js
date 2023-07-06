@@ -1,79 +1,76 @@
 import styles from "../styles/Home.module.css";
 import { CiSearch } from "react-icons/ci";
-import {
-  CustomButton,
-  ExportButton,
-  FilterButton,
-} from "../components/Common/CustomButton";
 import { HiEye } from "react-icons/hi";
 import { BsShareFill } from "react-icons/bs";
 import { MdModeEdit } from "react-icons/md";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
-import { IndustryCategoryModal } from "../components/Common/Modal";
-import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  getIndustryCategoryLists,
-  industryCategoryActions,
-} from "../redux/Actions/industryCategoryAction";
+// import Base from "@layouts/Baseof";
+import { useRouter } from "next/router";
+import { CustomButton } from "../components/Common/CustomButton";
+import { reportManagementAction } from "../redux/Actions/reportManagementAction ";
+import moment from "moment/moment";
 
-function IndustryCategory() {
+const actions = [
+  { icon: BsShareFill },
+  { icon: HiEye },
+  { icon: RiDeleteBin5Fill },
+];
+
+const AllReportLists = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const date = new Date();
+
+  const formattedDate = date.toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
   const [modalShow, setModalShow] = useState(false);
   const [type, setType] = useState("");
-  const [action, setAction] = useState(0);
+  const [action, setAction] = useState({});
 
-  const actions = [
-    { icon: BsShareFill },
-    { icon: HiEye },
-    { icon: MdModeEdit },
-    { icon: RiDeleteBin5Fill },
-  ];
-  const industryCategory = useSelector((state) => state?.industryCategory);
-
-  const addNewIndustryCategory = () => {
-    setModalShow(true);
-    setType("add");
-  };
+  const allReportLists = useSelector((state) => state?.report);
 
   useEffect(() => {
-    dispatch(industryCategoryActions?.getCategories());
-  }, [dispatch]);
+    dispatch(reportManagementAction.getAllReportBasedOnUser());
+  }, []);
 
-  const handleClick = (item, idx) => {
-    console.log(item, idx);
+  const addNewReports = () => {
+    router.push("/dashboard");
+  };
+
+  const handleClick = (e, item, idx) => {
+    // console.log(e, item, idx);
     if (idx === 0) {
-      console.log("Shared");
-    } else if (idx === 1) {
-      console.log("viewed");
-    } else if (idx === 2) {
       setModalShow(true);
-      setType("edit");
+      setType("share");
       setAction(item);
+    } else if (idx === 1) {
+      setModalShow(true);
+      setType("view");
+      setAction(item);
+      console.log(item);
+      dispatch(reportManagementAction.getReportByID(item?.report_id));
+      dispatch(reportManagementAction.selectedCategory("View Report"));
+      router.push("/report/view-report");
     } else {
       setModalShow(true);
       setType("delete");
-      setAction(item?.id);
+      setAction(item?.report_id);
     }
   };
 
   return (
-    <div className={styles.container}>
-      {modalShow && (
-        <IndustryCategoryModal
-          type={type}
-          action={action}
-          show={modalShow}
-          setModalShow={setModalShow}
-          onHide={() => setModalShow(false)}
-        />
-      )}
+    <>
       <div className={styles.tablee}>
         <div
           className={`d-flex justify-content-between align-items-center ${styles.tableHeader}`}
         >
-          <div className="d-flex justify-content-evenly">
+          <div className="d-flex justify-content-evenly ">
             {/* <div className={`mx-2 ${styles.search_box}`}>
               <div className={styles.search_icon}>
                 <CiSearch />
@@ -81,19 +78,19 @@ function IndustryCategory() {
               <input
                 type="text"
                 className={styles.search_bar}
-                placeholder="Search Industry Category"
+                placeholder="Search Reports"
               />
-            </div>
- 
-            <FilterButton name="Filter" /> */}
+            </div> */}
+
+            {/* <FilterButton name="Filter" /> */}
           </div>
           <div className="d-flex">
             <div className={styles.add_new_btn}>
               <CustomButton
-                name="Add New Industry Category"
+                name="Add New Reports"
                 bgColor="#4682E3"
                 color="#FFFFFF"
-                onClick={addNewIndustryCategory}
+                onClick={addNewReports}
               />
             </div>
 
@@ -104,35 +101,39 @@ function IndustryCategory() {
           <table className="table table-hover">
             <thead>
               <tr>
-                <th scope="col">Enquiry ID</th>
+                <th scope="col">Report ID.</th>
                 <th scope="col">Company Name</th>
                 <th scope="col">Company Owner Name</th>
-                <th scope="col">Created Date</th>
+                <th scope="col">Created date</th>
                 <th scope="col">Category</th>
+                <th scope="col">Generated By</th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {industryCategory?.industryCategoryData?.map((data, index) => {
+              {allReportLists?.allReports?.result?.map((data, index) => {
                 return (
                   <tr key={index}>
-                    <th scope="row">{data?.id}</th>
-                    <td>{data?.name}</td>
-                    <td>{data?.companyOwnerName}</td>
-                    <td>{data?.createdDt}</td>
-                    <td>{data?.category}</td>
+                    <th scope="row">#{data?.report_id}</th>
+                    <td> - </td>
+                    <td> - </td>
+                    <td>{moment(formattedDate).format("DD-MM-YYYY")}</td>
+                    <td> - </td>
+                    <td> - </td>
                     <td>
                       <ul className="d-flex justify-content-between">
                         {actions?.map(({ icon: Icon }, idx) => {
                           return (
                             <li
                               key={idx}
-                              onClick={() => handleClick(data, idx)}
+                              onClick={(e) => handleClick(e, data, idx)}
                             >
                               <Icon
-                                color="#FA6130"
-                                size="18px"
-                                className="action_icon"
+                                style={{
+                                  fontSize: "18px",
+                                  color: "#fa6130",
+                                  cursor: "pointer",
+                                }}
                               />
                             </li>
                           );
@@ -146,8 +147,8 @@ function IndustryCategory() {
           </table>
         </div>
       </div>
-    </div>
+    </>
   );
-}
+};
 
-export default IndustryCategory;
+export default AllReportLists;

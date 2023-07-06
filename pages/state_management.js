@@ -67,7 +67,7 @@ function StateManagement() {
           className={`d-flex justify-content-between align-items-center ${styles.tableHeader}`}
         >
           <div className="d-flex justify-content-evenly ">
-            <div className={`mx-2 ${styles.search_box}`}>
+            {/* <div className={`mx-2 ${styles.search_box}`}>
               <div className={styles.search_icon}>
                 <CiSearch />
               </div>
@@ -76,7 +76,7 @@ function StateManagement() {
                 className={styles.search_bar}
                 placeholder="Search State"
               />
-            </div>
+            </div> */}
           </div>
           <div className="d-flex">
             <div className={styles.add_new_btn}>
@@ -87,8 +87,8 @@ function StateManagement() {
                 onClick={addNewState}
               />
             </div>
-
-            <ExportButton name="Export List" />
+            {/* 
+            <ExportButton name="Export List" /> */}
           </div>
         </div>
         <div className={styles.tableBody}>
@@ -123,7 +123,7 @@ function StateManagement() {
                               <Icon
                                 color="#FA6130"
                                 size="18px"
-                                className="ms-2"
+                                className="ms-2 action_icon"
                               />
                             </li>
                           );

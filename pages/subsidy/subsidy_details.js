@@ -14,11 +14,13 @@ import { subsidyManagementAction } from "../../redux/Actions/subsidyManagementAc
 import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Spinner } from "../../components/Common/Loader";
 
 function SubsidyDetailsPage({ setDetailsPage }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const [calculatePage, setCalculatePage] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const subsidyDetails = useSelector(
     (state) => state?.subsidy?.subsidy_details
@@ -27,25 +29,52 @@ function SubsidyDetailsPage({ setDetailsPage }) {
     dispatch(subsidyManagementAction?.getSubsidyList());
   }, [dispatch]);
 
-  const addCalculateLogic = () => {
-    // setCalculatePage(true);
-    const schemeId = subsidyDetails?.id;
+  useEffect(() => {
+    if (subsidyDetails !== null) {
+      setIsLoading(false);
+    }
+  }, [subsidyDetails]);
 
+  const addCalculateLogic = () => {
+    const schemeId = subsidyDetails?.id;
     dispatch(subsidyManagementAction.getUserInputList(schemeId));
     dispatch(subsidyManagementAction.getAllConstantToSubsidy(schemeId));
-    router.push("/subsidy/calculate-subsidy-logic");
+    router.push("/subsidy/calculate_subsidy_logic");
   };
+
+  const goToMatchingCriteria = () => {
+    router.push("/subsidy/matching_criteria");
+  };
+
   const handleSubsidyDetailsCancel = () => {
     setDetailsPage(false);
+  };
+
+  const goToSchemeDetails = (item) => {
+    setIsLoading(true);
+    dispatch(subsidyManagementAction.getSubsidyDetails(item));
   };
   return (
     <>
       <div className={styles.container}>
+        {isLoading && (
+          <div className={styles.overlay}>
+            <Spinner />
+          </div>
+        )}
         <div className={styles.tablee}>
           <div
             className={`d-flex justify-content-end align-items-center ${styles.tableHeader}`}
           >
             <div className="d-flex">
+              <div className={styles.add_new_btn}>
+                <CustomButton
+                  name="Matching Criteria"
+                  bgColor="#4682E3"
+                  color="#FFFFFF"
+                  onClick={goToMatchingCriteria}
+                />
+              </div>
               <div className={styles.add_new_btn}>
                 <CustomButton
                   name="Add Calculate Logic"
@@ -75,11 +104,11 @@ function SubsidyDetailsPage({ setDetailsPage }) {
             <div className="row mt-3 mx-5">
               <div className="col-sm-4 d-flex flex-column">
                 <h6 className="details-page-content-head">State</h6>
-                <p>State A</p>
+                <p>{subsidyDetails?.state_name}</p>
               </div>
               <div className="col-sm-4 d-flex flex-column">
                 <h6 className="details-page-content-head">Taluka</h6>
-                <p>Taluka Name</p>
+                <p>{subsidyDetails?.taluka_name}</p>
               </div>
               <div className="col-sm-4 d-flex flex-column">
                 <p className="details-page-content-head">Subsidy Under</p>
@@ -91,25 +120,26 @@ function SubsidyDetailsPage({ setDetailsPage }) {
               </div>
             </div>
           </div>
-
-          <div className="row mt-3 mx-5">
-            <p className="details-page-content-head">Questions</p>
-            <p>
-              <ol>
-                {subsidyDetails?.questions?.map((que, ind) => {
-                  return (
-                    <>
-                      <li key={ind}>
-                        {que?.display_name !== null
-                          ? que?.display_name
-                          : que?.name}
-                      </li>
-                    </>
-                  );
-                })}
-              </ol>
-            </p>
-          </div>
+          {subsidyDetails?.questions !== undefined && (
+            <div className="row mt-3 mx-5">
+              <p className="details-page-content-head">Questions</p>
+              <p>
+                <ol>
+                  {subsidyDetails?.questions?.map((que, ind) => {
+                    return (
+                      <>
+                        <li key={ind}>
+                          {que?.display_name !== null
+                            ? que?.display_name
+                            : que?.name}
+                        </li>
+                      </>
+                    );
+                  })}
+                </ol>
+              </p>
+            </div>
+          )}
 
           {subsidyDetails?.schemes?.length > 0 && (
             <div className="row mt-3 mx-5">
@@ -119,7 +149,17 @@ function SubsidyDetailsPage({ setDetailsPage }) {
                   {subsidyDetails?.schemes?.map((sch, ind) => {
                     return (
                       <>
-                        <li key={ind}>{sch?.name}</li>
+                        <li
+                          key={ind}
+                          style={{
+                            color: "blue",
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => goToSchemeDetails(sch)}
+                        >
+                          {sch?.name}
+                        </li>
                       </>
                     );
                   })}

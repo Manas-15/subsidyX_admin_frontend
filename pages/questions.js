@@ -36,6 +36,7 @@ function Questions() {
   const addNewQuestionList = () => {
     setAddQuestion(true);
     setType("add");
+    setModalShow(true);
   };
 
   useEffect(() => {
@@ -49,6 +50,7 @@ function Questions() {
     } else if (idx === 1) {
       console.log("viewed");
     } else if (idx === 2) {
+      setAddQuestion(true);
       setModalShow(true);
       setType("edit");
       setAction(data);
@@ -62,14 +64,22 @@ function Questions() {
   return (
     <>
       {addQuestion ? (
-        <AddQuestion setModalShow={setModalShow} />
+        <AddQuestion
+          type={type}
+          action={action}
+          setType={setType}
+          setAction={setAction}
+          setModalShow={setModalShow}
+          setAddQuestion={setAddQuestion}
+        />
       ) : (
         <div className={styles.container}>
           {type === "delete" && (
             <QuestionManagementModal
               type={type}
+              setType={setType}
               action={action}
-              show={modalShow}
+              modalShow={modalShow}
               setModalShow={setModalShow}
               onHide={() => setModalShow(false)}
             />
@@ -79,7 +89,7 @@ function Questions() {
               className={`d-flex justify-content-between align-items-center ${styles.tableHeader}`}
             >
               <div className="d-flex justify-content-evenly ">
-                <div className={`mx-2 ${styles.search_box}`}>
+                {/* <div className={`mx-2 ${styles.search_box}`}>
                   <div className={styles.search_icon}>
                     <CiSearch />
                   </div>
@@ -90,7 +100,7 @@ function Questions() {
                   />
                 </div>
 
-                <FilterButton name="Filter" />
+                <FilterButton name="Filter" /> */}
               </div>
               <div className="d-flex">
                 <div className={styles.add_new_btn}>
@@ -102,7 +112,7 @@ function Questions() {
                   />
                 </div>
 
-                <ExportButton name="Export List" />
+                {/* <ExportButton name="Export List" /> */}
               </div>
             </div>
             <div className={styles.tableBody}>
@@ -142,7 +152,11 @@ function Questions() {
                                   key={idx}
                                   onClick={() => handleClick(data, idx)}
                                 >
-                                  <Icon color="#FA6130" size="18px" />
+                                  <Icon
+                                    color="#FA6130"
+                                    size="18px"
+                                    className="action_icon"
+                                  />
                                 </li>
                               );
                             })}

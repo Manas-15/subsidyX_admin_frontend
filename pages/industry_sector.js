@@ -74,7 +74,7 @@ function IndustrySector() {
           className={`d-flex justify-content-between align-items-center ${styles.tableHeader}`}
         >
           <div className="d-flex justify-content-evenly ">
-            <div className={`mx-2 ${styles.search_box}`}>
+            {/* <div className={`mx-2 ${styles.search_box}`}>
               <div className={styles.search_icon}>
                 <CiSearch />
               </div>
@@ -84,8 +84,7 @@ function IndustrySector() {
                 placeholder="Search Industry Sector"
               />
             </div>
-
-            <FilterButton name="Filter" />
+            <FilterButton name="Filter" /> */}
           </div>
           <div className="d-flex">
             <div className={styles.add_new_btn}>
@@ -97,7 +96,7 @@ function IndustrySector() {
               />
             </div>
 
-            <ExportButton name="Export List" />
+            {/* <ExportButton name="Export List" /> */}
           </div>
         </div>
         <div className={styles.tableBody}>
@@ -130,7 +129,11 @@ function IndustrySector() {
                                 key={idx}
                                 onClick={() => handleClick(data, idx)}
                               >
-                                <Icon color="#FA6130" size="18px" />
+                                <Icon
+                                  color="#FA6130"
+                                  size="18px"
+                                  className="action_icon"
+                                />
                               </li>
                             );
                           })}

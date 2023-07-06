@@ -8,14 +8,15 @@ import { LoginSchema } from "../components/Common/Validation";
 import { userActions } from "../redux/Actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { DotLoading } from "../components/Common/Loader";
 
 function Login() {
   const router = useRouter();
   const dispatch = useDispatch();
   const [showPassword, toggleShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const user = useSelector((state) => state?.user);
-  console.log(user);
 
   const accessToken = useMemo(
     () => user?.user?.access_token,
@@ -25,19 +26,20 @@ function Login() {
   useEffect(() => {
     if (accessToken !== undefined) {
       router.push("/industry_category");
+      setIsLoading(false);
     } else {
       router.push("/");
+      setIsLoading(false);
     }
   }, [accessToken]);
 
   const submit = (values) => {
     dispatch(userActions.login(values));
-    console.log("login submit");
+    setIsLoading(true);
   };
 
   return (
     <div>
-      {console.log("I am login")}
       <div className={styles.login}>
         <div className={styles.login_img}>
           <div className="text-light mx-auto">SubsidyX</div>
@@ -79,6 +81,7 @@ function Login() {
                     <p className={styles.login_span}>
                       Are you a part of SubsidyX family
                     </p>
+
                     <Form autoComplete="false">
                       <div className="form-group m-0">
                         <label htmlFor="email" className="has-float-label">
@@ -142,13 +145,23 @@ function Login() {
                         <Link href="/changepassword">Change Password </Link> */}
                       </div>
 
-                      <CustomButton
-                        name="Login"
-                        type="submit"
-                        bgColor="#FA6130"
-                        color="#FFFFFF"
-                        width="140px"
-                      />
+                      {isLoading ? (
+                        <DotLoading
+                          name="Loading ..."
+                          type="button"
+                          bgColor="#FA6130"
+                          color="#FFFFFF"
+                          width="140px"
+                        />
+                      ) : (
+                        <CustomButton
+                          name="Login"
+                          type="submit"
+                          bgColor="#FA6130"
+                          color="#FFFFFF"
+                          width="140px"
+                        />
+                      )}
                     </Form>
                   </>
                 )}

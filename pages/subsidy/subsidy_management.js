@@ -1,26 +1,28 @@
 import styles from "../../styles/Home.module.css";
 import { CiSearch } from "react-icons/ci";
-import {
-  CustomButton,
-  ExportButton,
-  FilterButton,
-} from "../../components/Common/CustomButton";
+import { CustomButton } from "../../components/Common/CustomButton";
 import { HiEye } from "react-icons/hi";
 import { MdModeEdit } from "react-icons/md";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import AddSubsidy from "../../components/add_subsidy";
 import { subsidyManagementAction } from "../../redux/Actions/subsidyManagementAction";
-import SubsidyDetailsPage from "./subsidy-details";
+import SubsidyDetailsPage from "./subsidy_details";
+import { Spinner } from "../../components/Common/Loader";
+import AddEditSubsidy from "../../components/add_subsidy";
+import { SubsidyManagementModal } from "../../components/Common/Modal";
+
+
 
 function SubsidyManagement() {
   const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false);
+  const [deleteModalShow, setDeleteModalShow] = useState(false);
   const [detailsPage, setDetailsPage] = useState(false);
   const [type, setType] = useState("");
   const [action, setAction] = useState(0);
   const [updatedData, setUpdatedData] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const actions = [
     { icon: HiEye },
@@ -38,6 +40,14 @@ function SubsidyManagement() {
     dispatch(subsidyManagementAction?.getSubsidyList());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (subsidyList !== null) {
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
+    }
+  }, [subsidyList]);
+
   const handleClick = (item, idx) => {
     console.log(item, idx);
     if (idx === 0) {
@@ -46,11 +56,11 @@ function SubsidyManagement() {
     } else if (idx === 1) {
       setModalShow(true);
       setType("edit");
-      setAction(item);
+      dispatch(subsidyManagementAction.getSubsidyDetails(item));
     } else {
-      setModalShow(true);
-      setType("delete");
-      setAction(item?.id);
+      setDeleteModalShow(true);
+      setType("subsidyDelete");
+      setAction(item);
     }
   };
 
@@ -72,20 +82,41 @@ function SubsidyManagement() {
     setUpdatedData(modifiedData);
   }, [subsidyList?.subsidyManagementData]);
 
+
   return (
     <>
       {modalShow ? (
-        <AddSubsidy setModalShow={setModalShow} />
+        <AddEditSubsidy
+          setModalShow={setModalShow}
+          type={type}
+          setType={setType}
+        />
       ) : detailsPage ? (
         <SubsidyDetailsPage setDetailsPage={setDetailsPage} />
       ) : (
-        <div className={styles.container}>
-          <div className={styles.tablee}>
+        <div className={`${styles.container}`}>
+          {isLoading && (
+            <div className={styles.overlay}>
+              <Spinner />
+            </div>
+          )}
+          {deleteModalShow && (
+            <SubsidyManagementModal
+              type={type}
+              setType={setType}
+              action={action}
+              setAction={setAction}
+              modalShow={deleteModalShow}
+              setModalShow={setDeleteModalShow}
+              onHide={() => setDeleteModalShow(false)}
+            />
+          )}
+          <div className={`${styles.tablee} `}>
             <div
               className={`d-flex justify-content-between align-items-center ${styles.tableHeader}`}
             >
               <div className="d-flex justify-content-evenly ">
-                <div className={`mx-2 ${styles.search_box}`}>
+                {/* <div className={`mx-2 ${styles.search_box}`}>
                   <div className={styles.search_icon}>
                     <CiSearch />
                   </div>
@@ -94,9 +125,9 @@ function SubsidyManagement() {
                     className={styles.search_bar}
                     placeholder="Search Subsidy"
                   />
-                </div>
+                </div> */}
 
-                <FilterButton name="Filter" />
+                {/* <FilterButton name="Filter" /> */}
               </div>
               <div className="d-flex">
                 <div className={styles.add_new_btn}>
@@ -108,14 +139,15 @@ function SubsidyManagement() {
                   />
                 </div>
 
-                <ExportButton name="Export List" />
+                {/* <ExportButton name="Export List" /> */}
               </div>
             </div>
+
             <div className={styles.tableBody}>
               <table className="table table-hover">
                 <thead>
                   <tr>
-                    <th scope="col">Subsidy Name</th>
+                    <th colSpan="2">Subsidy Name</th>
                     {/* <th scope="col">Category</th> */}
                     <th scope="col">State</th>
                     <th scope="col">District</th>
@@ -129,7 +161,7 @@ function SubsidyManagement() {
                   {updatedData?.map((data, index) => {
                     return (
                       <tr key={index}>
-                        <td scope="row">
+                        <td colSpan="2">
                           {data?.subsidy_name !== undefined
                             ? data?.subsidy_name
                             : data?.name}
@@ -142,14 +174,19 @@ function SubsidyManagement() {
 
                         {/* <td>{data?.questions[0].question_name}</td> */}
                         <td>
-                          <ul className="d-flex justify-content-between">
+                          <ul className="d-flex">
                             {actions?.map(({ icon: Icon }, idx) => {
                               return (
                                 <li
                                   key={idx}
+                                  className=" ms-4"
                                   onClick={() => handleClick(data, idx)}
                                 >
-                                  <Icon color="#FA6130" size="18px" />
+                                  <Icon
+                                    color="#FA6130"
+                                    size="18px"
+                                    className="action_icon"
+                                  />
                                 </li>
                               );
                             })}
