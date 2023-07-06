@@ -16,7 +16,7 @@ async function getQuestions(data) {
       data.industry_category_id
     : "";
 
-  return await api.get(`question/?page=1&page_size=10${params}`, {
+  return await api.get(`question/?page=1&page_size=300${params}`, {
     headers: authHeader(),
   });
 }

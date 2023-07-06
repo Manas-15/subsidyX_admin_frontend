@@ -13,7 +13,6 @@ function getStates() {
     dispatch(request());
     stateManagementService.getStates().then(
       (res) => {
-        console.log(res);
         dispatch(success(res));
       },
       (error) => {

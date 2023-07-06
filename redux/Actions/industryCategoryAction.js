@@ -13,7 +13,7 @@ function getCategories() {
     dispatch(request());
     industryCategoryService.getCategories().then(
       (res) => {
-        console.log(res);
+     
         dispatch(success(res));
       },
       (error) => {

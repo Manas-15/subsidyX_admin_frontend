@@ -13,7 +13,6 @@ function getTalukas(ID) {
     dispatch(request(ID));
     talukaManagementService.getTalukas(ID).then(
       (res) => {
-        console.log(res);
         dispatch(success(res));
       },
       (error) => {

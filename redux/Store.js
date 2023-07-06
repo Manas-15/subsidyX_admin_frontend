@@ -23,9 +23,13 @@ function saveToLocalStorage(state) {
 
 function loadFromLocalStorage() {
   try {
-    const serializedState = localStorage.getItem("state");
-    if (serializedState === null) return undefined;
-    return JSON.parse(serializedState);
+    if (typeof window === "undefined") {
+      return "";
+    } else {
+      const serializedState = localStorage.getItem("state");
+      if (serializedState === null) return undefined;
+      return JSON.parse(serializedState);
+    }
   } catch (err) {
     console.log(err);
     return undefined;

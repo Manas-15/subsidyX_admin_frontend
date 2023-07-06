@@ -38,6 +38,24 @@ export function subsidy(
     case subsidyManagementConstants.GET_SUBSIDY_DETAILS_FAILURE:
       return { ...state };
 
+    case subsidyManagementConstants.REMOVE_SUBSIDY_DETAILS_SUCCESS:
+      return {
+        ...state,
+        subsidy_details: undefined,
+      };
+
+    case subsidyManagementConstants.REMOVE_SUBSIDY_DETAILS_QUESTION_SUCCESS:
+      console.log(state.subsidy_details, action);
+      return {
+        ...state,
+        subsidy_details: {
+          ...state.subsidy_details,
+          questions: state?.subsidy_details?.questions?.filter(
+            (que) => que?.id !== action?.id
+          ),
+        },
+      };
+
     case subsidyManagementConstants.CREATE_CONSTANT_REQUEST:
       return { ...state, isCreated: false };
     case subsidyManagementConstants.CREATE_CONSTANT_SUCCESS:
@@ -95,13 +113,45 @@ export function subsidy(
     case subsidyManagementConstants.GET_CONSTANT_TO_A_SUBSIDY_REQUEST:
       return { ...state, isFetched: false };
     case subsidyManagementConstants.GET_CONSTANT_TO_A_SUBSIDY_SUCCESS:
-
       return {
         ...state,
         isFetched: true,
         constant_list_of_a_subsidy: action?.data?.data?.subsidy_constant_list,
       };
     case subsidyManagementConstants.GET_CONSTANT_TO_A_SUBSIDY_FAILURE:
+      return { ...state, isFetched: false };
+
+    case subsidyManagementConstants.GET_CONDITION_REQUEST:
+      return { ...state, isFetched: false };
+    case subsidyManagementConstants.GET_CONDITION_SUCCESS:
+      return {
+        ...state,
+        isFetched: true,
+        all_conditions: action?.data?.data?.subsidy_condition_list,
+      };
+    case subsidyManagementConstants.GET_CONDITION_FAILURE:
+      return { ...state, isFetched: false };
+
+    case subsidyManagementConstants.GET_MATCHING_CRITERIA_REQUEST:
+      return { ...state, isFetched: false };
+    case subsidyManagementConstants.GET_MATCHING_CRITERIA_SUCCESS:
+      return {
+        ...state,
+        isFetched: true,
+        all_matching_criteria_list: action?.data?.data?.criterias,
+      };
+    case subsidyManagementConstants.GET_MATCHING_CRITERIA_FAILURE:
+      return { ...state, isFetched: false };
+
+    case subsidyManagementConstants.GET_QUESTION_FOR_A_SUBSIDY_REQUEST:
+      return { ...state, isFetched: false };
+    case subsidyManagementConstants.GET_QUESTION_FOR_A_SUBSIDY_SUCCESS:
+      return {
+        ...state,
+        isFetched: true,
+        all_questions_for_a_subsidy: action?.data?.data,
+      };
+    case subsidyManagementConstants.GET_QUESTION_FOR_A_SUBSIDY_FAILURE:
       return { ...state, isFetched: false };
 
     default:

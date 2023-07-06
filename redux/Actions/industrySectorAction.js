@@ -13,7 +13,6 @@ function getSectors(id) {
     dispatch(request(id));
     industrySectorService.getSectors(id).then(
       (res) => {
-        console.log(res);
         dispatch(success(res));
       },
       (error) => {
