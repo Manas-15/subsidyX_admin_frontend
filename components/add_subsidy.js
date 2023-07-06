@@ -177,7 +177,7 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
         dispatch(subsidyManagementAction?.updateSubsidy({ id, data }));
       } else {
         console.log("else part", data);
-        // dispatch(subsidyManagementAction?.createSubsidy(data));
+        dispatch(subsidyManagementAction?.createSubsidy(data));
       }
       setModalShow(false);
       setType("");
