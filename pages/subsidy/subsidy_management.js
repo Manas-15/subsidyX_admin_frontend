@@ -12,8 +12,6 @@ import { Spinner } from "../../components/Common/Loader";
 import AddEditSubsidy from "../../components/add_subsidy";
 import { SubsidyManagementModal } from "../../components/Common/Modal";
 
-
-
 function SubsidyManagement() {
   const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false);
@@ -82,10 +80,9 @@ function SubsidyManagement() {
     setUpdatedData(modifiedData);
   }, [subsidyList?.subsidyManagementData]);
 
-
   return (
     <>
-      {modalShow ? (
+      {true ? (
         <AddEditSubsidy
           setModalShow={setModalShow}
           type={type}

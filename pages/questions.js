@@ -61,6 +61,8 @@ function Questions() {
     }
   };
 
+  console.log(type, action);
+
   return (
     <>
       {addQuestion ? (
@@ -127,6 +129,7 @@ function Questions() {
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
+                {/* {console.log(questions?.questionData?.questions)} */}
                 <tbody>
                   {questions?.questionData?.questions?.map((data, index) => {
                     return (
@@ -146,6 +149,7 @@ function Questions() {
                         <td></td>
                         <td>
                           <ul className="d-flex justify-content-between">
+                         
                             {actions?.map(({ icon: Icon }, idx) => {
                               return (
                                 <li
