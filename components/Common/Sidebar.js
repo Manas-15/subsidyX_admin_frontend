@@ -32,7 +32,7 @@ const sideBarItems = [
     href: "/subsidy/subsidy_management",
     icon: MdDashboard,
   },
-  { name: "Report management", href: "/about", icon: MdDashboard },
+  { name: "Report management", href: "/report_management", icon: MdDashboard },
   { name: "Employee Management", href: "/about", icon: MdDashboard },
   { name: "Client Management", href: "/about", icon: MdDashboard },
   { name: "Operational Partner Management", href: "/about", icon: MdDashboard },
@@ -53,18 +53,25 @@ const Sidebar = () => {
     setIsCollapsed((prevState) => !prevState);
   };
 
+  let path = router?.pathname;
+
   useEffect(() => {
-    const pathName = router?.pathname
+    const newPath = path.split("/");
+
+    if (newPath?.[1] === "subsidy") {
+      path = newPath?.[2];
+    }
+    const pathName = path
       .toLowerCase()
       .replace(/[^\w-]+/g, "")
       .replace("_", " ")
       .split(" ");
+
     const item = pathName
       .map((item) => {
         return item.charAt(0).toUpperCase() + item.slice(1);
       })
       .join(" ");
-
     dispatch(sidebarActions.selectedCategory(item));
   }, [router?.pathname]);
 

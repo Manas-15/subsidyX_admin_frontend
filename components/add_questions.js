@@ -3,13 +3,20 @@ import { useState } from "react";
 import GeneralQuestion from "./general_question";
 import CategoryQuestion from "./category_question";
 
-function AddQuestion({ setModalShow }) {
+function AddQuestion({
+  type,
+  action,
+  setType,
+  setAction,
+  setModalShow,
+  setAddQuestion,
+}) {
   const [questionType, setQuestionType] = useState("1");
 
   const handleRadioClick = (e) => {
     setQuestionType(e.target.value);
   };
-
+ 
   return (
     <div className={styles.container}>
       <div className={styles.tablee}>
@@ -48,9 +55,19 @@ function AddQuestion({ setModalShow }) {
           </div>
         </div>
         {questionType === "1" ? (
-          <GeneralQuestion setModalShow={setModalShow} />
+          <GeneralQuestion
+            type={type}
+            action={action}
+            setType={setType}
+            setAction={setAction}
+            setModalShow={setModalShow}
+            setAddQuestion={setAddQuestion}
+          />
         ) : (
-          <CategoryQuestion setModalShow={setModalShow} />
+          <CategoryQuestion
+            setModalShow={setModalShow}
+            setAddQuestion={setAddQuestion}
+          />
         )}
       </div>
     </div>

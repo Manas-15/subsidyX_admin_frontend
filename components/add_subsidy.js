@@ -22,20 +22,52 @@ import DatePicker from "react-datepicker";
 import * as moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import { AiOutlineCalendar } from "react-icons/ai";
-import { addMonths } from "date-fns";
+// import { addMonths } from "date-fns";
 import Multiselect from "multiselect-react-dropdown";
 import { MdCancel } from "react-icons/md";
 import { IoMdAddCircle } from "react-icons/io";
-import ReactMultiSelectCheckboxes from "react-multiselect-checkboxes";
 import { subsidyManagementAction } from "../redux/Actions/subsidyManagementAction";
+import { default as ReactSelect } from "react-select";
+import { components } from "react-select";
 
-function AddSubsidy({ setModalShow }) {
+const Option = (props) => {
+  return (
+    <div>
+      <components.Option {...props}>
+        <input
+          type="checkbox"
+          checked={props.isSelected}
+          onChange={() => null}
+        />
+        <label>{props.label}</label>
+      </components.Option>
+    </div>
+  );
+};
+
+export const colourOptions = [
+  { value: "ocean1", label: "Ocean" },
+  { value: "blue", label: "Blue" },
+  { value: "purple", label: "Purple" },
+  { value: "red", label: "Red" },
+  { value: "orange", label: "Orange" },
+  { value: "yellow", label: "Yellow" },
+  { value: "green", label: "Green" },
+  { value: "forest", label: "Forest" },
+  { value: "slate", label: "Slate" },
+  { value: "silver", label: "Silver" },
+];
+
+function AddEditSubsidy({ setModalShow, type, setType }) {
+  console.log(type);
   const dispatch = useDispatch();
   const [questionType, setQuestionType] = useState("1");
   const [isState, setIsState] = useState("1");
   const [stateStatus, setStateStatus] = useState(true);
   const [selectedCategoryID, setSelectedCategoryID] = useState(0);
   const [isSubscheme, setIsSubscheme] = useState(false);
+  const [filteredQuestionData, setFilteredQuestionData] = useState();
+  const [optionSelected, setOptionSelected] = useState(null);
 
   const industryCategory = useSelector((state) => state?.industryCategory);
   const industrySector = useSelector((state) => state?.industrySector);
@@ -43,12 +75,13 @@ function AddSubsidy({ setModalShow }) {
   const districtManagement = useSelector((state) => state?.district);
   const talukaManagement = useSelector((state) => state?.taluka);
   const questions = useSelector((state) => state?.question);
+
   const subsidyList = useSelector(
     (state) => state?.subsidy?.subsidyManagementData
   );
-
-  console.log(subsidyList);
-
+  const subsidyDetails = useSelector(
+    (state) => state?.subsidy?.subsidy_details
+  );
   const handleRadioClick = (e) => {
     setQuestionType(e.target.value);
   };
@@ -60,16 +93,52 @@ function AddSubsidy({ setModalShow }) {
   useEffect(() => {
     dispatch(industryCategoryActions?.getCategories());
     dispatch(stateManagementAction?.getStates());
-    // dispatch(questionActions?.getQuestions());
   }, []);
-  const handleAddNewIndustryBox = (e, index) => {
-    console.log(e, index);
-  };
 
   const handleSelectedCategory = (id) => {
     setSelectedCategoryID(id);
     dispatch(industrySectorActions?.getSectors(id));
   };
+
+  useEffect(() => {
+    if (type === "add") {
+      setFilteredQuestionData(questions?.questionData?.questions);
+    }
+  }, [questions?.questionData?.questions]);
+
+  useEffect(() => {
+    if (type === "edit" && subsidyDetails !== undefined) {
+      dispatch(
+        industrySectorActions?.getSectors(subsidyDetails?.industries?.[0]?.id)
+      );
+      dispatch(
+        districtManagementAction?.getDistricts(subsidyDetails?.state_id)
+      );
+      dispatch(talukaManagementAction?.getTalukas(subsidyDetails?.district_id));
+      const data = {
+        industry_category_id: subsidyDetails?.industries?.[0]?.id,
+        indsutry_sector_id: subsidyDetails?.sectors?.[0]?.id,
+      };
+      dispatch(questionActions?.getQuestions(data));
+    }
+  }, [type, subsidyDetails]);
+
+  useEffect(() => {
+    if (
+      type === "edit" &&
+      subsidyDetails !== undefined &&
+      questions?.questionData?.questions !== undefined
+    ) {
+      const data1 = questions?.questionData?.questions;
+      const data2 =
+        subsidyDetails !== undefined ? subsidyDetails?.questions : [];
+      const filteredData = data1?.filter(
+        (item) => !data2?.some((d) => d.id === item.id)
+      );
+      setFilteredQuestionData(filteredData);
+    }
+  }, [type, subsidyDetails, questions]);
+
   const handleSelectedSector = (id) => {
     const data = {
       industry_category_id: selectedCategoryID,
@@ -85,10 +154,27 @@ function AddSubsidy({ setModalShow }) {
   };
   const handleSubsidyCancel = () => {
     setModalShow(false);
+    setType("");
+    dispatch(subsidyManagementAction.removeSubsidyDetails());
   };
 
   const handleCreateSubsidy = (values) => {
-    console.log(values);
+    const newQueId = values?.questions?.map(
+      (que) => que?.questionID !== null && parseInt(que?.questionID)
+    );
+    const editQueId = subsidyDetails?.questions?.map((ques) =>
+      parseInt(ques?.id)
+    );
+
+    const finalQueId =
+      newQueId?.[0] !== false && editQueId !== undefined
+        ? [...newQueId, ...editQueId]
+        : newQueId?.[0] !== false
+        ? [...newQueId]
+        : editQueId !== undefined
+        ? [...editQueId]
+        : [];
+
     const data = {
       subsidy_name: values?.subsidy,
       refer_link: values?.reflink,
@@ -99,43 +185,71 @@ function AddSubsidy({ setModalShow }) {
       district_id: parseInt(values?.districtID),
       note: values?.notes,
       taluka_id_list: values?.talukaID?.map((taluka) => taluka?.id),
-      question_id_list: values?.questions?.map((que) =>
-        parseInt(que?.questionID)
-      ),
+      question_id_list: finalQueId,
       start_date: values?.startDate,
       end_date: values?.endDate,
       is_subscheme: values?.isSubscheme,
       parent_id: values?.isSubscheme ? parseInt(values?.parentSubsidyID) : 0,
     };
     if (data) {
-      console.log(data);
-      dispatch(subsidyManagementAction?.createSubsidy(data));
+      if (type === "edit") {
+        const id = subsidyDetails?.id;
+
+        dispatch(subsidyManagementAction?.updateSubsidy({ id, data }));
+      } else {
+        dispatch(subsidyManagementAction?.createSubsidy(data));
+      }
       setModalShow(false);
+      setType("");
     }
+  };
+
+  const removeQuestionFromASubsidy = (id) => {
+    dispatch(subsidyManagementAction.removeSubsidyDetailsQuestion(id));
+  };
+
+  const subsidyInitialValues = {
+    subsidy: type === "edit" ? subsidyDetails?.name : "",
+    categoryID: type === "edit" ? subsidyDetails?.industries?.[0]?.id : null,
+    sectorID: type === "edit" ? subsidyDetails?.sectors?.[0]?.id : null,
+    // industry: [{ categoryID: null, sectorID: null }],
+    stateID: type === "edit" ? subsidyDetails?.state_id : null,
+    districtID: type === "edit" ? subsidyDetails?.district_id : null,
+    talukaID: type === "edit" ? subsidyDetails?.taluka_id : [],
+    questions: [{ questionID: null }],
+    notes: type === "edit" ? subsidyDetails?.description : "",
+    reflink: type === "edit" ? subsidyDetails?.reference_link : "",
+    startDate: type === "edit" ? subsidyDetails?.start_date : "",
+    endDate: type === "edit" ? subsidyDetails?.end_date : "",
+    isSubscheme: type === "edit" ? subsidyDetails?.is_subscheme : false,
+    parentSubsidyID: type === "edit" ? subsidyDetails?.parent_subsidy_id : 0,
+  };
+
+  const handleChange = (selected) => {
+    setOptionSelected({
+      optionSelected: selected,
+    });
   };
 
   return (
     <div className={styles.container}>
+      {/* <ReactSelect
+        options={colourOptions}
+        isMulti
+        closeMenuOnSelect={false}
+        hideSelectedOptions={false}
+        components={{
+          Option,
+        }}
+        onChange={handleChange}
+        allowSelectAll={true}
+        value={optionSelected}
+      /> */}
       <div className={styles.tablee}>
         <div className="mx-4 mb-3 mt-4">
           <Formik
             enableReinitialize
-            initialValues={{
-              subsidy: "",
-              categoryID: null,
-              sectorID: null,
-              // industry: [{ categoryID: null, sectorID: null }],
-              stateID: null,
-              districtID: null,
-              talukaID: [],
-              questions: [{ questionID: null }],
-              notes: "",
-              reflink: "",
-              startDate: "",
-              endDate: "",
-              isSubscheme: false,
-              parentSubsidyID: 0,
-            }}
+            initialValues={subsidyInitialValues}
             validationSchema={SubsidySchema}
             onSubmit={(values, event) => {
               handleCreateSubsidy(values);
@@ -188,6 +302,7 @@ function AddSubsidy({ setModalShow }) {
                         }
                       >
                         <option value="">Industry Category</option>
+                        <option value={-1}>All</option>
                         {industryCategory?.industryCategoryData?.map(
                           (category, index) => (
                             <option value={category?.id} key={index}>
@@ -220,7 +335,8 @@ function AddSubsidy({ setModalShow }) {
                         >
                           <>
                             <option value="1">Industry Sector</option>
-
+                            {industrySector?.industrySectorData?.sectors
+                              ?.length > 0 && <option value={-1}>All</option>}
                             {industrySector?.industrySectorData?.sectors?.map(
                               (sector, index) => (
                                 <option value={sector?.id} key={index}>
@@ -701,7 +817,7 @@ function AddSubsidy({ setModalShow }) {
                                 }
                               >
                                 <option value="">Select Question</option>
-                                {questions?.questionData?.questions?.map(
+                                {filteredQuestionData?.map(
                                   (category, index) => (
                                     <option value={category?.id} key={index}>
                                       {category?.name}
@@ -745,12 +861,42 @@ function AddSubsidy({ setModalShow }) {
                       </>
                     )}
                   </FieldArray>
+                  {type === "edit" && (
+                    <ol
+                      style={{
+                        border: "1px solid black",
+                        borderRadius: "10px",
+                        background: "white",
+                        marginTop: "10px",
+                      }}
+                    >
+                      {subsidyDetails?.questions?.map((que, ind) => {
+                        return (
+                          <li key={ind}>
+                            {que?.name}{" "}
+                            <>
+                              <MdCancel
+                                size="20px"
+                                color="#FA6130"
+                                style={{ cursor: "pointer" }}
+                                onClick={(e) =>
+                                  removeQuestionFromASubsidy(que?.id)
+                                }
+                              />
+                            </>
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  )}
 
                   <div>
+                    {/* {console.log(values?.isSubscheme)} */}
                     <h6 className="my-3 d-flex">
                       <input
                         name="isSubscheme"
                         type="checkbox"
+                        defaultChecked={values?.isSubscheme}
                         onChange={(e) => {
                           setIsSubscheme(e.target.checked);
                           setFieldValue("isSubscheme", e.target.checked);
@@ -758,7 +904,7 @@ function AddSubsidy({ setModalShow }) {
                       />
                       &nbsp; <span>Is Subscheme</span>
                     </h6>
-                    {isSubscheme && (
+                    {values?.isSubscheme && (
                       <>
                         <Field
                           name="parentSubsidyID"
@@ -776,7 +922,7 @@ function AddSubsidy({ setModalShow }) {
                           <option value="none">Select Subsidy</option>
                           {subsidyList?.map((sub, idx) => {
                             return (
-                              <option value={sub?.id}>
+                              <option key={idx} value={sub?.id}>
                                 {sub?.subsidy_name}
                               </option>
                             );
@@ -858,7 +1004,7 @@ function AddSubsidy({ setModalShow }) {
                                 }
                                 autoComplete="none"
                                 minDate={new Date()}
-                                maxDate={addMonths(new Date(), 5)}
+                                // maxDate={addMonths(new Date(), 5)}
                                 showMonthDropdown={true}
                                 showYearDropdown={true}
                                 dropdownMode="select"
@@ -892,7 +1038,7 @@ function AddSubsidy({ setModalShow }) {
 
                   <div className="d-flex justify-content-end mx-5 mt-1">
                     <CustomButton
-                      name="Submit"
+                      name={type === "edit" ? "Update" : "Submit"}
                       type="submit"
                       color="#FFFFFF"
                       bgColor="#FA6130"
@@ -917,4 +1063,4 @@ function AddSubsidy({ setModalShow }) {
   );
 }
 
-export default AddSubsidy;
+export default AddEditSubsidy;

@@ -18,22 +18,22 @@ export const SubsidySchema = Yup.object().shape({
   //     sectorID: Yup.number().required("Category ID is required"),
   //   })
   // ),
-  categoryID: Yup.number().required("Category ID is required"),
-  sectorID: Yup.number().required("Category ID is required"),
-  stateID: Yup.number().required("StateID is required"),
-  districtID: Yup.number().required("DistrictID is required"),
-  talukaID: Yup.array(
-    Yup.object({ name: Yup.string().required("TalukaID is required") })
-  ),
+  categoryID: Yup.number().required("Category Id is required"),
+  sectorID: Yup.number().required("Sector Id is required"),
+  // stateID: Yup.number().required("State Id is required"),
+  // districtID: Yup.number().required("District Id is required"),
+  // talukaID: Yup.array(
+  //   Yup.object({ name: Yup.string().required("Taluka Id is required") })
+  // ),
   // questionID: Yup.number().required("QuestionID is required"),
-  questions: Yup.array(
-    Yup.object({
-      questionID: Yup.number().required("Question ID is required"),
-    })
-  ),
+  // questions: Yup.array(
+  //   Yup.object({
+  //     questionID: Yup.number().required("Question Id is required"),
+  //   })
+  // ),
   notes: Yup.string().required("Notes is required"),
   reflink: Yup.string().required("Reflink is required"),
-  startDate: Yup.string().required("StartDate is required"),
-  endDate: Yup.string().required("EndDate is required"),
-  parentSubsidyID: Yup.number().required("Parent subsidy is required"),
+  startDate: Yup.string().required("Start date is required"),
+  endDate: Yup.string().required("End date is required"),
+  // parentSubsidyID: Yup.number().required("Parent subsidy is required"),
 });

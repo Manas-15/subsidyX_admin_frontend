@@ -28,7 +28,6 @@ function BaseLayout({ children }) {
   };
   return (
     <>
-      {console.log("I am render")}
       {alert?.message && openNotificationWithIcon(alert?.type, alert?.message)}
       {router.pathname === "/" ||
       router.pathname === "/login" ||

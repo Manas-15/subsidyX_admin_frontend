@@ -1,53 +1,15 @@
-import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { CustomButton } from "./CustomButton";
 import Form from "react-bootstrap/Form";
-// import Dropdown from "react-bootstrap/Dropdown";
-import { DropdownButton, Dropdown } from "react-bootstrap";
-import { BiFilter } from "react-icons/bi";
-import {
-  createIndustryCategory,
-  deleteIndustryCategory,
-  editIndustryCategory,
-  getIndustryCategoryLists,
-  getIndustryLists,
-  industryCategoryActions,
-} from "../../redux/Actions/industryCategoryAction";
-
+import { industryCategoryActions } from "../../redux/Actions/industryCategoryAction";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createIndustrySector,
-  deleteIndustrySector,
-  editIndustrySector,
-  getIndustrySectorLists,
-  industrySectorActions,
-} from "../../redux/Actions/industrySectorAction";
+import { industrySectorActions } from "../../redux/Actions/industrySectorAction";
 import { useEffect } from "react";
-import {
-  createStateManagement,
-  deleteStateManagement,
-  editStateManagement,
-  getStateManagementLists,
-  stateManagementAction,
-} from "../../redux/Actions/stateManagementAction";
-import {
-  createDistrictManagement,
-  deleteDistrictManagement,
-  districtManagementAction,
-  editDistrictManagement,
-  getDistrictManagementLists,
-} from "../../redux/Actions/districtManagementAction";
-import {
-  createTalukaManagement,
-  deleteTalukaManagement,
-  editTalukaManagement,
-  talukaManagementAction,
-} from "../../redux/Actions/talukaManagementAction";
-import {
-  deleteQuestionManagement,
-  questionActions,
-} from "../../redux/Actions/questionsAction";
+import { stateManagementAction } from "../../redux/Actions/stateManagementAction";
+import { districtManagementAction } from "../../redux/Actions/districtManagementAction";
+import { talukaManagementAction } from "../../redux/Actions/talukaManagementAction";
+import { questionActions } from "../../redux/Actions/questionsAction";
 import { subsidyManagementAction } from "../../redux/Actions/subsidyManagementAction";
 import { RxCross2 } from "react-icons/rx";
 
@@ -825,10 +787,11 @@ export const QuestionManagementModal = (props) => {
 
   const questionManagementDelete = () => {
     dispatch(questionActions?.deleteQuestion(props.action));
-    // props.toggleModalshow(false);
+    props.setModalShow(false);
   };
+
   const questionManagementCancel = () => {
-    // props.toggleModalshow(false);
+    props.setModalShow(false);
   };
 
   return (
@@ -837,6 +800,7 @@ export const QuestionManagementModal = (props) => {
       size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
+      show={props.modalShow}
       backdrop="static"
     >
       <Modal.Header closeButton>
@@ -880,8 +844,6 @@ export const UserInputManagementModal = (props) => {
   });
 
   const subsidyDetails = useSelector((state) => state?.subsidy);
-
-
 
   const mergedData =
     subsidyDetails?.user_input_field_names !== undefined
@@ -1026,7 +988,14 @@ export const UserInputManagementModal = (props) => {
             >
               <option value="none">Select Field Name</option>
               {mergedData?.map((queName, idx) => {
-                return <option value={queName?.id}>{queName?.name}</option>;
+                {
+                  console.log(queName);
+                }
+                return (
+                  <option key={idx} value={queName?.id}>
+                    {queName?.name}
+                  </option>
+                );
               })}
             </select>
           </div>
@@ -1163,17 +1132,15 @@ export const ConstantManagementModal = (props) => {
   }, [allList]);
 
   const constantSearch = (value) => {
-
     if (value.trim() === "") {
       setAllConstantList(allList);
     } else if (value?.length <= previousQuery?.length) {
- 
       const filteredResults = allConstantList?.filter(
         (item) =>
           item?.name?.toLowerCase().includes(value?.toLowerCase()) ||
           item?.value?.toLowerCase().includes(value?.toLowerCase())
       );
- 
+
       // setAllConstantList(filteredResults);
       // setPreviousQuery(value);
     } else {
@@ -1317,6 +1284,7 @@ export const ConstantManagementModal = (props) => {
             {selectedItems?.map((item, index) => {
               return (
                 <div
+                  key={index}
                   style={{
                     border: "1px solid black",
                     borderRadius: "10px",
@@ -1354,5 +1322,130 @@ export const ConstantManagementModal = (props) => {
         </>
       </Modal.Footer>
     </Modal>
+  );
+};
+
+export const SubsidyManagementModal = (props) => {
+  const id = props?.action?.id;
+  const scheme_id = props?.action?.scheme_id;
+  console.log(props, id, scheme_id, ":::::::::::::::::::::::::::");
+  const dispatch = useDispatch();
+
+  const handleDelete = () => {
+    if (props?.type === "subsidyDelete") {
+      dispatch(subsidyManagementAction.deleteSubsidy(id));
+    } else {
+      dispatch(subsidyManagementAction.deleteCondition({ id, scheme_id }));
+    }
+    props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
+  };
+  const handleCancel = () => {
+    props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
+  };
+  return (
+    <>
+      <Modal
+        {...props}
+        show={props.modalShow}
+        // onHide = { handleClose };
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        backdrop="static"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {props?.type === "subsidyDelete"
+              ? "Delete Subsidy"
+              : "Delete Constant"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {props?.type === "subsidyDelete"
+            ? "Do you want to delete this subsidy, this can't be undone, subsidy will removed from list."
+            : "Do you want to delete this condition, this can't be undone, condition will removed from list."}
+        </Modal.Body>
+        <Modal.Footer>
+          <>
+            <CustomButton
+              name="Delete"
+              color="#FFFFFF"
+              bgColor="#FA6130"
+              onClick={() => handleDelete()}
+            />
+            <CustomButton
+              name="Cancel"
+              color="#000000"
+              bgColor="#FFFFFF"
+              border="1px solid #000000"
+              onClick={() => handleCancel()}
+            />
+          </>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+};
+
+export const MatchingCriteriaModal = (props) => {
+  const id = props?.action?.id;
+  const scheme_id = props?.action?.scheme_id;
+  const dispatch = useDispatch();
+
+  console.log(id, scheme_id);
+  const criteriaDelete = () => {
+    dispatch(subsidyManagementAction.deleteCriteria({ id, scheme_id }));
+    props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
+  };
+  const criteriaCancel = () => {
+    props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
+  };
+  return (
+    <>
+      <Modal
+        {...props}
+        show={props.modalShow}
+        // onHide = { handleClose };
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        backdrop="static"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Delete Criteria
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Do you want to delete this criteria, this cant be undone, criteria
+          will removed from list.
+        </Modal.Body>
+        <Modal.Footer>
+          <>
+            <CustomButton
+              name="Delete"
+              color="#FFFFFF"
+              bgColor="#FA6130"
+              onClick={() => criteriaDelete()}
+            />
+            <CustomButton
+              name="Cancel"
+              color="#000000"
+              bgColor="#FFFFFF"
+              border="1px solid #000000"
+              onClick={() => criteriaCancel()}
+            />
+          </>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };

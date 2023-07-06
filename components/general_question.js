@@ -11,10 +11,33 @@ import {
 } from "../redux/Actions/questionsAction";
 import { BsFileEarmarkTextFill } from "react-icons/bs";
 
-const GeneralQuestion = ({ setModalShow }) => {
+const GeneralQuestion = ({
+  type,
+  action,
+  setType,
+  setAction,
+  setModalShow,
+  setAddQuestion,
+}) => {
+  console.log(type, action);
+  const data = {
+    id: 104,
+    name: "What is the minimum Sales of All food products in 2019-20 (in Crores)",
+    display_label: null,
+    options: [],
+    industry_category: "Manufacturing & Processing",
+    industry_sector: "Agriculture",
+    field: "text box",
+  };
   const dispatch = useDispatch();
   const [inputList, setInputList] = useState([
-    { name: "", options: [""], field_type_id: "", question_type_id: 0 },
+    {
+      name: action?.name !== "" ? action?.name : "",
+      display_label: "",
+      options: [""],
+      field_type_id: "",
+      question_type_id: 0,
+    },
   ]);
 
   const handleSelectQuestionChange = (e, index) => {
@@ -54,6 +77,7 @@ const GeneralQuestion = ({ setModalShow }) => {
     const list = [...inputList];
     if (name === "name") {
       list[index][name] = value;
+      list[index].display_label = value;
     } else {
       list[index][name][idx] = value;
     }
@@ -67,6 +91,7 @@ const GeneralQuestion = ({ setModalShow }) => {
     };
     dispatch(questionActions?.createQuestion(data));
     setModalShow(false);
+    setAddQuestion(false);
   };
 
   const handleGeneralCancel = (e) => {
@@ -75,6 +100,9 @@ const GeneralQuestion = ({ setModalShow }) => {
       { name: "", options: [""], field_type_id: "", question_type_id: 0 },
     ]);
     setModalShow(false);
+    setAddQuestion(false);
+    setType("");
+    setAction({});
   };
 
   return (
@@ -98,6 +126,7 @@ const GeneralQuestion = ({ setModalShow }) => {
                       <Form.Control
                         type="text"
                         name="name"
+                        value={inputList[index].name}
                         placeholder="Enter Label"
                         autoFocus
                         defaultValue=""
@@ -108,6 +137,7 @@ const GeneralQuestion = ({ setModalShow }) => {
                   <div className="col-md-5">
                     <select
                       className="form-control mb-3"
+                      value={inputList[index].field}
                       onChange={(e) => handleSelectQuestionChange(e, index)}
                     >
                       <option value="none">Select Category</option>

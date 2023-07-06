@@ -20,7 +20,7 @@ import {
   questionActions,
 } from "../redux/Actions/questionsAction";
 
-const CategoryQuestion = ({ setModalShow }) => {
+const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
   const dispatch = useDispatch();
   const [industryType, setIndustryType] = useState({
     industryCategory: null,
@@ -29,6 +29,7 @@ const CategoryQuestion = ({ setModalShow }) => {
   const [inputList, setInputList] = useState([
     {
       name: "",
+      display_label: "",
       options: [""],
       field_type_id: "",
       question_type_id: 1,
@@ -70,6 +71,7 @@ const CategoryQuestion = ({ setModalShow }) => {
       ...inputList,
       {
         name: "",
+        display_label: "",
         options: [""],
         field_type_id: "",
         question_type_id: 1,
@@ -87,10 +89,11 @@ const CategoryQuestion = ({ setModalShow }) => {
 
   const handleLabelChange = (e, index, idx) => {
     const { name, value } = e.target;
-    console.log(name, value);
+
     const list = [...inputList];
     if (name === "name") {
       list[index][name] = value;
+      list[index].display_label = value;
     } else {
       list[index][name][idx] = value;
     }
@@ -121,6 +124,7 @@ const CategoryQuestion = ({ setModalShow }) => {
     // }
     dispatch(questionActions?.createQuestion(data));
     setModalShow(false);
+    setAddQuestion(false);
   };
 
   const handleCategoryCancel = (e) => {
@@ -128,6 +132,7 @@ const CategoryQuestion = ({ setModalShow }) => {
     setInputList([
       {
         name: "",
+        display_label: "",
         options: [""],
         field_type_id: "",
         question_type_id: 0,
@@ -136,6 +141,7 @@ const CategoryQuestion = ({ setModalShow }) => {
       },
     ]);
     setModalShow(false);
+    setAddQuestion(false);
   };
   return (
     <>
