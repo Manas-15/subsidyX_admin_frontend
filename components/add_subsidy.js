@@ -30,34 +30,6 @@ import { subsidyManagementAction } from "../redux/Actions/subsidyManagementActio
 import { default as ReactSelect } from "react-select";
 import { components } from "react-select";
 
-const Option = (props) => {
-  return (
-    <div>
-      <components.Option {...props}>
-        <input
-          type="checkbox"
-          checked={props.isSelected}
-          onChange={() => null}
-        />
-        <label>{props.label}</label>
-      </components.Option>
-    </div>
-  );
-};
-
-export const colourOptions = [
-  { value: "ocean1", label: "Ocean" },
-  { value: "blue", label: "Blue" },
-  { value: "purple", label: "Purple" },
-  { value: "red", label: "Red" },
-  { value: "orange", label: "Orange" },
-  { value: "yellow", label: "Yellow" },
-  { value: "green", label: "Green" },
-  { value: "forest", label: "Forest" },
-  { value: "slate", label: "Slate" },
-  { value: "silver", label: "Silver" },
-];
-
 function AddEditSubsidy({ setModalShow, type, setType }) {
   console.log(type);
   const dispatch = useDispatch();
@@ -67,7 +39,6 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
   const [selectedCategoryID, setSelectedCategoryID] = useState(0);
   const [isSubscheme, setIsSubscheme] = useState(false);
   const [filteredQuestionData, setFilteredQuestionData] = useState();
-  const [optionSelected, setOptionSelected] = useState(null);
 
   const industryCategory = useSelector((state) => state?.industryCategory);
   const industrySector = useSelector((state) => state?.industrySector);
@@ -75,6 +46,11 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
   const districtManagement = useSelector((state) => state?.district);
   const talukaManagement = useSelector((state) => state?.taluka);
   const questions = useSelector((state) => state?.question);
+
+  const allSectors =
+    industrySector?.industrySectorData?.sectors !== undefined
+      ? industrySector?.industrySectorData?.sectors
+      : [];
 
   const subsidyList = useSelector(
     (state) => state?.subsidy?.subsidyManagementData
@@ -96,8 +72,11 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
   }, []);
 
   const handleSelectedCategory = (id) => {
-    setSelectedCategoryID(id);
-    dispatch(industrySectorActions?.getSectors(id));
+    setSelectedCategoryID(parseInt(id));
+    console.log(id);
+    if (parseInt(id) !== -1) {
+      dispatch(industrySectorActions?.getSectors(parseInt(id)));
+    }
   };
 
   useEffect(() => {
@@ -179,7 +158,8 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
       subsidy_name: values?.subsidy,
       refer_link: values?.reflink,
       industry_category_id: parseInt(values?.categoryID),
-      industry_sector_id: parseInt(values?.sectorID),
+      industry_sector_id: values?.sectorID?.map((sector) => sector?.id),
+      // industry_sector_id: parseInt(values?.sectorID),
       question_type_id: parseInt(questionType),
       state_id: parseInt(values?.stateID),
       district_id: parseInt(values?.districtID),
@@ -194,10 +174,10 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
     if (data) {
       if (type === "edit") {
         const id = subsidyDetails?.id;
-
         dispatch(subsidyManagementAction?.updateSubsidy({ id, data }));
       } else {
-        dispatch(subsidyManagementAction?.createSubsidy(data));
+        console.log("else part", data);
+        // dispatch(subsidyManagementAction?.createSubsidy(data));
       }
       setModalShow(false);
       setType("");
@@ -207,11 +187,13 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
   const removeQuestionFromASubsidy = (id) => {
     dispatch(subsidyManagementAction.removeSubsidyDetailsQuestion(id));
   };
+  console.log(allSectors);
 
   const subsidyInitialValues = {
     subsidy: type === "edit" ? subsidyDetails?.name : "",
     categoryID: type === "edit" ? subsidyDetails?.industries?.[0]?.id : null,
-    sectorID: type === "edit" ? subsidyDetails?.sectors?.[0]?.id : null,
+    sectorID: [],
+    // type === "edit" ? subsidyDetails?.sectors?.[0]?.id : null,
     // industry: [{ categoryID: null, sectorID: null }],
     stateID: type === "edit" ? subsidyDetails?.state_id : null,
     districtID: type === "edit" ? subsidyDetails?.district_id : null,
@@ -225,26 +207,8 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
     parentSubsidyID: type === "edit" ? subsidyDetails?.parent_subsidy_id : 0,
   };
 
-  const handleChange = (selected) => {
-    setOptionSelected({
-      optionSelected: selected,
-    });
-  };
-
   return (
     <div className={styles.container}>
-      {/* <ReactSelect
-        options={colourOptions}
-        isMulti
-        closeMenuOnSelect={false}
-        hideSelectedOptions={false}
-        components={{
-          Option,
-        }}
-        onChange={handleChange}
-        allowSelectAll={true}
-        value={optionSelected}
-      /> */}
       <div className={styles.tablee}>
         <div className="mx-4 mb-3 mt-4">
           <Formik
@@ -253,6 +217,7 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
             validationSchema={SubsidySchema}
             onSubmit={(values, event) => {
               handleCreateSubsidy(values);
+              console.log(values);
             }}
           >
             {({
@@ -319,7 +284,39 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
                     </div>
                     <div className="form-group m-0 col-md-6">
                       <>
-                        <Field
+                        <Field name="sectorID" className={`ml-3`}>
+                          {({ field, form: { setFieldValue } }) => {
+                            return (
+                              <Multiselect
+                                {...field}
+                                // showCheckbox
+                                placeholder="Industry Sector"
+                                className={
+                                  errors.sectorID && touched.sectorID
+                                    ? " is-invalid"
+                                    : ""
+                                }
+                                options={[
+                                  { name: "All", value: "-1" },
+                                  ...allSectors,
+                                ]}
+                                onSelect={(event) => {
+                                  setFieldValue(field.name, event);
+                                }}
+                                onRemove={(event) =>
+                                  setFieldValue(field.name, event)
+                                }
+                                displayValue="name"
+                              />
+                            );
+                          }}
+                        </Field>
+                        <ErrorMessage
+                          name="sectorID"
+                          component="div"
+                          className="invalid-feedback"
+                        />
+                        {/* <Field
                           name="sectorID"
                           as="select"
                           onChange={(e) => {
@@ -345,12 +342,7 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
                               )
                             )}
                           </>
-                        </Field>
-                        <ErrorMessage
-                          name="sectorID"
-                          component="div"
-                          className="invalid-feedback"
-                        />
+                        </Field> */}
                       </>
                     </div>
                     {/* {values?.industry?.length !== 1 && (

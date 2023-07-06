@@ -1,14 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import { IoMdAddCircle } from "react-icons/io";
 import { MdCancel } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { CustomButton } from "./Common/CustomButton";
-import {
-  createQuestion,
-  questionActions,
-} from "../redux/Actions/questionsAction";
+import { questionActions } from "../redux/Actions/questionsAction";
 import { BsFileEarmarkTextFill } from "react-icons/bs";
 
 const GeneralQuestion = ({
@@ -20,19 +17,11 @@ const GeneralQuestion = ({
   setAddQuestion,
 }) => {
   console.log(type, action);
-  const data = {
-    id: 104,
-    name: "What is the minimum Sales of All food products in 2019-20 (in Crores)",
-    display_label: null,
-    options: [],
-    industry_category: "Manufacturing & Processing",
-    industry_sector: "Agriculture",
-    field: "text box",
-  };
+
   const dispatch = useDispatch();
   const [inputList, setInputList] = useState([
     {
-      name: action?.name !== "" ? action?.name : "",
+      name: "",
       display_label: "",
       options: [""],
       field_type_id: "",
@@ -40,9 +29,26 @@ const GeneralQuestion = ({
     },
   ]);
 
+  useEffect(() => {
+    if (type === "edit") {
+      setInputList([
+        {
+          name: action?.name,
+          display_label:
+            action?.display_label !== null ? action?.display_label : "",
+          options: action?.options,
+          field_type_id: action?.field_type_id,
+          question_type_id: action?.question_type_id,
+        },
+      ]);
+    }
+  }, [type]);
+
+  console.log("LLLLLLLLLLLLLLLLLLLLLLLL", inputList);
+
   const handleSelectQuestionChange = (e, index) => {
     const list = [...inputList];
-    list[index].field_type_id = e.target.value;
+    list[index].field_type_id = parseInt(e.target.value);
     setInputList(list);
   };
 
@@ -89,15 +95,40 @@ const GeneralQuestion = ({
     const data = {
       questions: inputList,
     };
-    dispatch(questionActions?.createQuestion(data));
+    console.log(data);
+    if (type === "edit") {
+      const id = action?.id;
+      dispatch(questionActions?.updateQuestion({ id, data }));
+    } else {
+      dispatch(questionActions?.createQuestion(data));
+    }
+
     setModalShow(false);
     setAddQuestion(false);
+    setInputList([
+      {
+        name: "",
+        display_label: "",
+        options: [""],
+        field_type_id: "",
+        question_type_id: 0,
+      },
+    ]);
+
+    setType("");
+    setAction({});
   };
 
   const handleGeneralCancel = (e) => {
     e.preventDefault();
     setInputList([
-      { name: "", options: [""], field_type_id: "", question_type_id: 0 },
+      {
+        name: "",
+        display_label: "",
+        options: [""],
+        field_type_id: "",
+        question_type_id: 0,
+      },
     ]);
     setModalShow(false);
     setAddQuestion(false);
@@ -137,7 +168,7 @@ const GeneralQuestion = ({
                   <div className="col-md-5">
                     <select
                       className="form-control mb-3"
-                      value={inputList[index].field}
+                      value={inputList[index].field_type_id}
                       onChange={(e) => handleSelectQuestionChange(e, index)}
                     >
                       <option value="none">Select Category</option>
@@ -177,7 +208,7 @@ const GeneralQuestion = ({
                   )}
                 </div>
 
-                {item?.field_type_id === "1" && (
+                {item?.field_type_id === 1 && (
                   <div className="row mx-auto">
                     <div className="col-md-5">
                       <Form.Group
@@ -197,7 +228,7 @@ const GeneralQuestion = ({
                   </div>
                 )}
 
-                {item?.field_type_id === "2" && (
+                {item?.field_type_id === 2 && (
                   <>
                     {item?.options?.map((option, idx) => {
                       return (
@@ -222,6 +253,7 @@ const GeneralQuestion = ({
                                 <Form.Control
                                   type="text"
                                   name="options"
+                                  value={inputList[index].options[idx]}
                                   placeholder="Type a text"
                                   autoFocus
                                   defaultValue=""
@@ -259,7 +291,7 @@ const GeneralQuestion = ({
                   </>
                 )}
 
-                {item?.field_type_id === "3" && (
+                {item?.field_type_id === 3 && (
                   <>
                     {item?.options?.map((option, idx) => {
                       return (
@@ -273,6 +305,7 @@ const GeneralQuestion = ({
                                 <Form.Control
                                   type="text"
                                   name="options"
+                                  value={inputList[index].options[idx]}
                                   placeholder="Type a text"
                                   autoFocus
                                   defaultValue=""
@@ -310,7 +343,7 @@ const GeneralQuestion = ({
                   </>
                 )}
 
-                {item?.field_type_id === "4" && (
+                {item?.field_type_id === 4 && (
                   <div className="ms-3 mb-3">
                     <BsFileEarmarkTextFill size="20px" />
                     File Upload

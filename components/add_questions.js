@@ -1,5 +1,5 @@
 import styles from "../styles/Home.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GeneralQuestion from "./general_question";
 import CategoryQuestion from "./category_question";
 
@@ -11,12 +11,21 @@ function AddQuestion({
   setModalShow,
   setAddQuestion,
 }) {
-  const [questionType, setQuestionType] = useState("1");
+  // console.log(type, action);
+  // console.log(action?.question_type_id);
+
+  const [questionType, setQuestionType] = useState(1);
+
+  useEffect(() => {
+    if (type === "edit") {
+      setQuestionType(parseInt(action?.question_type_id));
+    }
+  }, [type]);
 
   const handleRadioClick = (e) => {
-    setQuestionType(e.target.value);
+    setQuestionType(parseInt(e.target.value));
   };
- 
+
   return (
     <div className={styles.container}>
       <div className={styles.tablee}>
@@ -28,7 +37,7 @@ function AddQuestion({
                 type="radio"
                 name="questiontype"
                 value="1"
-                checked={questionType === "1" ? true : false}
+                checked={questionType === 1 ? true : false}
                 style={{
                   width: "18px",
                   height: "18px",
@@ -43,6 +52,7 @@ function AddQuestion({
                 type="radio"
                 name="questiontype"
                 value="2"
+                checked={questionType === 2 ? true : false}
                 style={{
                   width: "18px",
                   height: "18px",
@@ -54,7 +64,7 @@ function AddQuestion({
             </div>
           </div>
         </div>
-        {questionType === "1" ? (
+        {questionType === 1 ? (
           <GeneralQuestion
             type={type}
             action={action}
@@ -65,6 +75,10 @@ function AddQuestion({
           />
         ) : (
           <CategoryQuestion
+            type={type}
+            action={action}
+            setType={setType}
+            setAction={setAction}
             setModalShow={setModalShow}
             setAddQuestion={setAddQuestion}
           />

@@ -19,7 +19,7 @@ export const SubsidySchema = Yup.object().shape({
   //   })
   // ),
   categoryID: Yup.number().required("Category Id is required"),
-  sectorID: Yup.number().required("Sector Id is required"),
+  // sectorID: Yup.number().required("Sector Id is required"),
   // stateID: Yup.number().required("State Id is required"),
   // districtID: Yup.number().required("District Id is required"),
   // talukaID: Yup.array(

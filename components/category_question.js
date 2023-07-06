@@ -20,7 +20,15 @@ import {
   questionActions,
 } from "../redux/Actions/questionsAction";
 
-const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
+const CategoryQuestion = ({
+  type,
+  action,
+  setType,
+  setAction,
+  setModalShow,
+  setAddQuestion,
+}) => {
+  console.log(type, action);
   const dispatch = useDispatch();
   const [industryType, setIndustryType] = useState({
     industryCategory: null,
@@ -45,24 +53,41 @@ const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
     dispatch(industryCategoryActions?.getCategories());
   }, []);
 
+  useEffect(() => {
+    if (type === "edit") {
+      setInputList([
+        {
+          name: action?.name,
+          display_label:
+            action?.display_label !== null ? action?.display_label : "",
+          options: action?.options,
+          field_type_id: action?.field_type_id,
+          question_type_id: action?.question_type_id,
+          industry_category_id: action?.industry_category_id,
+          industry_sector_id: action?.industry_sector_id,
+        },
+      ]);
+    }
+  }, [type]);
+
   const handleSelectIndustry = (e) => {
     const { name, value } = e.target;
     if (name === "industryCategory") {
       dispatch(industrySectorActions?.getSectors(value));
     }
-    setIndustryType({ ...industryType, [name]: value });
+    setIndustryType({ ...industryType, [name]: parseInt(value) });
     const list = [...inputList];
     if (name === "industryCategory") {
-      list[0].industry_category_id = value;
+      list[0].industry_category_id = parseInt(value);
     } else {
-      list[0].industry_sector_id = value;
+      list[0].industry_sector_id = parseInt(value);
     }
     setInputList(list);
   };
 
   const handleSelectQuestionChange = (e, index) => {
     const list = [...inputList];
-    list[index].field_type_id = e.target.value;
+    list[index].field_type_id = parseInt(e.target.value);
     setInputList(list);
   };
 
@@ -89,7 +114,6 @@ const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
 
   const handleLabelChange = (e, index, idx) => {
     const { name, value } = e.target;
-
     const list = [...inputList];
     if (name === "name") {
       list[index][name] = value;
@@ -118,13 +142,27 @@ const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
     const data = {
       questions: inputList,
     };
-    // if (inputList[0].name === "") {
-    //   console.log(inputList);
-    //   dispatch(alertActionError("Question label is required!"));
-    // }
-    dispatch(questionActions?.createQuestion(data));
+    console.log(data);
+    const id = action?.id;
+    if (type === "edit") {
+      // dispatch(questionActions?.updateQuestion({ id, data }));
+    } else {
+      // dispatch(questionActions?.createQuestion(data));
+    }
+
     setModalShow(false);
     setAddQuestion(false);
+    setInputList([
+      {
+        name: "",
+        display_label: "",
+        options: [""],
+        field_type_id: "",
+        question_type_id: 1,
+        industry_category_id: null,
+        industry_sector_id: null,
+      },
+    ]);
   };
 
   const handleCategoryCancel = (e) => {
@@ -135,13 +173,15 @@ const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
         display_label: "",
         options: [""],
         field_type_id: "",
-        question_type_id: 0,
-        industry_category_id: 0,
-        industry_sector_id: 0,
+        question_type_id: 1,
+        industry_category_id: null,
+        industry_sector_id: null,
       },
     ]);
     setModalShow(false);
     setAddQuestion(false);
+    setAction({});
+    setType("");
   };
   return (
     <>
@@ -211,6 +251,7 @@ const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
                         <Form.Control
                           type="text"
                           name="name"
+                          value={inputList[index].name}
                           required
                           placeholder="Enter Label"
                           autoFocus
@@ -225,6 +266,7 @@ const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
                     <div className="col-md-5">
                       <select
                         className="form-control mb-3"
+                        value={inputList[index].field_type_id}
                         onChange={(e) => handleSelectQuestionChange(e, index)}
                       >
                         <option value="none">Select Category</option>
@@ -264,7 +306,7 @@ const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
                     )}
                   </div>
 
-                  {item?.field_type_id === "1" && (
+                  {item?.field_type_id === 1 && (
                     <div className="row mx-auto">
                       <div className="col-md-5">
                         <Form.Group
@@ -284,7 +326,7 @@ const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
                     </div>
                   )}
 
-                  {item?.field_type_id === "2" && (
+                  {item?.field_type_id === 2 && (
                     <>
                       {item?.options?.map((option, idx) => {
                         return (
@@ -309,6 +351,7 @@ const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
                                   <Form.Control
                                     type="text"
                                     name="options"
+                                    value={inputList[index].options[idx]}
                                     required
                                     placeholder="Type a text"
                                     autoFocus
@@ -347,7 +390,7 @@ const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
                     </>
                   )}
 
-                  {item?.field_type_id === "3" && (
+                  {item?.field_type_id === 3 && (
                     <>
                       {item?.options?.map((option, idx) => {
                         return (
@@ -361,6 +404,7 @@ const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
                                   <Form.Control
                                     type="text"
                                     name="options"
+                                    value={inputList[index].options[idx]}
                                     required
                                     placeholder="Type a text"
                                     autoFocus
@@ -399,7 +443,7 @@ const CategoryQuestion = ({ setModalShow, setAddQuestion }) => {
                     </>
                   )}
 
-                  {item?.field_type_id === "4" && (
+                  {item?.field_type_id === 4 && (
                     <div className="ms-3 mb-3">
                       <BsFileEarmarkTextFill size="20px" />
                       File Upload
