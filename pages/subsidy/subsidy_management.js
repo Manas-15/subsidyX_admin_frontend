@@ -82,7 +82,7 @@ function SubsidyManagement() {
 
   return (
     <>
-      {true ? (
+      {modalShow ? (
         <AddEditSubsidy
           setModalShow={setModalShow}
           type={type}
