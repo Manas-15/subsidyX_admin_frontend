@@ -73,10 +73,18 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
 
   const handleSelectedCategory = (id) => {
     setSelectedCategoryID(parseInt(id));
-    console.log(id);
     if (parseInt(id) !== -1) {
       dispatch(industrySectorActions?.getSectors(parseInt(id)));
     }
+  };
+
+  const handleSelectedSector = (event) => {
+    const id = event?.map((item, index) => item?.id);
+    const data = {
+      industry_category_id: selectedCategoryID,
+      indsutry_sector_id: id[0],
+    };
+    dispatch(questionActions?.getQuestions());
   };
 
   useEffect(() => {
@@ -118,13 +126,6 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
     }
   }, [type, subsidyDetails, questions]);
 
-  const handleSelectedSector = (id) => {
-    const data = {
-      industry_category_id: selectedCategoryID,
-      indsutry_sector_id: id,
-    };
-    dispatch(questionActions?.getQuestions(data));
-  };
   const handleSelectedState = (id) => {
     dispatch(districtManagementAction?.getDistricts(id));
   };
@@ -187,7 +188,7 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
   const removeQuestionFromASubsidy = (id) => {
     dispatch(subsidyManagementAction.removeSubsidyDetailsQuestion(id));
   };
-  console.log(allSectors);
+  // console.log(allSectors);
 
   const subsidyInitialValues = {
     subsidy: type === "edit" ? subsidyDetails?.name : "",
@@ -301,6 +302,7 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
                                   ...allSectors,
                                 ]}
                                 onSelect={(event) => {
+                                  handleSelectedSector(event);
                                   setFieldValue(field.name, event);
                                 }}
                                 onRemove={(event) =>
