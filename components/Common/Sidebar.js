@@ -9,41 +9,77 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { sidebarActions } from "../../redux/Actions/sidebarAction";
 import { userActions } from "../../redux/Actions/userAction";
+import Image from "next/image";
+import { AiOutlineLogout } from "react-icons/ai";
 
 const sideBarItems = [
   {
     name: "Adminstrative Management",
     href: "/adminstrative_management",
-    icon: MdDashboard,
+    icon: "/Application.png",
   },
-  { name: "Industry Category", href: "/industry_category", icon: MdDashboard },
-  { name: "Industry Sectors", href: "/industry_sector", icon: MdDashboard },
-  { name: "Questions", href: "/questions", icon: MdDashboard },
-  { name: "State Management", href: "/state_management", icon: MdDashboard },
+  {
+    name: "Industry Category",
+    href: "/industry_category",
+    icon: "/industry category.png",
+  },
+  {
+    name: "Industry Sectors",
+    href: "/industry_sector",
+    icon: "/industry sectors.png",
+  },
+  { name: "Questions", href: "/questions", icon: "/Application.png" },
+  {
+    name: "State Management",
+    href: "/state_management",
+    icon: "/State.png",
+  },
   {
     name: "District Management",
     href: "/district_management",
-    icon: MdDashboard,
+    icon: "/District.png",
   },
-  { name: "Taluka Management", href: "/taluka_management", icon: MdDashboard },
-  { name: "Department Management", href: "/about", icon: MdDashboard },
+  {
+    name: "Taluka Management",
+    href: "/taluka_management",
+    icon: "/Taluka.png",
+  },
+  { name: "Department Management", href: "/about", icon: "/department.png" },
   {
     name: "Subsidy Management",
     href: "/subsidy/subsidy_management",
-    icon: MdDashboard,
+    icon: "/subsidy.png",
   },
-  { name: "Report management", href: "/report_management", icon: MdDashboard },
-  { name: "Employee Management", href: "/about", icon: MdDashboard },
-  { name: "Client Management", href: "/about", icon: MdDashboard },
-  { name: "Operational Partner Management", href: "/about", icon: MdDashboard },
-  { name: "Channel Partner Management", href: "/about", icon: MdDashboard },
-  { name: "Application Management", href: "/about", icon: MdDashboard },
-  { name: "Quatation Management", href: "/about", icon: MdDashboard },
-  { name: "Generate Form", href: "/about", icon: MdDashboard },
-  { name: "Membership", href: "/about", icon: MdDashboard },
-  { name: "Logout", href: "/login", icon: MdDashboard },
+  {
+    name: "Report management",
+    href: "/report_management",
+    icon: "/Application.png",
+  },
+  { name: "Employee Management", href: "/about", icon: "/Employee.png" },
+  { name: "Client Management", href: "/about", icon: "/Client.png" },
+  {
+    name: "Operational Partner Management",
+    href: "/about",
+    icon: "/partner.png",
+  },
+  {
+    name: "Channel Partner Management",
+    href: "/about",
+    icon: "/Channel Partner.png",
+  },
+  {
+    name: "Trusted Partner Management",
+    href: "/about",
+    icon: "/Trusted  Associate Partner.png",
+  },
+  { name: "Application Management", href: "/about", icon: "/Application.png" },
+  { name: "Quatation Management", href: "/about", icon: "/quotation.png" },
+  { name: "Generate Form", href: "/about", icon: "/Application.png" },
+  { name: "Membership", href: "/about", icon: "/subscription.png" },
+  { name: "Logout", href: "/login", icon: "/Application.png" },
 ];
 
+console.log(sideBarItems);
 const Sidebar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -111,7 +147,8 @@ const Sidebar = () => {
                   onClick={() => handleClick(name)}
                 >
                   <span className="sidebar_icon">
-                    <Icon />
+                    {/* <Icon /> */}
+                    <Image src={Icon} alt="My Image" width={20} height={20} />
                   </span>
                   <span className="sidebar_name">{name}</span>
                 </Link>

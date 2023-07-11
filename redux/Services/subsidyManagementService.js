@@ -51,6 +51,7 @@ async function updateSubsidy({ id, data }) {
 }
 
 async function getSubsidyDetails(item) {
+  console.log(typeof item?.is_subscheme);
   return await api.get(
     `subsidy/subsidies/${item?.id}?is_subscheme=${item?.is_subscheme}`,
     {

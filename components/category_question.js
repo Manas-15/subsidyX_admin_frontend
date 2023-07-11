@@ -34,6 +34,12 @@ const CategoryQuestion = ({
     industryCategory: null,
     industrySector: null,
   });
+  const [industryList, setIndustryList] = useState([
+    {
+      industry_category_id: 0,
+      industry_sector_id: [],
+    },
+  ]);
   const [inputList, setInputList] = useState([
     {
       name: "",
@@ -147,7 +153,7 @@ const CategoryQuestion = ({
     if (type === "edit") {
       // dispatch(questionActions?.updateQuestion({ id, data }));
     } else {
-      // dispatch(questionActions?.createQuestion(data));
+      dispatch(questionActions?.createQuestion(data));
     }
 
     setModalShow(false);
@@ -236,7 +242,7 @@ const CategoryQuestion = ({
               </div>
             </div>
             <h5 className="fw-bold mb-3">
-              Questions Based on Category ans Sector
+              Questions Based on Category and Sector
             </h5>
 
             {inputList?.map((item, index) => {
