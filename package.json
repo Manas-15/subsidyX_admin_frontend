@@ -19,6 +19,7 @@
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
     "formik": "^2.2.9",
+    "jsonwebtoken": "^9.0.1",
     "moment": "^2.29.4",
     "multiselect-react-dropdown": "^2.0.25",
     "next": "13.3.4",
