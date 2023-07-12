@@ -10,7 +10,7 @@ export const industrySectorService = {
 
 async function getSectors(ID) {
   let params = ID ? "&industry_category_id=" + ID : "";
-  return await api.get(`industry_sector/?page=1&page_size=10${params}`, {
+  return await api.get(`industry_sector/?page=1&page_size=100${params}`, {
     headers: authHeader(),
   });
 }

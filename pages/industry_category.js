@@ -22,11 +22,11 @@ function IndustryCategory() {
   const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState(false);
   const [type, setType] = useState("");
-  const [action, setAction] = useState(0);
+  const [action, setAction] = useState({});
 
   const actions = [
-    { icon: BsShareFill },
-    { icon: HiEye },
+    // { icon: BsShareFill },
+    // { icon: HiEye },
     { icon: MdModeEdit },
     { icon: RiDeleteBin5Fill },
   ];
@@ -43,11 +43,12 @@ function IndustryCategory() {
 
   const handleClick = (item, idx) => {
     console.log(item, idx);
+    // if (idx === 0) {
+    //   console.log("Shared");
+    // } else if (idx === 1) {
+    //   console.log("viewed");
+    // } else
     if (idx === 0) {
-      console.log("Shared");
-    } else if (idx === 1) {
-      console.log("viewed");
-    } else if (idx === 2) {
       setModalShow(true);
       setType("edit");
       setAction(item);
@@ -63,7 +64,9 @@ function IndustryCategory() {
       {modalShow && (
         <IndustryCategoryModal
           type={type}
+          setType={setType}
           action={action}
+          setAction={setAction}
           show={modalShow}
           setModalShow={setModalShow}
           onHide={() => setModalShow(false)}
@@ -104,11 +107,11 @@ function IndustryCategory() {
           <table className="table table-hover">
             <thead>
               <tr>
-                <th scope="col">Enquiry ID</th>
-                <th scope="col">Company Name</th>
-                <th scope="col">Company Owner Name</th>
-                <th scope="col">Created Date</th>
-                <th scope="col">Category</th>
+                <th scope="col">ID</th>
+                <th colSpan="2">Industry Category</th>
+                {/* <th scope="col">Company Owner Name</th> */}
+                <th colSpan="2">Created Date</th>
+
                 <th scope="col">Actions</th>
               </tr>
             </thead>
@@ -116,11 +119,14 @@ function IndustryCategory() {
               {industryCategory?.industryCategoryData?.map((data, index) => {
                 return (
                   <tr key={index}>
+                    {console.log(data?.createdDt)}
                     <th scope="row">{data?.id}</th>
-                    <td>{data?.name}</td>
-                    <td>{data?.companyOwnerName}</td>
-                    <td>{data?.createdDt}</td>
-                    <td>{data?.category}</td>
+                    <td colSpan="2">{data?.name}</td>
+                    {/* <td>{data?.companyOwnerName}</td> */}
+                    <td colSpan="2">
+                      {data?.createdDt != undefined ? data?.createdDt : "-"}
+                    </td>
+
                     <td>
                       <ul className="d-flex justify-content-between">
                         {actions?.map(({ icon: Icon }, idx) => {
