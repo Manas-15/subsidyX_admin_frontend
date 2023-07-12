@@ -941,11 +941,11 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
                   <div>
                     <h6 className="my-3">Subsidy Start & End Date</h6>
                     <div className="row">
-                      <div className="col-md-3">
+                      <div className={`col-md-3 ${styles.startDate}`}>
                         <Field
                           name="startDate"
                           placeholder="Start Date"
-                          className={`ml-3 ${styles.startDate}`}
+                          className={`ml-3`}
                         >
                           {({ field, form: { setFieldValue } }) => {
                             return (
@@ -986,11 +986,11 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
                           className="invalid-feedback d-inline-block"
                         />
                       </div>
-                      <div className="col-md-3">
+                      <div className={`col-md-3 ${styles.endDate}`}>
                         <Field
                           name="endDate"
                           placeholder="End Date"
-                          className={`ml-3 ${styles.endDate}`}
+                          className={`ml-3`}
                         >
                           {({ field, form: { setFieldValue } }) => {
                             return (

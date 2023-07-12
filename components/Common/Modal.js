@@ -29,15 +29,22 @@ export const IndustryCategoryModal = (props) => {
       dispatch(industryCategoryActions?.createCategory(state));
     }
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
 
   const industryCategoryDelete = () => {
     dispatch(industryCategoryActions?.deleteCategory(props.action));
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
   const industryCategoryCancel = () => {
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
+
   return (
     <Modal
       {...props}
@@ -156,13 +163,19 @@ export const IndustrySectorModal = (props) => {
       dispatch(industrySectorActions?.createSector(industrySectorData));
     }
     props.setmodalshow(false);
+    props.setType("");
+    props.setAction({});
   };
   const industrySectorDelete = () => {
     dispatch(industrySectorActions?.deleteSector(props.action));
     props.setmodalshow(false);
+    props.setType("");
+    props.setAction({});
   };
   const industryCategoryCancel = () => {
     props.setmodalshow(false);
+    props.setType("");
+    props.setAction({});
   };
   const handleSelectChange = (e) => {
     setSelectedCategory(e.target.value);

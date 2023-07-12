@@ -44,7 +44,11 @@ const sideBarItems = [
     href: "/taluka_management",
     icon: "/Taluka.png",
   },
-  { name: "Department Management", href: "/about", icon: "/department.png" },
+  {
+    name: "Department Management",
+    href: "/department_management",
+    icon: "/department.png",
+  },
   {
     name: "Subsidy Management",
     href: "/subsidy/subsidy_management",
@@ -53,37 +57,57 @@ const sideBarItems = [
   {
     name: "Report management",
     href: "/report_management",
-    icon: "/Application.png",
+    icon: "/report (1).png",
   },
-  { name: "Employee Management", href: "/about", icon: "/Employee.png" },
-  { name: "Client Management", href: "/about", icon: "/Client.png" },
+  {
+    name: "Employee Management",
+    href: "/employee_management",
+    icon: "/Employee.png",
+  },
+  {
+    name: "Client Management",
+    href: "/client_management",
+    icon: "/Client.png",
+  },
   {
     name: "Operational Partner Management",
-    href: "/about",
+    href: "/operational_management",
     icon: "/partner.png",
   },
   {
     name: "Channel Partner Management",
-    href: "/about",
+    href: "/channel_partner_management",
     icon: "/Channel Partner.png",
   },
   {
     name: "Trusted Partner Management",
-    href: "/about",
+    href: "/trusted_partner_management",
     icon: "/Trusted  Associate Partner.png",
   },
-  { name: "Application Management", href: "/about", icon: "/Application.png" },
-  { name: "Quatation Management", href: "/about", icon: "/quotation.png" },
-  { name: "Generate Form", href: "/about", icon: "/Application.png" },
-  { name: "Membership", href: "/about", icon: "/subscription.png" },
-  { name: "Logout", href: "/login", icon: "/Application.png" },
+  {
+    name: "Application Management",
+    href: "/application_management",
+    icon: "/Application.png",
+  },
+  {
+    name: "Quatation Management",
+    href: "/quatation_management",
+    icon: "/quotation.png",
+  },
+  { name: "Generate Form", href: "/generate_management", icon: "/forms.png" },
+  {
+    name: "Membership",
+    href: "/membership_management",
+    icon: "/subscription.png",
+  },
+  { name: "Logout", href: "/login", icon: "/logout.png" },
 ];
 
 console.log(sideBarItems);
 const Sidebar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const toogleSidebar = () => {
     setIsCollapsed((prevState) => !prevState);
