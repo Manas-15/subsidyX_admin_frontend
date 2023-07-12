@@ -23,7 +23,7 @@ async function createSector(iData) {
 
 async function updateSector({ id, industrySectorData }) {
   return await api.patch(
-    `industry/edit?industry_id=${id}`,
+    `industry_sector/update?sector_id=${id}`,
     industrySectorData,
     {
       headers: authHeader(),

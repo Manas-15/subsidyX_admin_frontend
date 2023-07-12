@@ -53,6 +53,7 @@ function IndustrySector() {
       setModalShow(true);
       setType("edit");
       setAction(data);
+      console.log(data);
     } else {
       setModalShow(true);
       setType("delete");

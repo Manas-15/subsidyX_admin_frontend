@@ -149,7 +149,7 @@ function Questions() {
                         <td>{data?.field}</td>
                         {console.log(data)}
                         <td>
-                          {data?.question_type_id === 0
+                          {data?.question_type_id === 1
                             ? "General"
                             : "Industry"}
                         </td>

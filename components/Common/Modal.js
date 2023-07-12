@@ -150,12 +150,13 @@ export const IndustrySectorModal = (props) => {
   const editIndustrySectorChange = (e) => {
     setState(e.target.value);
   };
+  console.log(selectedCategory);
+
   const industrySectorSubmit = () => {
     const industrySectorData = {
       name: state,
       industry_id: selectedCategory,
     };
-
     if (props?.action?.id) {
       const id = props?.action?.id;
       dispatch(industrySectorActions?.updateSector({ id, industrySectorData }));
@@ -180,6 +181,7 @@ export const IndustrySectorModal = (props) => {
   const handleSelectChange = (e) => {
     setSelectedCategory(e.target.value);
   };
+  // industry_id;
   return (
     <Modal
       {...props}

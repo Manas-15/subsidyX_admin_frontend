@@ -25,7 +25,7 @@ const GeneralQuestion = ({
       display_label: "",
       options: [""],
       field_type_id: "",
-      question_type_id: 0,
+      question_type_id: 1,
     },
   ]);
 
@@ -55,7 +55,7 @@ const GeneralQuestion = ({
   const handleAddNewInputBox = () => {
     setInputList([
       ...inputList,
-      { name: "", options: [""], field_type_id: "", question_type_id: 0 },
+      { name: "", options: [""], field_type_id: "", question_type_id: 1 },
     ]);
   };
   const handleRemoveInputBox = (e, index) => {
@@ -100,6 +100,7 @@ const GeneralQuestion = ({
       const id = action?.id;
       dispatch(questionActions?.updateQuestion({ id, data }));
     } else {
+      console.log(data);
       dispatch(questionActions?.createQuestion(data));
     }
 
@@ -111,7 +112,7 @@ const GeneralQuestion = ({
         display_label: "",
         options: [""],
         field_type_id: "",
-        question_type_id: 0,
+        question_type_id: 1,
       },
     ]);
 
@@ -127,7 +128,7 @@ const GeneralQuestion = ({
         display_label: "",
         options: [""],
         field_type_id: "",
-        question_type_id: 0,
+        question_type_id: 1,
       },
     ]);
     setModalShow(false);
