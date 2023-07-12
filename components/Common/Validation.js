@@ -37,3 +37,10 @@ export const SubsidySchema = Yup.object().shape({
   endDate: Yup.string().required("End date is required"),
   // parentSubsidyID: Yup.number().required("Parent subsidy is required"),
 });
+
+export const clientSchema = Yup.object().shape({
+  name: Yup.string().required("Client Name is  required").min(3, "Client name must be atleast 3 characters!"),
+  email: Yup.string().email("Invalid email address").required('Email address is required'),
+  number: Yup.string().required("Contact number is required!").matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, "Invalid Phone number!"),
+  associated: Yup.string().required('Associated With is required'),
+})

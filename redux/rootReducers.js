@@ -11,9 +11,8 @@ import { taluka } from "./Reducers/talukaManagementReducer";
 import { adminstative } from "./Reducers/adminstativeReducer";
 import { subsidy } from "./Reducers/subsidyManagementReducer";
 import { report } from "./Reducers/reportManagementReducers";
-
 import { userConstants } from "./Constants/userConstants";
-
+import { client } from "./Reducers/clientManagementReducer"
 const MainReducer = combineReducers({
   user,
   adminstative,
@@ -27,6 +26,7 @@ const MainReducer = combineReducers({
   taluka,
   subsidy,
   report,
+  client,
 });
 
 const rootReducer = (state, action) => {

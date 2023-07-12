@@ -34,7 +34,7 @@ const sideBarItems = [
   },
   { name: "Report management", href: "/report_management", icon: MdDashboard },
   { name: "Employee Management", href: "/about", icon: MdDashboard },
-  { name: "Client Management", href: "/about", icon: MdDashboard },
+  { name: "Client Management", href: "/clients/client_management", icon: MdDashboard },
   { name: "Operational Partner Management", href: "/about", icon: MdDashboard },
   { name: "Channel Partner Management", href: "/about", icon: MdDashboard },
   { name: "Application Management", href: "/about", icon: MdDashboard },
@@ -57,9 +57,9 @@ const Sidebar = () => {
 
   useEffect(() => {
     const newPath = path.split("/");
-
-    if (newPath?.[1] === "subsidy") {
-      path = newPath?.[2];
+    console.log(newPath);
+    if (newPath[1] === "subsidy" || newPath[1].toLowerCase() === "clients") {
+      path = newPath[2];
     }
     const pathName = path
       .toLowerCase()

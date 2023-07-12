@@ -49,6 +49,7 @@ td {
 
 .sidebar_wrapper {
   position: relative;
+  height: 100vh;
 }
 .sidebar_btn {
   position: absolute;
@@ -100,7 +101,7 @@ td {
   width: 100%;
   list-style: none;
   padding: 0;
-  height: 530px;
+  height: 90vh;
   overflow-y: scroll;
 }
 .sidebar_link {
@@ -177,7 +178,7 @@ label {
   }
   body {
     color: white;
-    background: black;
+    background: #F0EAFF;
   }
 }
 
