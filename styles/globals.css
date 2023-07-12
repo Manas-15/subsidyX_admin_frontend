@@ -140,12 +140,15 @@ a:hover {
 }
 /* Custom Modal Start */
 .modal-header {
+  color: black;
   border-bottom: none !important;
 }
 .modal-body {
+  color: black;
   padding: 25px 30px !important;
 }
 .modal-footer {
+  color: black;
   border-top: none !important;
 }
 /* Custom Modal End */
