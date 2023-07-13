@@ -15,8 +15,8 @@ const Header = () => {
           {selectedCategory.selectedItem}
         </div>
         <div className={styles.header_name_b}>
-          Subsidy <IoIosArrowForward />
-          {selectedCategory.selectedItem}
+          subsidyX <IoIosArrowForward />
+          <span style={{ color: "#FA6130" }}>{selectedCategory.selectedItem}</span>
         </div>
       </div>
     </>

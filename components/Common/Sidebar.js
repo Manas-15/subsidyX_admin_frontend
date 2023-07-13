@@ -117,9 +117,9 @@ const Sidebar = () => {
 
   useEffect(() => {
     const newPath = path.split("/");
-
-    if (newPath?.[1] === "subsidy") {
-      path = newPath?.[2];
+    console.log(newPath);
+    if (newPath[1] === "subsidy" || newPath[1].toLowerCase() === "clients") {
+      path = newPath[2];
     }
     const pathName = path
       .toLowerCase()
