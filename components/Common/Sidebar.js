@@ -66,7 +66,7 @@ const sideBarItems = [
   },
   {
     name: "Client Management",
-    href: "/client_management",
+    href: "/clients/client_management",
     icon: "/Client.png",
   },
   {
