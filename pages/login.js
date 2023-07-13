@@ -9,6 +9,7 @@ import { userActions } from "../redux/Actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { DotLoading } from "../components/Common/Loader";
+import jwt from "jsonwebtoken";
 
 function Login() {
   const router = useRouter();
@@ -22,6 +23,20 @@ function Login() {
     () => user?.user?.access_token,
     [user?.user?.access_token]
   );
+
+  function decodeAccessToken(accessToken) {
+    try {
+      const decodedToken = jwt.decode(accessToken);
+      return decodedToken;
+    } catch (error) {
+      console.log("Error decoding access token:", error);
+      return null;
+    }
+  }
+  const decodedData = decodeAccessToken(accessToken);
+  if (decodedData) {
+    console.log("Decoded data:", decodedData);
+  }
 
   useEffect(() => {
     if (accessToken !== undefined) {

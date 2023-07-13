@@ -56,9 +56,11 @@ function TalukaManagement() {
       {modalShow && (
         <TalukaManagementModal
           type={type}
+          setType={setType}
+          setAction={setAction}
           action={action}
           show={modalShow}
-          toggleModalshow={setModalShow}
+          setModalShow={setModalShow}
           onHide={() => setModalShow(false)}
         />
       )}

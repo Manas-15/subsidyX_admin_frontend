@@ -12,6 +12,8 @@ import { talukaManagementAction } from "../../redux/Actions/talukaManagementActi
 import { questionActions } from "../../redux/Actions/questionsAction";
 import { subsidyManagementAction } from "../../redux/Actions/subsidyManagementAction";
 import { RxCross2 } from "react-icons/rx";
+import { clientData } from "../../static/clientData";
+import { clientManagementAction } from "../../redux/Actions/clientManagementAction";
 
 export const IndustryCategoryModal = (props) => {
   const dispatch = useDispatch();
@@ -29,15 +31,22 @@ export const IndustryCategoryModal = (props) => {
       dispatch(industryCategoryActions?.createCategory(state));
     }
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
 
   const industryCategoryDelete = () => {
     dispatch(industryCategoryActions?.deleteCategory(props.action));
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
   const industryCategoryCancel = () => {
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
+
   return (
     <Modal
       {...props}
@@ -46,7 +55,8 @@ export const IndustryCategoryModal = (props) => {
       centered
       backdrop="static"
     >
-      <Modal.Header closeButton>
+      {/* closeButton */}
+      <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter">
           {props.type === "add"
             ? "Add New Category"
@@ -76,12 +86,22 @@ export const IndustryCategoryModal = (props) => {
       </Modal.Body>
       <Modal.Footer>
         {props.type === "add" ? (
-          <CustomButton
-            name="Submit"
-            color="#FFFFFF"
-            bgColor="#FA6130"
-            onClick={() => industryCategorySubmit()}
-          />
+          <>
+            <CustomButton
+              name="Submit"
+              color="#FFFFFF"
+              bgColor="#FA6130"
+              onClick={() => industryCategorySubmit()}
+            />
+
+            <CustomButton
+              name="Cancel"
+              color="#000000"
+              bgColor="#FFFFFF"
+              border="1px solid #000000"
+              onClick={() => industryCategoryCancel()}
+            />
+          </>
         ) : props.type === "delete" ? (
           <>
             <CustomButton
@@ -143,12 +163,13 @@ export const IndustrySectorModal = (props) => {
   const editIndustrySectorChange = (e) => {
     setState(e.target.value);
   };
+  console.log(selectedCategory);
+
   const industrySectorSubmit = () => {
     const industrySectorData = {
       name: state,
       industry_id: selectedCategory,
     };
-
     if (props?.action?.id) {
       const id = props?.action?.id;
       dispatch(industrySectorActions?.updateSector({ id, industrySectorData }));
@@ -156,17 +177,24 @@ export const IndustrySectorModal = (props) => {
       dispatch(industrySectorActions?.createSector(industrySectorData));
     }
     props.setmodalshow(false);
+    props.setType("");
+    props.setAction({});
   };
   const industrySectorDelete = () => {
     dispatch(industrySectorActions?.deleteSector(props.action));
     props.setmodalshow(false);
+    props.setType("");
+    props.setAction({});
   };
-  const industryCategoryCancel = () => {
+  const industrySectorCancel = () => {
     props.setmodalshow(false);
+    props.setType("");
+    props.setAction({});
   };
   const handleSelectChange = (e) => {
     setSelectedCategory(e.target.value);
   };
+  // industry_id;
   return (
     <Modal
       {...props}
@@ -175,7 +203,7 @@ export const IndustrySectorModal = (props) => {
       centered
       backdrop="static"
     >
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter">
           {props.type === "add"
             ? "Add New Sector"
@@ -228,12 +256,21 @@ export const IndustrySectorModal = (props) => {
       </Modal.Body>
       <Modal.Footer>
         {props.type === "add" ? (
-          <CustomButton
-            name="Submit"
-            color="#FFFFFF"
-            bgColor="#FA6130"
-            onClick={() => industrySectorSubmit()}
-          />
+          <>
+            <CustomButton
+              name="Submit"
+              color="#FFFFFF"
+              bgColor="#FA6130"
+              onClick={() => industrySectorSubmit()}
+            />
+            <CustomButton
+              name="Cancel"
+              color="#000000"
+              bgColor="#FFFFFF"
+              border="1px solid #000000"
+              onClick={() => industrySectorCancel()}
+            />
+          </>
         ) : props.type === "delete" ? (
           <>
             <CustomButton
@@ -247,7 +284,7 @@ export const IndustrySectorModal = (props) => {
               color="#000000"
               bgColor="#FFFFFF"
               border="1px solid #000000"
-              onClick={() => industryCategoryCancel()}
+              onClick={() => industrySectorCancel()}
             />
           </>
         ) : (
@@ -263,7 +300,7 @@ export const IndustrySectorModal = (props) => {
               color="#000000"
               bgColor="#FFFFFF"
               border="1px solid #000000"
-              onClick={() => industryCategoryCancel()}
+              onClick={() => industrySectorCancel()}
             />
           </>
         )}
@@ -302,13 +339,19 @@ export const StateManagementModal = (props) => {
       dispatch(stateManagementAction?.createState(data));
     }
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
   const stateManagementDelete = () => {
     dispatch(stateManagementAction?.deleteState(props.action));
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
   const stateManagementCancel = () => {
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
   return (
     <Modal
@@ -318,7 +361,7 @@ export const StateManagementModal = (props) => {
       centered
       backdrop="static"
     >
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter">
           {props.type === "add"
             ? "Add New State"
@@ -352,12 +395,21 @@ export const StateManagementModal = (props) => {
       </Modal.Body>
       <Modal.Footer>
         {props.type === "add" ? (
-          <CustomButton
-            name="Submit"
-            color="#FFFFFF"
-            bgColor="#FA6130"
-            onClick={() => stateManagementSubmit()}
-          />
+          <>
+            <CustomButton
+              name="Submit"
+              color="#FFFFFF"
+              bgColor="#FA6130"
+              onClick={() => stateManagementSubmit()}
+            />
+            <CustomButton
+              name="Cancel"
+              color="#000000"
+              bgColor="#FFFFFF"
+              border="1px solid #000000"
+              onClick={() => stateManagementCancel()}
+            />
+          </>
         ) : props.type === "delete" ? (
           <>
             <CustomButton
@@ -427,13 +479,19 @@ export const DistrictManagementModal = (props) => {
       dispatch(districtManagementAction?.createDistrict(data));
     }
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
   const districtManagementDelete = () => {
     dispatch(districtManagementAction?.deleteDistrict(props.action));
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
   const districtManagementCancel = () => {
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
   const handleSelectDistrictChange = (e) => {
     const stateID = e.target.value;
@@ -454,7 +512,7 @@ export const DistrictManagementModal = (props) => {
       centered
       backdrop="static"
     >
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter">
           {props.type === "add"
             ? "Add New District"
@@ -508,12 +566,21 @@ export const DistrictManagementModal = (props) => {
       </Modal.Body>
       <Modal.Footer>
         {props.type === "add" ? (
-          <CustomButton
-            name="Submit"
-            color="#FFFFFF"
-            bgColor="#FA6130"
-            onClick={() => districtManagementSubmit()}
-          />
+          <>
+            <CustomButton
+              name="Submit"
+              color="#FFFFFF"
+              bgColor="#FA6130"
+              onClick={() => districtManagementSubmit()}
+            />
+            <CustomButton
+              name="Cancel"
+              color="#000000"
+              bgColor="#FFFFFF"
+              border="1px solid #000000"
+              onClick={() => districtManagementCancel()}
+            />
+          </>
         ) : props.type === "delete" ? (
           <>
             <CustomButton
@@ -602,14 +669,20 @@ export const TalukaManagementModal = (props) => {
     } else {
       dispatch(talukaManagementAction?.createTaluka(data));
     }
-    props.toggleModalshow(false);
+    props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
   const talukaManagementDelete = () => {
     dispatch(talukaManagementAction?.deleteTaluka(props.action));
-    props.toggleModalshow(false);
+    props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
   const talukaManagementCancel = () => {
-    props.toggleModalshow(false);
+    props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
   const handleSelectStateChange = (e) => {
     const stateID = e.target.value;
@@ -640,7 +713,7 @@ export const TalukaManagementModal = (props) => {
       centered
       backdrop="static"
     >
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter">
           {props.type === "add"
             ? "Add New Taluka"
@@ -736,12 +809,21 @@ export const TalukaManagementModal = (props) => {
       </Modal.Body>
       <Modal.Footer>
         {props.type === "add" ? (
-          <CustomButton
-            name="Submit"
-            color="#FFFFFF"
-            bgColor="#FA6130"
-            onClick={() => talukaManagementSubmit()}
-          />
+          <>
+            <CustomButton
+              name="Submit"
+              color="#FFFFFF"
+              bgColor="#FA6130"
+              onClick={() => talukaManagementSubmit()}
+            />
+            <CustomButton
+              name="Cancel"
+              color="#000000"
+              bgColor="#FFFFFF"
+              border="1px solid #000000"
+              onClick={() => talukaManagementCancel()}
+            />
+          </>
         ) : props.type === "delete" ? (
           <>
             <CustomButton
@@ -788,10 +870,14 @@ export const QuestionManagementModal = (props) => {
   const questionManagementDelete = () => {
     dispatch(questionActions?.deleteQuestion(props.action));
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
 
   const questionManagementCancel = () => {
     props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
   };
 
   return (
@@ -803,7 +889,7 @@ export const QuestionManagementModal = (props) => {
       show={props.modalShow}
       backdrop="static"
     >
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter">
           Delete Question
         </Modal.Title>
@@ -834,7 +920,56 @@ export const QuestionManagementModal = (props) => {
     </Modal>
   );
 };
-
+export const ClientManagementModal = (props) => {
+  const dispatch = useDispatch();
+  const clientDelete = () => {
+    dispatch(clientManagementAction.deleteClient(props.action));
+    props.setModalShow(false);
+  };
+  const clientCancel = () => {
+    props.setModalShow(false);
+  };
+  return (
+    <Modal
+      {...props}
+      size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      backdrop="static"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title
+          style={{ color: "#000" }}
+          id="contained-modal-title-vcenter"
+        >
+          Delete Client
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body style={{ color: "#000" }}>
+        {
+          "Do you want to delete this client, this can't be undone, client will removed from list."
+        }
+      </Modal.Body>
+      <Modal.Footer>
+        <>
+          <CustomButton
+            name="Delete"
+            color="#FFFFFF"
+            bgColor="#FA6130"
+            onClick={() => clientDelete()}
+          />
+          <CustomButton
+            name="Cancel"
+            color="#000000"
+            bgColor="#FFFFFF"
+            border="1px solid #000000"
+            onClick={() => clientCancel()}
+          />
+        </>
+      </Modal.Footer>
+    </Modal>
+  );
+};
 export const UserInputManagementModal = (props) => {
   const dispatch = useDispatch();
   const [userInput, setUserInput] = useState({

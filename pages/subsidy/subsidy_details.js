@@ -112,10 +112,11 @@ function SubsidyDetailsPage({ setDetailsPage }) {
               </div>
               <div className="col-sm-4 d-flex flex-column">
                 <p className="details-page-content-head">Subsidy Under</p>
+                {console.log(subsidyDetails)}
                 <p>
-                  {subsidyDetails?.is_subscheme === true
+                  {subsidyDetails?.is_subscheme === "true"
                     ? subsidyDetails?.parent_subsidy_name
-                    : "N/A"}
+                    : "-"}
                 </p>
               </div>
             </div>

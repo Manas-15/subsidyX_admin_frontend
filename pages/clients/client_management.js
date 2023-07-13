@@ -1,72 +1,65 @@
-import styles from "../styles/Home.module.css";
+import React from "react";
+import styles from "../../styles/Home.module.css";
 import { CiSearch } from "react-icons/ci";
 import {
   CustomButton,
   ExportButton,
   FilterButton,
-} from "../components/Common/CustomButton";
+} from "../../components/Common/CustomButton";
 import { HiEye } from "react-icons/hi";
 import { BsShareFill } from "react-icons/bs";
 import { MdModeEdit } from "react-icons/md";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
-import { IndustryCategoryModal } from "../components/Common/Modal";
+import {
+  ClientManagementModal,
+  IndustryCategoryModal,
+} from "../../components/Common/Modal";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  getIndustryCategoryLists,
-  industryCategoryActions,
-} from "../redux/Actions/industryCategoryAction";
+import { clientData } from "../../static/clientData";
+import { useRouter } from "next/router";
+import { clientManagementAction } from "../../redux/Actions/clientManagementAction";
 
-function IndustryCategory() {
+const ClientManagement = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [modalShow, setModalShow] = useState(false);
   const [type, setType] = useState("");
-  const [action, setAction] = useState({});
-
-  const actions = [
-    // { icon: BsShareFill },
-    // { icon: HiEye },
-    { icon: MdModeEdit },
-    { icon: RiDeleteBin5Fill },
-  ];
-  const industryCategory = useSelector((state) => state?.industryCategory);
-
-  const addNewIndustryCategory = () => {
-    setModalShow(true);
-    setType("add");
+  const [action, setAction] = useState(0);
+  const clients = useSelector((state) => state.client);
+  const addNewClientManagement = () => {
+    router.push("add_client");
   };
-
-  useEffect(() => {
-    dispatch(industryCategoryActions?.getCategories());
-  }, [dispatch]);
 
   const handleClick = (item, idx) => {
     console.log(item, idx);
-    // if (idx === 0) {
-    //   console.log("Shared");
-    // } else if (idx === 1) {
-    //   console.log("viewed");
-    // } else
     if (idx === 0) {
-      setModalShow(true);
-      setType("edit");
-      setAction(item);
-    } else {
+      router.push(`/clients/${item?.id}`);
+    } else if (idx === 1) {
+      router.push(`/clients/edit/${item?.id}`);
+    } else if (idx === 2) {
       setModalShow(true);
       setType("delete");
-      setAction(item?.id);
+      setAction(+item?.id);
     }
   };
+  const actions = [
+    { icon: HiEye },
+    { icon: MdModeEdit },
+    { icon: RiDeleteBin5Fill },
+  ];
+
+  useEffect(() => {
+    dispatch(clientManagementAction?.getClients());
+  }, []);
 
   return (
     <div className={styles.container}>
       {modalShow && (
-        <IndustryCategoryModal
+        <ClientManagementModal
           type={type}
-          setType={setType}
           action={action}
-          setAction={setAction}
           show={modalShow}
           setModalShow={setModalShow}
           onHide={() => setModalShow(false)}
@@ -84,19 +77,19 @@ function IndustryCategory() {
               <input
                 type="text"
                 className={styles.search_bar}
-                placeholder="Search Industry Category"
+                placeholder="Search Client Associate"
               />
-            </div>
- 
-            <FilterButton name="Filter" /> */}
+            </div> */}
+
+            <FilterButton name="Filter" />
           </div>
           <div className="d-flex">
             <div className={styles.add_new_btn}>
               <CustomButton
-                name="Add New Industry Category"
+                name="Add New Client"
                 bgColor="#4682E3"
                 color="#FFFFFF"
-                onClick={addNewIndustryCategory}
+                onClick={addNewClientManagement}
               />
             </div>
 
@@ -106,29 +99,39 @@ function IndustryCategory() {
         <div className={styles.tableBody}>
           <table className="table table-hover">
             <thead>
-              <tr>
-                <th scope="col">ID</th>
-                <th colSpan="2">Industry Category</th>
-                {/* <th scope="col">Company Owner Name</th> */}
-                <th colSpan="2">Created Date</th>
+              <tr className="text-center">
+                <th className="p-4" scope="col">
+                  ID
+                </th>
 
-                <th scope="col">Actions</th>
+                <th className="p-4" scope="col">
+                  Client Name
+                </th>
+                <th className="p-4" scope="col">
+                  Client Contact
+                </th>
+                <th className="p-4" scope="col">
+                  Client Email{" "}
+                </th>
+                <th className="p-4" scope="col">
+                  Associate
+                </th>
+                <th className="p-4" scope="col">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
-              {industryCategory?.industryCategoryData?.map((data, index) => {
+              {clients?.clients?.map((data, index) => {
                 return (
-                  <tr key={index}>
-                    {console.log(data?.createdDt)}
+                  <tr className="text-center" key={index}>
                     <th scope="row">{data?.id}</th>
-                    <td colSpan="2">{data?.name}</td>
-                    {/* <td>{data?.companyOwnerName}</td> */}
-                    <td colSpan="2">
-                      {data?.createdDt != undefined ? data?.createdDt : "-"}
-                    </td>
-
+                    <td>{data?.name}</td>
+                    <td>{data?.number}</td>
+                    <td>{data?.email}</td>
+                    <td>{data?.associated}</td>
                     <td>
-                      <ul className="d-flex justify-content-between">
+                      <ul className="d-flex justify-content-center">
                         {actions?.map(({ icon: Icon }, idx) => {
                           return (
                             <li
@@ -138,7 +141,7 @@ function IndustryCategory() {
                               <Icon
                                 color="#FA6130"
                                 size="18px"
-                                className="action_icon"
+                                className="action_icon m-2"
                               />
                             </li>
                           );
@@ -154,6 +157,6 @@ function IndustryCategory() {
       </div>
     </div>
   );
-}
+};
 
-export default IndustryCategory;
+export default ClientManagement;

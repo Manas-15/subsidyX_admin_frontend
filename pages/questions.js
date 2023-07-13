@@ -26,7 +26,7 @@ function Questions() {
   const [action, setAction] = useState({});
 
   const actions = [
-    { icon: BsShareFill },
+    // { icon: BsShareFill },
     { icon: HiEye },
     { icon: MdModeEdit },
     { icon: RiDeleteBin5Fill },
@@ -45,11 +45,12 @@ function Questions() {
 
   const handleClick = (data, idx) => {
     console.log(data, idx);
+    // if (idx === 0) {
+    //   console.log("Shared");
+    // } else
     if (idx === 0) {
-      console.log("Shared");
-    } else if (idx === 1) {
       console.log("viewed");
-    } else if (idx === 2) {
+    } else if (idx === 1) {
       setAddQuestion(true);
       setModalShow(true);
       setType("edit");
@@ -80,6 +81,7 @@ function Questions() {
             <QuestionManagementModal
               type={type}
               setType={setType}
+              setAction={setAction}
               action={action}
               modalShow={modalShow}
               setModalShow={setModalShow}
@@ -125,7 +127,7 @@ function Questions() {
                     <th scope="col">Industry Sector</th>
                     <th scope="col">Question</th>
                     <th scope="col">Field</th>
-                    <th scope="col"> </th>
+                    <th scope="col">Type</th>
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
@@ -136,20 +138,24 @@ function Questions() {
                       <tr key={index}>
                         <td>
                           {data?.industry_category === " "
-                            ? "N/A"
+                            ? "-"
                             : data?.industry_category}
                         </td>
                         <td>
                           {data?.industry_sector === " "
-                            ? "N/A"
+                            ? "-"
                             : data?.industry_sector}
                         </td>
                         <td>{data?.name}</td>
                         <td>{data?.field}</td>
-                        <td></td>
+                        {console.log(data)}
+                        <td>
+                          {data?.question_type_id === 1
+                            ? "General"
+                            : "Industry"}
+                        </td>
                         <td>
                           <ul className="d-flex justify-content-between">
-                         
                             {actions?.map(({ icon: Icon }, idx) => {
                               return (
                                 <li

@@ -119,9 +119,11 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
       const data1 = questions?.questionData?.questions;
       const data2 =
         subsidyDetails !== undefined ? subsidyDetails?.questions : [];
+
       const filteredData = data1?.filter(
-        (item) => !data2?.some((d) => d.id === item.id)
+        (item) => !data2?.some((d) => d?.question_id === item?.id)
       );
+      console.log(data1, data2);
       setFilteredQuestionData(filteredData);
     }
   }, [type, subsidyDetails, questions]);
@@ -143,9 +145,8 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
       (que) => que?.questionID !== null && parseInt(que?.questionID)
     );
     const editQueId = subsidyDetails?.questions?.map((ques) =>
-      parseInt(ques?.id)
+      parseInt(ques?.question_id)
     );
-
     const finalQueId =
       newQueId?.[0] !== false && editQueId !== undefined
         ? [...newQueId, ...editQueId]
@@ -172,8 +173,11 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
       is_subscheme: values?.isSubscheme,
       parent_id: values?.isSubscheme ? parseInt(values?.parentSubsidyID) : 0,
     };
+
+    console.log(data);
     if (data) {
       if (type === "edit") {
+        console.log(data);
         const id = subsidyDetails?.id;
         dispatch(subsidyManagementAction?.updateSubsidy({ id, data }));
       } else {
@@ -188,12 +192,13 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
   const removeQuestionFromASubsidy = (id) => {
     dispatch(subsidyManagementAction.removeSubsidyDetailsQuestion(id));
   };
-  // console.log(allSectors);
+  console.log(subsidyDetails?.sectors?.map((sec) => sec?.id));
 
   const subsidyInitialValues = {
     subsidy: type === "edit" ? subsidyDetails?.name : "",
     categoryID: type === "edit" ? subsidyDetails?.industries?.[0]?.id : null,
-    sectorID: [],
+    sectorID:
+      type === "edit" ? subsidyDetails?.sectors?.map((sec) => sec?.id) : [],
     // type === "edit" ? subsidyDetails?.sectors?.[0]?.id : null,
     // industry: [{ categoryID: null, sectorID: null }],
     stateID: type === "edit" ? subsidyDetails?.state_id : null,
@@ -301,6 +306,9 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
                                   { name: "All", value: "-1" },
                                   ...allSectors,
                                 ]}
+                                // selectedValues={[
+                                //   { name: "Manas", value: "333" },
+                                // ]}
                                 onSelect={(event) => {
                                   handleSelectedSector(event);
                                   setFieldValue(field.name, event);
@@ -811,13 +819,11 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
                                 }
                               >
                                 <option value="">Select Question</option>
-                                {filteredQuestionData?.map(
-                                  (category, index) => (
-                                    <option value={category?.id} key={index}>
-                                      {category?.name}
-                                    </option>
-                                  )
-                                )}
+                                {filteredQuestionData?.map((que, index) => (
+                                  <option value={que?.id} key={index}>
+                                    {que?.name}
+                                  </option>
+                                ))}
                               </Field>
                               <ErrorMessage
                                 name={`questions[${index}].questionID`}
@@ -885,12 +891,12 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
                   )}
 
                   <div>
-                    {/* {console.log(values?.isSubscheme)} */}
                     <h6 className="my-3 d-flex">
                       <input
                         name="isSubscheme"
                         type="checkbox"
-                        defaultChecked={values?.isSubscheme}
+                        // defaultChecked={values?.isSubscheme}
+                        disabled={type === "edit" ? true : false}
                         onChange={(e) => {
                           setIsSubscheme(e.target.checked);
                           setFieldValue("isSubscheme", e.target.checked);
@@ -903,6 +909,7 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
                         <Field
                           name="parentSubsidyID"
                           as="select"
+                          disabled={type === "edit" ? true : false}
                           onChange={(e) => {
                             setFieldValue("parentSubsidyID", e.target.value);
                           }}
@@ -934,11 +941,11 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
                   <div>
                     <h6 className="my-3">Subsidy Start & End Date</h6>
                     <div className="row">
-                      <div className="col-md-3">
+                      <div className={`col-md-3 ${styles.startDate}`}>
                         <Field
                           name="startDate"
                           placeholder="Start Date"
-                          className={`ml-3 ${styles.startDate}`}
+                          className={`ml-3`}
                         >
                           {({ field, form: { setFieldValue } }) => {
                             return (
@@ -979,11 +986,11 @@ function AddEditSubsidy({ setModalShow, type, setType }) {
                           className="invalid-feedback d-inline-block"
                         />
                       </div>
-                      <div className="col-md-3">
+                      <div className={`col-md-3 ${styles.endDate}`}>
                         <Field
                           name="endDate"
                           placeholder="End Date"
-                          className={`ml-3 ${styles.endDate}`}
+                          className={`ml-3`}
                         >
                           {({ field, form: { setFieldValue } }) => {
                             return (

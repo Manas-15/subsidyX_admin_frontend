@@ -25,8 +25,8 @@ function IndustrySector() {
   const [action, setAction] = useState({});
 
   const actions = [
-    { icon: BsShareFill },
-    { icon: HiEye },
+    // { icon: BsShareFill },
+    // { icon: HiEye },
     { icon: MdModeEdit },
     { icon: RiDeleteBin5Fill },
   ];
@@ -43,14 +43,17 @@ function IndustrySector() {
 
   const handleClick = (data, idx) => {
     console.log(data, idx);
+    // if (idx === 0) {
+    //   console.log("Shared");
+    // } else if (idx === 1) {
+    //   console.log("viewed");
+    // } else
+
     if (idx === 0) {
-      console.log("Shared");
-    } else if (idx === 1) {
-      console.log("viewed");
-    } else if (idx === 2) {
       setModalShow(true);
       setType("edit");
       setAction(data);
+      console.log(data);
     } else {
       setModalShow(true);
       setType("delete");
@@ -63,7 +66,9 @@ function IndustrySector() {
       {modalShow && (
         <IndustrySectorModal
           type={type}
+          setType={setType}
           action={action}
+          setAction={setAction}
           show={modalShow}
           setmodalshow={setModalShow}
           onHide={() => setModalShow(false)}
@@ -104,8 +109,8 @@ function IndustrySector() {
             <thead>
               <tr>
                 <th scope="col">ID</th>
-                <th scope="col">Sector</th>
-                <th scope="col">Category</th>
+                <th colSpan="2">Sector</th>
+                <th colSpan="2">Category</th>
                 <th scope="col"></th>
                 <th scope="col"> </th>
                 <th scope="col">Actions</th>
@@ -117,8 +122,8 @@ function IndustrySector() {
                   return (
                     <tr key={index}>
                       <th scope="row">{data?.id}</th>
-                      <td>{data?.name}</td>
-                      <td>{data?.industry}</td>
+                      <td colSpan="2">{data?.name}</td>
+                      <td colSpan="2">{data?.industry}</td>
                       <td>{data?.createdDt}</td>
                       <td>{data?.category}</td>
                       <td>

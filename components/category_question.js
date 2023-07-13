@@ -34,13 +34,19 @@ const CategoryQuestion = ({
     industryCategory: null,
     industrySector: null,
   });
+  const [industryList, setIndustryList] = useState([
+    {
+      industry_category_id: 0,
+      industry_sector_id: [],
+    },
+  ]);
   const [inputList, setInputList] = useState([
     {
       name: "",
       display_label: "",
       options: [""],
       field_type_id: "",
-      question_type_id: 1,
+      question_type_id: 2,
       industry_category_id: null,
       industry_sector_id: null,
     },
@@ -99,7 +105,7 @@ const CategoryQuestion = ({
         display_label: "",
         options: [""],
         field_type_id: "",
-        question_type_id: 1,
+        question_type_id: 2,
         industry_category_id: industryType?.industryCategory,
         industry_sector_id: industryType?.industrySector,
       },
@@ -147,7 +153,8 @@ const CategoryQuestion = ({
     if (type === "edit") {
       // dispatch(questionActions?.updateQuestion({ id, data }));
     } else {
-      // dispatch(questionActions?.createQuestion(data));
+      console.log(data);
+      dispatch(questionActions?.createQuestion(data));
     }
 
     setModalShow(false);
@@ -158,7 +165,7 @@ const CategoryQuestion = ({
         display_label: "",
         options: [""],
         field_type_id: "",
-        question_type_id: 1,
+        question_type_id: 2,
         industry_category_id: null,
         industry_sector_id: null,
       },
@@ -173,7 +180,7 @@ const CategoryQuestion = ({
         display_label: "",
         options: [""],
         field_type_id: "",
-        question_type_id: 1,
+        question_type_id: 2,
         industry_category_id: null,
         industry_sector_id: null,
       },
@@ -236,7 +243,7 @@ const CategoryQuestion = ({
               </div>
             </div>
             <h5 className="fw-bold mb-3">
-              Questions Based on Category ans Sector
+              Questions Based on Category and Sector
             </h5>
 
             {inputList?.map((item, index) => {
