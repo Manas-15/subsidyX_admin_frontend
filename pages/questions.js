@@ -17,6 +17,7 @@ import {
   questionActions,
 } from "../redux/Actions/questionsAction";
 import { QuestionManagementModal } from "../components/Common/Modal";
+import Pagination from "../components/Common/Pagination";
 
 function Questions() {
   const dispatch = useDispatch();
@@ -24,7 +25,8 @@ function Questions() {
   const [addQuestion, setAddQuestion] = useState(false);
   const [type, setType] = useState("");
   const [action, setAction] = useState({});
-
+  const [pageSize, setPageSize] = useState(20)
+  const [page, setPage] = useState(1)
   const actions = [
     // { icon: BsShareFill },
     { icon: HiEye },
@@ -32,7 +34,6 @@ function Questions() {
     { icon: RiDeleteBin5Fill },
   ];
   const questions = useSelector((state) => state?.question);
-
   const addNewQuestionList = () => {
     setAddQuestion(true);
     setType("add");
@@ -40,8 +41,8 @@ function Questions() {
   };
 
   useEffect(() => {
-    dispatch(questionActions?.getQuestions());
-  }, [questions?.isCreated, questions?.isDeleted]);
+    dispatch(questionActions?.getQuestions({ pagination: { page, pageSize } }));
+  }, [questions?.isCreated, questions?.isDeleted, pageSize, page]);
 
   const handleClick = (data, idx) => {
     console.log(data, idx);
@@ -104,7 +105,7 @@ function Questions() {
                   />
                 </div>
 
-                <FilterButton name="Filter" /> */}
+                // <FilterButton name="Filter" /> */}
               </div>
               <div className="d-flex">
                 <div className={styles.add_new_btn}>
@@ -122,20 +123,20 @@ function Questions() {
             <div className={styles.tableBody}>
               <table className="table table-hover">
                 <thead>
-                  <tr>
-                    <th scope="col">Industry Category</th>
-                    <th scope="col">Industry Sector</th>
-                    <th scope="col">Question</th>
-                    <th scope="col">Field</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Actions</th>
+                  <tr className='text-center'>
+                    <th className='p-4' scope="col">Industry Category</th>
+                    <th className='p-4' scope="col">Industry Sector</th>
+                    <th className='p-4' scope="col">Question</th>
+                    <th className='p-4' scope="col">Field</th>
+                    <th className='p-4' scope="col">Type</th>
+                    <th className='p-4' scope="col">Actions</th>
                   </tr>
                 </thead>
                 {/* {console.log(questions?.questionData?.questions)} */}
                 <tbody>
                   {questions?.questionData?.questions?.map((data, index) => {
                     return (
-                      <tr key={index}>
+                      <tr className='text-center' key={index}>
                         <td>
                           {data?.industry_category === " "
                             ? "-"
@@ -155,7 +156,7 @@ function Questions() {
                             : "Industry"}
                         </td>
                         <td>
-                          <ul className="d-flex justify-content-between">
+                          <ul className="d-flex justify-content-center">
                             {actions?.map(({ icon: Icon }, idx) => {
                               return (
                                 <li
@@ -165,7 +166,7 @@ function Questions() {
                                   <Icon
                                     color="#FA6130"
                                     size="18px"
-                                    className="action_icon"
+                                    className="action_icon m-2"
                                   />
                                 </li>
                               );
@@ -179,6 +180,7 @@ function Questions() {
               </table>
             </div>
           </div>
+          <Pagination pageSizeOptions={[5, 10, 20, 50]} pageSize={pageSize} setPageSize={setPageSize} page={page} setPage={setPage} totalItems={questions?.questionData?.total_items} />
         </div>
       )}
     </>
