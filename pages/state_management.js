@@ -56,7 +56,9 @@ function StateManagement() {
       {modalShow && (
         <StateManagementModal
           type={type}
+          setType={setType}
           action={action}
+          setAction={setAction}
           show={modalShow}
           setModalShow={setModalShow}
           onHide={() => setModalShow(false)}

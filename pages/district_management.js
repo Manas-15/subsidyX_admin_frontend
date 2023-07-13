@@ -57,6 +57,8 @@ function DistrictManagement() {
       {modalShow && (
         <DistrictManagementModal
           type={type}
+          setType={setType}
+          setAction={setAction}
           action={action}
           show={modalShow}
           setModalShow={setModalShow}

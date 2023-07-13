@@ -81,6 +81,7 @@ function Questions() {
             <QuestionManagementModal
               type={type}
               setType={setType}
+              setAction={setAction}
               action={action}
               modalShow={modalShow}
               setModalShow={setModalShow}
