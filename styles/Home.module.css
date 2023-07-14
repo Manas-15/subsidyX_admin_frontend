@@ -1,7 +1,11 @@
 .container {
-  background: #d3d6dd;
+  /* background: #d3d6dd; */
   /* position: relative; */
   padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 70vh;
 }
 
 .tablee,
@@ -144,4 +148,36 @@
 }
 .view_client_content {
   font-weight: 400 !important;
+}
+.pagination_box {
+  height: 3rem;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0.8rem;
+}
+.dropdown_input_container {
+  position: relative;
+  width: 4rem;
+}
+
+.dropdown_icon_container {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  margin-left: 1rem;
+}
+
+.dropdown_icon {
+  color: #999;
+}
+.custom_toggle {
+  width: 5rem !important;
+}
+
+.custom_menu {
+  width: 1rem !important;
 }

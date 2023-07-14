@@ -9,14 +9,13 @@ export const questionService = {
 };
 
 async function getQuestions(data) {
-  let params = data
+  let params = data?.industry_category_id || data?.indsutry_sector_id
     ? "&indsutry_sector_id=" +
-      data.indsutry_sector_id +
-      "&industry_category_id=" +
-      data.industry_category_id
+    data?.indsutry_sector_id +
+    "&industry_category_id=" +
+    data?.industry_category_id
     : "";
-
-  return await api.get(`question/?page=1&page_size=300${params}`, {
+  return await api.get(`question/?page=${data?.pagination?.page || 1}&page_size=${data?.pagination?.pageSize || 300000000000}${params}`, {
     headers: authHeader(),
   });
 }
