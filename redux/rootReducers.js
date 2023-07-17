@@ -13,6 +13,8 @@ import { subsidy } from "./Reducers/subsidyManagementReducer";
 import { report } from "./Reducers/reportManagementReducers";
 import { userConstants } from "./Constants/userConstants";
 import { client } from "./Reducers/clientManagementReducer"
+import { trustedPartners } from "./Reducers/trustedPartnersReducer";
+import { channelPartners } from "./Reducers/channelPartnersReducer";
 const MainReducer = combineReducers({
   user,
   adminstative,
@@ -27,6 +29,8 @@ const MainReducer = combineReducers({
   subsidy,
   report,
   client,
+  trustedPartners,
+  channelPartners
 });
 
 const rootReducer = (state, action) => {

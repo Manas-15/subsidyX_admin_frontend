@@ -76,12 +76,12 @@ const sideBarItems = [
   },
   {
     name: "Channel Partner Management",
-    href: "/channel_partner_management",
+    href: "/channel_partner_management/channel_partners",
     icon: "/Channel Partner.png",
   },
   {
     name: "Trusted Partner Management",
-    href: "/trusted_partner_management",
+    href: "/trusted_partner_management/trusted_partners",
     icon: "/Trusted  Associate Partner.png",
   },
   {
@@ -118,15 +118,15 @@ const Sidebar = () => {
   useEffect(() => {
     const newPath = path.split("/");
     console.log(newPath);
-    if (newPath[1] === "subsidy" || newPath[1].toLowerCase() === "clients") {
+    if (newPath[1] === "subsidy" || newPath[1].toLowerCase() === "clients" || newPath[1].toLowerCase() === "trusted_partner_management" || newPath[1].toLowerCase() === "channel_partner_management") {
       path = newPath[2];
     }
     const pathName = path
       .toLowerCase()
-      .replace(/[^\w-]+/g, "")
-      .replace("_", " ")
+      .replaceAll(/[^\w-]+/g, "")
+      .replaceAll("_", " ")
       .split(" ");
-
+    console.log(pathName);
     const item = pathName
       .map((item) => {
         return item.charAt(0).toUpperCase() + item.slice(1);

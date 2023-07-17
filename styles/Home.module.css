@@ -124,6 +124,7 @@
   justify-content: space-between;
   padding: 2rem;
   height: 360px;
+  margin: 3rem;
 }
 .add > h4 {
   color: #04032b;
@@ -148,6 +149,18 @@
 }
 .view_client_content {
   font-weight: 400 !important;
+}
+.view_client > div {
+  flex: 1;
+  justify-content: space-evenly;
+  align-items: center;
+  display: flex;
+
+  flex-direction: column;
+}
+.view_client > div > p {
+  width: 50%;
+  text-align: left !important;
 }
 .pagination_box {
   height: 3rem;
@@ -180,4 +193,10 @@
 
 .custom_menu {
   width: 1rem !important;
+}
+.radio_check input[type="radio"] {
+  border-color: #fa6130;
+}
+.radio_check input[type="radio"]:checked {
+  background: #fa6130;
 }

@@ -14,6 +14,9 @@ import { subsidyManagementAction } from "../../redux/Actions/subsidyManagementAc
 import { RxCross2 } from "react-icons/rx";
 import { clientData } from "../../static/clientData";
 import { clientManagementAction } from "../../redux/Actions/clientManagementAction";
+import { trustedPartnerManagementActions } from "../../redux/Actions/trustedPartnersAction";
+import { useRouter } from "next/router";
+import { channelPartnerManagementActions } from "../../redux/Actions/channelPartnersAction";
 
 export const IndustryCategoryModal = (props) => {
   const dispatch = useDispatch();
@@ -61,8 +64,8 @@ export const IndustryCategoryModal = (props) => {
           {props.type === "add"
             ? "Add New Category"
             : props.type === "delete"
-            ? "Delete Category"
-            : "Edit Category"}
+              ? "Delete Category"
+              : "Edit Category"}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -208,8 +211,8 @@ export const IndustrySectorModal = (props) => {
           {props.type === "add"
             ? "Add New Sector"
             : props.type === "delete"
-            ? "Delete Sector"
-            : props.type === "edit" && "Edit Sector"}
+              ? "Delete Sector"
+              : props.type === "edit" && "Edit Sector"}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -366,8 +369,8 @@ export const StateManagementModal = (props) => {
           {props.type === "add"
             ? "Add New State"
             : props.type === "delete"
-            ? "Delete State"
-            : props.type === "edit" && "Edit State"}
+              ? "Delete State"
+              : props.type === "edit" && "Edit State"}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -517,8 +520,8 @@ export const DistrictManagementModal = (props) => {
           {props.type === "add"
             ? "Add New District"
             : props.type === "delete"
-            ? "Delete District"
-            : props.type === "edit" && "Edit District"}
+              ? "Delete District"
+              : props.type === "edit" && "Edit District"}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -718,8 +721,8 @@ export const TalukaManagementModal = (props) => {
           {props.type === "add"
             ? "Add New Taluka"
             : props.type === "delete"
-            ? "Delete Taluka"
-            : props.type === "edit" && "Edit Taluka"}
+              ? "Delete Taluka"
+              : props.type === "edit" && "Edit Taluka"}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -788,8 +791,8 @@ export const TalukaManagementModal = (props) => {
                   ? props.action?.category_id === 1
                     ? "Category 1"
                     : props.action?.category_id === 2
-                    ? "Category 2"
-                    : "Category 3"
+                      ? "Category 2"
+                      : "Category 3"
                   : "Select Category"}
               </option>
               {categories?.map((cat, index) => {
@@ -970,6 +973,111 @@ export const ClientManagementModal = (props) => {
     </Modal>
   );
 };
+export const TrustedPartnerModal = (props) => {
+  const router = useRouter()
+  const dispatch = useDispatch();
+  const trustedPartnerDelete = () => {
+    dispatch(trustedPartnerManagementActions.deleteTrustedPartner(props.action));
+    props.setModalShow(false);
+    if (props?.redirect) router.push(props?.redirect);
+  };
+  const trustedPartnerCancel = () => {
+    props.setModalShow(false);
+  };
+  return (
+    <Modal
+      {...props}
+      size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      backdrop="static"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title
+          style={{ color: "#000" }}
+          id="contained-modal-title-vcenter"
+        >
+          Delete Trusted Partner
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body style={{ color: "#000" }}>
+        {
+          "Do you want to delete this trusted partner, this can't be undone, trusted partner will removed from list."
+        }
+      </Modal.Body>
+      <Modal.Footer>
+        <>
+          <CustomButton
+            name="Delete"
+            color="#FFFFFF"
+            bgColor="#FA6130"
+            onClick={() => trustedPartnerDelete()}
+          />
+          <CustomButton
+            name="Cancel"
+            color="#000000"
+            bgColor="#FFFFFF"
+            border="1px solid #000000"
+            onClick={() => trustedPartnerCancel()}
+          />
+        </>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+export const ChannelPartnerModal = (props) => {
+  const router = useRouter()
+  const dispatch = useDispatch();
+  const channelPartnerDelete = () => {
+    dispatch(channelPartnerManagementActions.deleteChannelPartner(props.action));
+    props.setModalShow(false);
+    if (props?.redirect) router.push(props?.redirect);
+  };
+  const channelPartnerCancel = () => {
+    props.setModalShow(false);
+  };
+  return (
+    <Modal
+      {...props}
+      size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      backdrop="static"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title
+          style={{ color: "#000" }}
+          id="contained-modal-title-vcenter"
+        >
+          Delete Channel Partner
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body style={{ color: "#000" }}>
+        {
+          "Do you want to delete this channel partner, this can't be undone, channel partner will removed from list."
+        }
+      </Modal.Body>
+      <Modal.Footer>
+        <>
+          <CustomButton
+            name="Delete"
+            color="#FFFFFF"
+            bgColor="#FA6130"
+            onClick={() => channelPartnerDelete()}
+          />
+          <CustomButton
+            name="Cancel"
+            color="#000000"
+            bgColor="#FFFFFF"
+            border="1px solid #000000"
+            onClick={() => channelPartnerCancel()}
+          />
+        </>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
 export const UserInputManagementModal = (props) => {
   const dispatch = useDispatch();
   const [userInput, setUserInput] = useState({
@@ -983,9 +1091,9 @@ export const UserInputManagementModal = (props) => {
   const mergedData =
     subsidyDetails?.user_input_field_names !== undefined
       ? [
-          ...subsidyDetails?.user_input_field_names?.questions,
-          ...subsidyDetails?.user_input_field_names?.reports,
-        ]
+        ...subsidyDetails?.user_input_field_names?.questions,
+        ...subsidyDetails?.user_input_field_names?.reports,
+      ]
       : [];
 
   useEffect(() => {

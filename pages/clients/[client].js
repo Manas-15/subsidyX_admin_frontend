@@ -2,16 +2,19 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/Home.module.css";
 import { CustomButton } from "../../components/Common/CustomButton";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ClientManagementModal } from "../../components/Common/Modal";
+import { clientManagementAction } from "../../redux/Actions/clientManagementAction";
 
 const Client = () => {
   const clientData = useSelector((state) => state.client.clients);
+  const dispatch = useDispatch()
   const [modalShow, setModalShow] = useState(false);
   const router = useRouter();
   const c = router.query.client;
   const [clientD, setClientD] = useState({});
   useEffect(() => {
+    dispatch(clientManagementAction.getClients())
     setClientD(clientData.find((x) => x.id === +c));
   }, []);
   return (
@@ -28,16 +31,10 @@ const Client = () => {
       <h4>Client Details {c}</h4>
       <div className={styles.view_client_body}>
         <div className={styles.view_client}>
-          <p>Name</p>
-          <p>Email</p>
-          <p>Contact</p>
-          <p>Associate With</p>
-        </div>
-        <div className={styles.view_client_content}>
-          <p>{clientD?.name}</p>
-          <p>{clientD?.email}</p>
-          <p>{clientD?.number}</p>
-          <p>{clientD?.associated}</p>
+          <div><p>Name</p><p style={{fontWeight:400}}>{clientD?.name}</p></div>
+          <div><p>Email</p><p style={{fontWeight:400}}>{clientD?.email}</p></div>
+          <div><p>Contact</p><p style={{fontWeight:400}}>{clientD?.number}</p></div>
+          <div><p>Associate With</p><p style={{fontWeight:400}}>{clientD?.associated}</p></div>
         </div>
       </div>
       <div className="d-flex justify-content-end">

@@ -44,3 +44,33 @@ export const clientSchema = Yup.object().shape({
   number: Yup.string().required("Contact number is required!").matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, "Invalid Phone number!"),
   associated: Yup.string().required('Associated With is required'),
 })
+export const TrustedPartnerSchema = Yup.object().shape({
+  trustedPartnerName: Yup.string().required("Trusted Partner Name is required!"),
+  email: Yup.string().required("Email is required!").email("Invalid Email Address"),
+  contact: Yup.string().required("Contact number is required!").matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, "Invalid Contact number!"),
+  district: Yup.string().required("District is required!"),
+  state: Yup.string().required("State is required!"),
+  taluka: Yup.string().required("Taluka is required!"),
+  talukaCategory: Yup.number("Taluka Category must be a number").required("Taluka Category is required!").positive("Taluka Category must be positive!").typeError('Taluka Category must be a number'),
+  clients: Yup.number("Clients must be a number").required("Clients is required!").positive("Clients must be positive!").typeError('Clients must be a number'),
+})
+
+export const channelPartnerSchema = Yup.object().shape({
+  type: Yup.string().required('Payment Basis is required field'),
+  amount: Yup.number()
+    .when('type', {
+      is: (type) => type === 'percentage',
+      then: () => Yup.number()
+        .max(100, 'Amount must be at most 100')
+        .required('Amount and Payment Basis are required').positive().typeError("Enter Valid Amount"),
+      otherwise: () => Yup.number().required('Amount and Payment Basis are required').positive().typeError("Enter Valid Amount")
+    }),
+  channelPartnerName: Yup.string().required("Trusted Partner Name is required!"),
+  email: Yup.string().required("Email is required!").email("Invalid Email Address"),
+  contact: Yup.string().required("Contact number is required!").matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, "Invalid Contact number!"),
+  district: Yup.string().required("District is required!"),
+  state: Yup.string().required("State is required!"),
+  taluka: Yup.string().required("Taluka is required!"),
+  talukaCategory: Yup.number("Taluka Category must be a number").required("Taluka Category is required!").positive("Taluka Category must be positive!").typeError('Taluka Category must be a number'),
+  clients: Yup.number("Clients must be a number").required("Clients is required!").positive("Clients must be positive!").typeError('Clients must be a number'),
+})
