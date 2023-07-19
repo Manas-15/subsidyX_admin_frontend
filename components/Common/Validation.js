@@ -74,3 +74,23 @@ export const channelPartnerSchema = Yup.object().shape({
   talukaCategory: Yup.number("Taluka Category must be a number").required("Taluka Category is required!").positive("Taluka Category must be positive!").typeError('Taluka Category must be a number'),
   clients: Yup.number("Clients must be a number").required("Clients is required!").positive("Clients must be positive!").typeError('Clients must be a number'),
 })
+
+export const membershipSchema = Yup.object().shape({
+  descriptions: Yup.array().of(Yup.string().required('Fill the description!')).required('Description is required!'),
+  membershipName: Yup.string().required("Membership Name is required!"),
+  price: Yup.number().typeError('Price is required and must be a number').required('Price is required!').positive('Price must be more than 0')
+})
+export const employeeSchema = Yup.object().shape({
+  name: Yup.string().required('Name is required!'),
+  password: Yup.string().required('Password is required!'),
+  email: Yup.string().required('Email is required!'),
+  role: Yup.string().required('Role  is required!'),
+  contact: Yup.string().required('Contact is required!'),
+  isAssociated: Yup.string().required('Association is a required field'),
+  associatedWith: Yup.string()
+    .when('isAssociated', {
+      is: (isAssociated) => isAssociated === 'yes',
+      then: () => Yup.string().required('Association is Required!'),
+      otherwise: () => Yup.string().notRequired()
+    }),
+})

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { ChannelPartnerModal } from "../../components/Common/Modal";
 
-const Client = () => {
+const ChannelPartner = () => {
     const channelPartnersData = useSelector((state) => state.channelPartners.channelPartners);
     const [modalShow, setModalShow] = useState(false);
     const router = useRouter();
@@ -71,4 +71,4 @@ const Client = () => {
     );
 };
 
-export default Client;
+export default ChannelPartner;

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { TrustedPartnerModal } from "../../components/Common/Modal";
 
-const Client = () => {
+const TrustedPartner = () => {
     const trustedPartnersData = useSelector((state) => state.trustedPartners.trustedPartners);
     const [modalShow, setModalShow] = useState(false);
     const router = useRouter();
@@ -71,4 +71,4 @@ const Client = () => {
     );
 };
 
-export default Client;
+export default TrustedPartner;

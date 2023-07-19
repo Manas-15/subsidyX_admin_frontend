@@ -17,6 +17,8 @@ import { clientManagementAction } from "../../redux/Actions/clientManagementActi
 import { trustedPartnerManagementActions } from "../../redux/Actions/trustedPartnersAction";
 import { useRouter } from "next/router";
 import { channelPartnerManagementActions } from "../../redux/Actions/channelPartnersAction";
+import { membershipManagementActions } from "../../redux/Actions/membershipActions";
+import { employeeManagementAction } from "../../redux/Actions/employeeActions";
 
 export const IndustryCategoryModal = (props) => {
   const dispatch = useDispatch();
@@ -967,6 +969,110 @@ export const ClientManagementModal = (props) => {
             bgColor="#FFFFFF"
             border="1px solid #000000"
             onClick={() => clientCancel()}
+          />
+        </>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+export const MembershipModal = (props) => {
+  const router = useRouter()
+  const dispatch = useDispatch();
+  const membershipDelete = () => {
+    dispatch(membershipManagementActions.deleteMembership(props.action));
+    props.setModalShow(false);
+    if (props?.redirect) router.push(props?.redirect);
+  };
+  const membershipCancel = () => {
+    props.setModalShow(false);
+  };
+  return (
+    <Modal
+      {...props}
+      size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      backdrop="static"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title
+          style={{ color: "#000" }}
+          id="contained-modal-title-vcenter"
+        >
+          Delete  Membership
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body style={{ color: "#000" }}>
+        {
+          "Do you want to delete this membership , this can't be undone, membership  will removed from list."
+        }
+      </Modal.Body>
+      <Modal.Footer>
+        <>
+          <CustomButton
+            name="Delete"
+            color="#FFFFFF"
+            bgColor="#FA6130"
+            onClick={() => membershipDelete()}
+          />
+          <CustomButton
+            name="Cancel"
+            color="#000000"
+            bgColor="#FFFFFF"
+            border="1px solid #000000"
+            onClick={() => membershipCancel()}
+          />
+        </>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+export const EmployeeModal = (props) => {
+  const router = useRouter()
+  const dispatch = useDispatch();
+  const employeeDelete = () => {
+    dispatch(employeeManagementAction.deleteEmployee(props.action));
+    props.setModalShow(false);
+    if (props?.redirect) router.push(props?.redirect);
+  };
+  const employeeCancel = () => {
+    props.setModalShow(false);
+  };
+  return (
+    <Modal
+      {...props}
+      size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      backdrop="static"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title
+          style={{ color: "#000" }}
+          id="contained-modal-title-vcenter"
+        >
+          Delete Employee
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body style={{ color: "#000" }}>
+        {
+          "Do you want to delete this Employee, this can't be undone, Employee will removed from list."
+        }
+      </Modal.Body>
+      <Modal.Footer>
+        <>
+          <CustomButton
+            name="Delete"
+            color="#FFFFFF"
+            bgColor="#FA6130"
+            onClick={() => employeeDelete()}
+          />
+          <CustomButton
+            name="Cancel"
+            color="#000000"
+            bgColor="#FFFFFF"
+            border="1px solid #000000"
+            onClick={() => employeeCancel()}
           />
         </>
       </Modal.Footer>

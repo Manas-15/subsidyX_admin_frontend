@@ -200,3 +200,7 @@
 .radio_check input[type="radio"]:checked {
   background: #fa6130;
 }
+.marker::marker {
+  color: #fa6130 !important;
+  
+}

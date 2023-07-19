@@ -61,7 +61,7 @@ const sideBarItems = [
   },
   {
     name: "Employee Management",
-    href: "/employee_management",
+    href: "/employee/employees",
     icon: "/Employee.png",
   },
   {
@@ -76,6 +76,7 @@ const sideBarItems = [
   },
   {
     name: "Channel Partner Management",
+    href: "/channel_partner_management/channel_partners",
     href: "/channel_partner_management/channel_partners",
     icon: "/Channel Partner.png",
   },
@@ -97,7 +98,7 @@ const sideBarItems = [
   { name: "Generate Form", href: "/generate_management", icon: "/forms.png" },
   {
     name: "Membership",
-    href: "/membership_management",
+    href: "/membership/memberships",
     icon: "/subscription.png",
   },
   { name: "Logout", href: "/login", icon: "/logout.png" },
@@ -118,7 +119,7 @@ const Sidebar = () => {
   useEffect(() => {
     const newPath = path.split("/");
     console.log(newPath);
-    if (newPath[1] === "subsidy" || newPath[1].toLowerCase() === "clients" || newPath[1].toLowerCase() === "trusted_partner_management" || newPath[1].toLowerCase() === "channel_partner_management") {
+    if (newPath[1] === "subsidy" || newPath[1].toLowerCase() === "clients" || newPath[1].toLowerCase() === "trusted_partner_management" || newPath[1].toLowerCase() === "channel_partner_management" || newPath[1].toLowerCase() === "membership" || newPath[1].toLowerCase() === "employee") {
       path = newPath[2];
     }
     const pathName = path
