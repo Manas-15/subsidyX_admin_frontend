@@ -4,6 +4,7 @@ import { CustomButton } from "../../components/Common/CustomButton";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { ChannelPartnerModal } from "../../components/Common/Modal";
+import Link from "next/link";
 
 const ChannelPartner = () => {
     const channelPartnersData = useSelector((state) => state.channelPartners.channelPartners);
@@ -41,7 +42,9 @@ const ChannelPartner = () => {
                     <div><p>Taluka Category</p><p style={{ fontWeight: 400 }}>{channelPartnerD?.talukaCategory}</p></div>
                 </div>
                 <div className={styles.view_client}>
-                    <div><p>Agreement Docs</p><p style={{ fontWeight: 400, textDecoration: 'underline', color: "#fa6130" }}>Docs1.pdf</p></div>
+                    <div >
+                        <p>Agreement Docs</p><Link onClick={(e) => e.target.style.backgroundColor = 'white'} onMouseOver={(e) => e.target.style.backgroundColor = 'white'} href={`${channelPartnerD?.agreementDoc}`} style={{ fontWeight: 400, textDecoration: 'underline', color: "#fa6130" }}>{channelPartnerD?.agreementDoc?.split(".com/")[1]?.slice(32) ?? "NA"}</Link >
+                    </div>
                     <div></div>
                     <div></div>
                     <div></div>

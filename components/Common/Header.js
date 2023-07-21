@@ -9,6 +9,7 @@ const Header = () => {
   return (
     <>
       <div
+        style={{ zIndex: "20", position: 'sticky' ,boxShadow:"1px 3px 3px rgba(0,0,0,0.2)" }}
         className={`d-flex justify-content-between align-items-center ${styles.header}`}
       >
         <div className={styles.header_name_a}>

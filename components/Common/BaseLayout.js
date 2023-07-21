@@ -30,18 +30,18 @@ function BaseLayout({ children }) {
     <>
       {alert?.message && openNotificationWithIcon(alert?.type, alert?.message)}
       {router.pathname === "/" ||
-      router.pathname === "/login" ||
-      router.pathname === "/forgotpassword" ||
-      router.pathname === "/resetpassword" ||
-      router.pathname === "/changepassword" ? (
+        router.pathname === "/login" ||
+        router.pathname === "/forgotpassword" ||
+        router.pathname === "/resetpassword" ||
+        router.pathname === "/changepassword" ? (
         <div className="base_layout">{children}</div>
       ) : (
         <div className="base_layout">
           <Sidebar />
-          <main className="mainBodyWidth ml-auto w-100">
-            <Header />
+          <main style={{ height: "100vh", overflowY: "scroll" }} className="mainBodyWidth ml-auto w-100">
+            <Header  />
 
-            <div>{children}</div>
+            <div style={{ height: "100%", overflowY: "scroll" }}>{children}</div>
           </main>
         </div>
       )}

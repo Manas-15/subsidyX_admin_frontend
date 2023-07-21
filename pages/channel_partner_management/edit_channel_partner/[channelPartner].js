@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "../../../styles/Home.module.css";
 import { Col, Form, Row } from "react-bootstrap";
 import { useFormik } from "formik";
@@ -7,9 +7,40 @@ import { CustomButton } from "../../../components/Common/CustomButton";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { channelPartnerManagementActions } from "../../../redux/Actions/channelPartnersAction";
+import { BiCloudUpload } from "react-icons/bi";
+import { useDropzone } from "react-dropzone";
+import { generateUploadURL } from "../../../config/s3";
+import Link from "next/link";
+import { Edit } from "@rsuite/icons";
+import { MdCancel } from "react-icons/md";
+import LoadingSpinner from "../../../components/Common/LoadingSpinner";
 
 const EditChannelPartner = () => {
-    const fileRef = useRef(null)
+    const [loading, setLoading] = useState(false)
+    const [additionalErrorMessage, setAdditionalErrorMessage] = useState('')
+    const [emptyDocs, setEmptyDocs] = useState({
+        state: false,
+        message: ""
+    })
+    const { acceptedFiles: additionalAcceptedFiles, getRootProps: additionalGetRootProps, getInputProps: additionalGetInputProps } = useDropzone({
+        accept: {
+            "application/pdf": ['.pdf'],
+            "application/msword": ['.doc'],
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ['.docx'],
+        },
+        onDropRejected: () => {
+            setAdditionalErrorMessage('Invalid file type. Please upload .png, .jpg, .jpeg, .pdf, .doc, or .docx files.');
+        },
+        onDropAccepted: () => {
+            setAdditionalErrorMessage('');
+            setIsDocumentAvailable(additionalAcceptedFiles[0])
+        },
+    });
+    const additionalFiles = additionalAcceptedFiles.map(file => (
+        <li key={file.path}>
+            {file.path}
+        </li>
+    ));
     const dispatch = useDispatch();
     const channelPartners = useSelector((state) => state.channelPartners);
     const router = useRouter();
@@ -21,13 +52,49 @@ const EditChannelPartner = () => {
             submit(values);
         },
     });
-    const submit = (values) => {
-        dispatch(channelPartnerManagementActions.updateChannelPartner({ id: +t, editData: values }))
-        router.push("/channel_partner_management/channel_partners")
+    const [isDocumentAvailable, setIsDocumentAvailable] = useState()
+    const [editDoc, setEditDoc] = useState(false)
+    useEffect(() => {
+        setIsDocumentAvailable(additionalAcceptedFiles[0] || channelPartners.channelPartners.find(x => x.id === +t)?.agreementDoc)
+    }, []);
+    const submit = async (values) => {
+        if (!additionalAcceptedFiles[0] && !channelPartners.channelPartners.find(x => x.id === +t)?.agreementDoc) {
+            setEmptyDocs({
+                state: true,
+                message: "Agreement Document is required!!"
+            })
+            setEditDoc(true)
+            return
+        }
+        setLoading(true)
+        if (typeof isDocumentAvailable !== 'string') {
+            const uploadURL = await generateUploadURL({ fileName: additionalAcceptedFiles[0].path })
+            console.log(uploadURL);
+            await fetch(uploadURL, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                },
+                body: additionalAcceptedFiles[0],
+            }).then(res => {
+                const fileURL = uploadURL.split('?')[0]
+                console.log(fileURL);
+                dispatch(channelPartnerManagementActions.updateChannelPartner({ id: +t, editData: { ...values, agreementDoc: fileURL } }))
+            }).catch(err => console.log('An error occurred')).finally(x => { router.push("/channel_partner_management/channel_partners"); setLoading(false) }
+            )
+        }
+        else {
+            dispatch(channelPartnerManagementActions.updateChannelPartner({ id: +t, editData: values }))
+            setLoading(false)
+            router.push("/channel_partner_management/channel_partners")
+        }
+        setLoading(false)
+
     };
     return (
         <Form onSubmit={formik.handleSubmit}>
-            <div style={{ height: "85vh", justifyContent: "space-between" }} className={styles.add}>
+            <LoadingSpinner show={loading} />
+            <div style={{ height: "auto" }} className={styles.add}>
                 <h4>Edit Channel Partner</h4>
 
                 <Row>
@@ -35,7 +102,7 @@ const EditChannelPartner = () => {
                         <Form.Group className="mb-3" controlId="channelPartnerName">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
@@ -56,7 +123,7 @@ const EditChannelPartner = () => {
                         <Form.Group className="mb-3" controlId="email">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
@@ -79,7 +146,7 @@ const EditChannelPartner = () => {
                         <Form.Group className="mb-3" controlId="contact">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
@@ -99,7 +166,7 @@ const EditChannelPartner = () => {
                         <Form.Group className="mb-3" controlId="clients">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
@@ -123,7 +190,7 @@ const EditChannelPartner = () => {
                         <Form.Group className="mb-3" controlId="district">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
@@ -143,7 +210,7 @@ const EditChannelPartner = () => {
                         <Form.Group className="mb-3" controlId="state">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
@@ -167,7 +234,7 @@ const EditChannelPartner = () => {
                         <Form.Group className="mb-3" controlId="taluka">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
@@ -187,7 +254,7 @@ const EditChannelPartner = () => {
                         <Form.Group className="mb-3" controlId="talukaCategory">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
@@ -243,7 +310,7 @@ const EditChannelPartner = () => {
                         <Form.Control
                             disabled={!formik.values.type}
                             style={{
-                                padding: "1rem",
+                                padding: "0.5rem",
                                 border: "2px solid rgba(0,0,0,0.2)",
                                 borderRadius: "10px",
                             }}
@@ -261,19 +328,34 @@ const EditChannelPartner = () => {
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Row>
-                {/* <h5 style={{ fontWeight: 700, color: "#000" }}>Upload Agreement Documents</h5>
-                <Row style={{ height: "15vh" }}>
-                    <Col style={{ height: "100%", width: "100%", padding: "0.8rem" }}>
-                        <div style={{ border: "2px dashed rgba(0,0,0,0.5)", height: "100%", width: "100%", borderRadius: "0.3rem", backgroundColor: "rgba(0,0,0,0.1)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                            <p style={{ color: "black" }}>Drag & drop your files here or <span onClick={() => { fileRef.current.click() }} style={{ textDecoration: "underline", fontWeight: "700", cursor: "pointer" }}>browse</span> <input ref={fileRef} type="file" style={{ display: "none" }}></input> </p>
+                <h5 style={{ fontWeight: 700, color: "#000" }}>Update Agreement Documents</h5>
+                <Row className="mb-2 mt-2"><Col style={{ color: "black" }}><Link onMouseOver={(e) => e.target.style.backgroundColor = 'white'} href={`${channelPartners.channelPartners.find(x => x.id === +t)?.agreementDoc}`} style={{ fontWeight: 400, textDecoration: 'underline', color: "#fa6130" }}>{(additionalAcceptedFiles[0]?.path || channelPartners.channelPartners.find(x => x.id === +t)?.agreementDoc?.split(".com/")[1]?.slice(32)) ?? "NA"}</Link > </Col> <Col className="d-flex justify-content-end"><CustomButton type={'button'} color={'black'} bgColor={'white'} name={!editDoc ? <Edit style={{ fontSize: "1.5rem" }} /> : <MdCancel style={{ fontSize: "1.5rem" }} />} onClick={() => setEditDoc(!editDoc)} /></Col> </Row>
+                {editDoc && <Row >
+                    <Col style={{ width: "100%", padding: "0.8rem" }}>
+                        <div {...additionalGetRootProps({ className: 'dropzone' })} style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", border: '2px dashed rgba(0,0,0,0.6)', borderColor: (emptyDocs?.state === true && (!isDocumentAvailable)) || additionalErrorMessage ? 'red' : 'black', borderRadius: "10px", backgroundColor: "rgba(0,0,0,0.1)", height: "10rem" }}>
+                            <input  {...additionalGetInputProps()} />
+                            {additionalFiles[0]?.key ? (
+                                <div className="d-flex text-black">
+                                    <p style={{ fontWeight: "bold", marginRight: "5px" }}>Files:</p>
+                                    <ul>{additionalFiles}</ul>
+                                </div>
+                            ) : (
+                                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", color: "black" }}>
+                                    <BiCloudUpload fontSize={"3.5rem"} color="rgba(0,0,0,0.7)" />
+                                    <p style={{ fontSize: "24px", fontWeight: "bold" }}>Drop files here or click to upload.</p>
+                                    <span style={{ fontSize: "12px", marginTop: "-15px", fontStyle: "italic" }}>(Only *.pdf, *.doc, *.docx files will be accepted)</span>
+                                    {additionalErrorMessage && <p style={{ color: 'red' }}>{additionalErrorMessage}</p>}
+                                </div>)}
                         </div>
+                        <div style={{ color: 'red' }}  >{emptyDocs?.state === true && (!isDocumentAvailable) && emptyDocs?.message}</div>
+
                     </Col>
 
-                </Row> */}
+                </Row>}
 
 
 
-                <div className="d-flex justify-content-start">
+                <div className="d-flex justify-content-start mt-2">
                     <CustomButton
                         height={"3rem"}
                         width={"8rem"}

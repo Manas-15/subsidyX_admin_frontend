@@ -25,7 +25,7 @@ function MyApp({ Component, pageProps }) {
       <>
         <Provider store={store}>
           <BaseLayout>
-            <Component {...pageProps} />
+            <Component  {...pageProps} />
             <ToastContainer theme="colored" />
           </BaseLayout>
         </Provider>

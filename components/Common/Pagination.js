@@ -14,7 +14,7 @@ const Pagination = ({ pageSize, setPageSize, page, setPage, totalItems, pageSize
     }, [pageSize, totalItems])
     console.log(totalItems / pageSize);
     return (
-        <div className={styles.pagination_box}>
+        <div style={{ marginTop: "1rem" }} className={styles.pagination_box}>
             <div><PaginationDropdown pageSizeOptions={pageSizeOptions} pageSize={pageSize} setPageSize={setPageSize} /></div>
             <div>
                 <CustomButton
