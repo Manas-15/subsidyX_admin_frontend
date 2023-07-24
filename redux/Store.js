@@ -9,7 +9,7 @@ const persistedState = loadFromLocalStorage();
 export const store = configureStore({
   reducer: rootReducer,
   preloadedState: persistedState,
-  middleware: [thunkMiddleware],
+  middleware: [thunkMiddleware, loggerMiddleware],
 });
 
 function saveToLocalStorage(state) {

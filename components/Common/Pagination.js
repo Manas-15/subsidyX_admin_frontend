@@ -11,8 +11,9 @@ const Pagination = ({ pageSize, setPageSize, page, setPage, totalItems, pageSize
         } else {
             setTotal(parseInt(totalItems / pageSize))
         }
+        setPage(1)
     }, [pageSize, totalItems])
-    console.log(totalItems / pageSize);
+    
     return (
         <div style={{ marginTop: "1rem" }} className={styles.pagination_box}>
             <div><PaginationDropdown pageSizeOptions={pageSizeOptions} pageSize={pageSize} setPageSize={setPageSize} /></div>

@@ -41,7 +41,7 @@ const AddEmployee = () => {
                         <Form.Group className="mb-3" controlId="name">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
@@ -62,7 +62,7 @@ const AddEmployee = () => {
                             <Form.Control
                                 autoComplete="off"
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
@@ -84,7 +84,7 @@ const AddEmployee = () => {
                         <Form.Group className="mb-3" controlId="contact">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
@@ -107,7 +107,7 @@ const AddEmployee = () => {
                                 <Form.Control
                                     autoComplete="off"
                                     style={{
-                                        padding: "1rem",
+                                        padding: "0.5rem",
                                         border: "2px solid rgba(0,0,0,0.2)",
                                         borderRadius: "10px",
                                         borderTopRightRadius: "0px",
@@ -141,7 +141,7 @@ const AddEmployee = () => {
                         <Form.Group className="mb-3" controlId="role">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}

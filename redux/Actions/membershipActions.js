@@ -1,56 +1,134 @@
 import { membershipConstants } from "../Constants/membershipConstants";
-
+import { membershipService } from "../Services/membershipManagementService";
+import { alertActions } from "./alertAction";
 export const membershipManagementActions = {
     getMemberships,
     createMembership,
     updateMembership,
     deleteMembership,
+    getSingleMembership
 };
 function getMemberships() {
     return (dispatch) => {
-        dispatch(success());
-
+        dispatch(request());
+        membershipService.getMemberships().then(
+            (res) => {
+                dispatch(success(res));
+            },
+            (error) => {
+                dispatch(failure(error.toString()));
+                dispatch(alertActions.error(error.toString()));
+            }
+        );
     };
-
-    function success(data) {
-        return { type: membershipConstants.GET_MEMBERSHIP_SUCCESS };
+    function request() {
+        return { type: membershipConstants.GET_MEMBERSHIP_REQUEST };
     }
-
+    function success(data) {
+        return { type: membershipConstants.GET_MEMBERSHIP_SUCCESS, data };
+    }
+    function failure(error) {
+        return { type: membershipConstants.GET_MEMBERSHIP_FAILURE, error };
+    }
 }
 
-function createMembership(body) {
-    console.log(body);
+function createMembership(iData) {
     return (dispatch) => {
-        dispatch(create({ body }));
-
+        dispatch(request({ iData }));
+        membershipService.createMembership(iData).then(
+            (res) => {
+                dispatch(success(res));
+                dispatch(alertActions.success("Membership Created"));
+            },
+            (error) => {
+                dispatch(failure(error.toString()));
+                dispatch(alertActions.error(error.toString()));
+            }
+        );
     };
-
-    function create(data) {
+    function request() {
+        return { type: membershipConstants.CREATE_MEMBERSHIP_REQUEST };
+    }
+    function success(data) {
         return { type: membershipConstants.CREATE_MEMBERSHIP_SUCCESS, data };
     }
+    function failure(error) {
+        return { type: membershipConstants.CREATE_MEMBERSHIP_FAILURE, error };
+    }
 
 }
 
-function updateMembership({ id, editData }) {
+function updateMembership({ id, data }) {
     return (dispatch) => {
-        dispatch(update({ id, editData }));
-
+        dispatch(request({ id, data }));
+        membershipService.updateMembership({ id, data }).then(
+            (res) => {
+                dispatch(success(res));
+                dispatch(alertActions.success("Membership Updated"));
+            },
+            (error) => {
+                dispatch(failure(error.toString()));
+                dispatch(alertActions.error(error.toString()));
+            }
+        );
     };
-
-    function update(data) {
+    function request() {
+        return { type: membershipConstants.UPDATE_MEMBERSHIP_REQUEST };
+    }
+    function success(data) {
         return { type: membershipConstants.UPDATE_MEMBERSHIP_SUCCESS, data };
+    }
+    function failure(error) {
+        return { type: membershipConstants.UPDATE_MEMBERSHIP_FAILURE, error };
     }
 
 }
 
 function deleteMembership(id) {
     return (dispatch) => {
-        dispatch(remove({ id }));
-
+        dispatch(request({ id }));
+        membershipService.deleteMembership(id).then(
+            (res) => {
+                dispatch(success(res));
+                dispatch(alertActions.success("Membership Deleted"));
+            },
+            (error) => {
+                dispatch(failure(error.toString()));
+                dispatch(alertActions.error(error.toString()));
+            }
+        );
     };
-
-    function remove(data) {
+    function request() {
+        return { type: membershipConstants.DELETE_MEMBERSHIP_REQUEST };
+    }
+    function success(data) {
         return { type: membershipConstants.DELETE_MEMBERSHIP_SUCCESS, data };
     }
+    function failure(error) {
+        return { type: membershipConstants.DELETE_MEMBERSHIP_FAILURE, error };
+    }
 
+}
+function getSingleMembership(id) {
+    return (dispatch) => {
+        dispatch(request());
+        membershipService.getSingleMembership(id).then(
+            (res) => {
+                dispatch(success(res));
+            },
+            (error) => {
+                dispatch(failure(error.toString()));
+                dispatch(alertActions.error(error.toString()));
+            }
+        );
+    };
+    function request() {
+        return { type: membershipConstants.GET_SINGLE_MEMBERSHIP_REQUEST };
+    }
+    function success(data) {
+        return { type: membershipConstants.GET_SINGLE_MEMBERSHIP_SUCCESS, data };
+    }
+    function failure(error) {
+        return { type: membershipConstants.GET_SINGLE_MEMBERSHIP_FAILURE, error };
+    }
 }

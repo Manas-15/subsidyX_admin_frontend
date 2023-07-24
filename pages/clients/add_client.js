@@ -34,7 +34,7 @@ const AddClient = () => {
             <Form.Group className="mb-3" controlId="name">
               <Form.Control
                 style={{
-                  padding: "1rem",
+                  padding: "0.5rem",
                   border: "2px solid rgba(0,0,0,0.2)",
                   borderRadius: "10px",
                 }}
@@ -54,7 +54,7 @@ const AddClient = () => {
             <Form.Group className="mb-3" controlId="email">
               <Form.Control
                 style={{
-                  padding: "1rem",
+                  padding: "0.5rem",
                   border: "2px solid rgba(0,0,0,0.2)",
                   borderRadius: "10px",
                 }}
@@ -76,7 +76,7 @@ const AddClient = () => {
             <Form.Group className="mb-3" controlId="number">
               <Form.Control
                 style={{
-                  padding: "1rem",
+                  padding: "0.5rem",
                   border: "2px solid rgba(0,0,0,0.2)",
                   borderRadius: "10px",
                 }}
@@ -96,7 +96,7 @@ const AddClient = () => {
             <Form.Group className="mb-3" controlId="associated">
               <Form.Control
                 style={{
-                  padding: "1rem",
+                  padding: "0.5rem",
                   border: "2px solid rgba(0,0,0,0.2)",
                   borderRadius: "10px",
                 }}

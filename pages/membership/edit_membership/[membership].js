@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Formik, Field, FieldArray, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import styles from '../../../styles/Home.module.css'
@@ -15,15 +15,23 @@ const EditMembership = () => {
     const memberships = useSelector(state => state.memberships)
     const router = useRouter()
     const m = router.query.membership
+    useEffect(() => {
+        const fetch = async () => {
+            const c = await router.query.membership;
+            dispatch(membershipManagementActions.getSingleMembership(+c))
+        }
+        fetch()
+    }, [router.query]);
     const dispatch = useDispatch()
     const onSubmit = (values) => {
-        dispatch(membershipManagementActions.updateMembership({ id: +m, editData: values }))
+        const { descriptions, ...remainingKeys } = values
+        dispatch(membershipManagementActions.updateMembership({ id: +m, data: { ...remainingKeys, description: descriptions?.join(";::;") } }))
         router.push("/membership/memberships")
 
     }
     return (
         <Formik
-            initialValues={memberships.memberships.find(x => +m == +x.id)}
+            initialValues={{ pricing: memberships?.memberships?.find(x => x.id === +m)?.pricing, membership_name: memberships?.memberships?.find(x => x.id === +m)?.membership_name, descriptions: memberships?.memberships?.find(x => x.id === +m)?.description.split(";::;") }}
             validationSchema={membershipSchema}
             onSubmit={onSubmit}
         >
@@ -33,46 +41,46 @@ const EditMembership = () => {
                         <h4>Edit Membership #{m}</h4>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', height: "75%" }}>
                             <Row>
-                                <Form.Group className="mb-3" controlId="membershipName">
+                                <Form.Group className="mb-3" controlId="membership_name">
                                     <Form.Control
                                         size='sm'
                                         style={{
-                                            padding: "1rem",
+                                            padding: "0.5rem",
                                             border: "2px solid rgba(0,0,0,0.2)",
                                             borderRadius: "10px",
                                         }}
                                         placeholder="Membership Name"
                                         type="text"
-                                        name="membershipName"
-                                        value={values.membershipName}
+                                        name="membership_name"
+                                        value={values.membership_name}
                                         onChange={handleChange}
-                                        isInvalid={touched.membershipName && errors.membershipName}
+                                        isInvalid={touched.membership_name && errors.membership_name}
                                         onBlur={handleBlur}
                                     />
                                     <Form.Control.Feedback type="invalid">
-                                        {errors.membershipName}
+                                        {errors.membership_name}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
                             <Row>
-                                <Form.Group className="mb-3" controlId="price">
+                                <Form.Group className="mb-3" controlId="pricing">
                                     <Form.Control
                                         size='sm'
                                         style={{
-                                            padding: "1rem",
+                                            padding: "0.5rem",
                                             border: "2px solid rgba(0,0,0,0.2)",
                                             borderRadius: "10px",
                                         }}
                                         placeholder="Price (in INR)"
                                         type="number"
-                                        name="price"
-                                        value={values.price}
+                                        name="pricing"
+                                        value={values.pricing}
                                         onChange={handleChange}
-                                        isInvalid={touched.price && errors.price}
+                                        isInvalid={touched.pricing && errors.pricing}
                                         onBlur={handleBlur}
                                     />
                                     <Form.Control.Feedback type="invalid">
-                                        {errors.price}
+                                        {errors.pricing}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
@@ -81,12 +89,12 @@ const EditMembership = () => {
                             <FieldArray name="descriptions">
                                 {({ push, remove }) => (
                                     <div style={{ display: 'flex', flexDirection: 'column-reverse', justifyContent: 'space-between', maxHeight: "40vh", overflowY: "scroll", }}>
-                                        {values.descriptions.map((_, index) => (
+                                        {values?.descriptions?.map((_, index) => (
                                             <Form.Group style={{ display: 'flex', flexDirection: 'column', width: "100%", justifyContent: "space-between", marginTop: '0.5rem' }} key={index}>
                                                 <div style={{ justifyContent: "space-between", alignItems: "center", width: "100%" }} className='d-flex justify-content-between'>
                                                     <Form.Control
                                                         style={{
-                                                            padding: "1rem",
+                                                            padding: "0.5rem",
                                                             // border: "2px solid rgba(0,0,0,0.2)",
                                                             borderRadius: "10px",
 

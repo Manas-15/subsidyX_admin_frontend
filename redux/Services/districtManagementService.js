@@ -9,8 +9,8 @@ export const districtManagementService = {
 };
 
 async function getDistricts(ID) {
-  let params = ID ? "?state_id=" + ID : "";
-  return await api.get(`district/${params}`, {
+  let params = ID ? "&state_id=" + +ID : "";
+  return await api.get(`district/?page=1&page_size=10000${params}`, {
     headers: authHeader(),
   });
 }

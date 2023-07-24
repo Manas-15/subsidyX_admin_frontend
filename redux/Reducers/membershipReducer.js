@@ -1,39 +1,65 @@
 import { membershipData } from "../../static/membershipData";
 import { membershipConstants } from "../Constants/membershipConstants";
 
-export function memberships(state = { isSuccess: false, memberships: membershipData }, action) {
+export function memberships(state = { isSuccess: false, memberships: [], currentMembership: {}, isUpdated: false, isDeleted: false, isCreated: false }, action) {
+    console.log(action);
     switch (action.type) {
+        case membershipConstants.GET_MEMBERSHIP_REQUEST:
+            return {
+                isSuccess: false,
+            };
         case membershipConstants.GET_MEMBERSHIP_SUCCESS:
             return {
-                ...state,
                 isSuccess: true,
-                memberships: state.memberships,
+                memberships: action?.data.data,
             };
+        case membershipConstants.GET_MEMBERSHIP_FAILURE:
+            return { isSuccess: false };
 
-        case membershipConstants.CREATE_MEMBERSHIP_SUCCESS:
-            console.log(action.data.body);
+        case membershipConstants.GET_SINGLE_MEMBERSHIP_REQUEST:
             return {
-                ...state,
+                isSuccess: false,
+            };
+        case membershipConstants.GET_SINGLE_MEMBERSHIP_SUCCESS:
+            return {
                 isSuccess: true,
-                memberships: [...state.memberships, action.data.body],
+                currentMembership: action?.data?.data,
+            };
+        case membershipConstants.GET_SINGLE_MEMBERSHIP_FAILURE:
+            return { isSuccess: false };
+
+        case membershipConstants.CREATE_MEMBERSHIP_REQUEST:
+            return {
+                isCreated: false,
+            };
+        case membershipConstants.CREATE_MEMBERSHIP_SUCCESS:
+            return {
+                isCreated: true,
+            };
+        case membershipConstants.CREATE_MEMBERSHIP_FAILURE:
+            return { isCreated: false };
+
+        case membershipConstants.UPDATE_MEMBERSHIP_REQUEST:
+            return {
+                isUpdated: false,
             };
         case membershipConstants.UPDATE_MEMBERSHIP_SUCCESS:
             return {
-                ...state,
-                isSuccess: true,
-                memberships: state.memberships.map((c) => {
-                    if (+c.id === +action.data.id) {
-                        return action.data.editData;
-                    }
-                    return c;
-                }),
+                isUpdated: true,
+            };
+        case membershipConstants.UPDATE_MEMBERSHIP_FAILURE:
+            return { isUpdated: false };
+
+        case membershipConstants.DELETE_MEMBERSHIP_REQUEST:
+            return {
+                isDeleted: false,
             };
         case membershipConstants.DELETE_MEMBERSHIP_SUCCESS:
             return {
-                ...state,
-                isSuccess: true,
-                memberships: state.memberships.filter((c) => c.id !== action.data.id),
+                isDeleted: true,
             };
+        case membershipConstants.DELETE_MEMBERSHIP_FAILURE:
+            return { isDeleted: false };
 
         default:
             return state;

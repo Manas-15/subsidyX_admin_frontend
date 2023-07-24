@@ -2,20 +2,25 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/Home.module.css";
 import { CustomButton } from "../../components/Common/CustomButton";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { TrustedPartnerModal } from "../../components/Common/Modal";
+import { trustedPartnerManagementActions } from "../../redux/Actions/trustedPartnersAction";
 
 const TrustedPartner = () => {
-    const trustedPartnersData = useSelector((state) => state.trustedPartners.trustedPartners);
+    const dispatch = useDispatch()
+    const trustedPartnerD = useSelector((state) => state.trustedPartners.singleTrustedPartner);
     const [modalShow, setModalShow] = useState(false);
     const router = useRouter();
     const t = router.query.trustedPartner;
-    const [trustedPartnerD, setTrustedPartnerD] = useState({});
     useEffect(() => {
-        setTrustedPartnerD(trustedPartnersData.find((x) => x.id === +t));
-    }, []);
+        const fetch = async () => {
+            const t = router.query.trustedPartner;
+            dispatch(trustedPartnerManagementActions.getSingleTrustedPartner(+t))
+        }
+        fetch()
+    }, [router.query.trustedPartner]);
     return (
-        <div style={{ height: "60vh" }} className={styles.add}>
+        <div style={{ height: "auto" }} className={styles.add}>
             {modalShow && (
                 <TrustedPartnerModal
                     redirect={"/trusted_partner_management/trusted_partners"}
@@ -27,27 +32,22 @@ const TrustedPartner = () => {
                 />
             )}
             <h4>Trusted Partners Details #{t}</h4>
-            <div style={{ height: "30vh", justifyContent: 'space-around' }} className={styles.view_client_body}>
+            <div style={{ height: "auto", justifyContent: 'space-around' }} className={styles.view_client_body}>
                 <div className={styles.view_client}>
-                    <div><p>Trusted Partner Name</p><p style={{ fontWeight: 400 }}>{trustedPartnerD?.trustedPartnerName}</p></div>
+                    <div><p> Name</p><p style={{ fontWeight: 400 }}>{trustedPartnerD?.first_name + " " + trustedPartnerD?.last_name}</p></div>
                     <div><p>Email</p><p style={{ fontWeight: 400 }}>{trustedPartnerD?.email}</p></div>
                     <div><p>Contact Details</p><p style={{ fontWeight: 400 }}>{trustedPartnerD?.contact}</p></div>
-                    <div><p>Clients</p><p style={{ fontWeight: 400 }}>{trustedPartnerD?.clients}</p></div>
+                    <div><p>Address</p><p style={{ fontWeight: 400 }}>{trustedPartnerD?.address}</p></div>
                 </div>
                 <div className={styles.view_client}>
                     <div><p>District</p><p style={{ fontWeight: 400 }}>{trustedPartnerD?.district}</p></div>
                     <div><p>State</p><p style={{ fontWeight: 400 }}>{trustedPartnerD?.state}</p></div>
                     <div><p>Taluka</p><p style={{ fontWeight: 400 }}>{trustedPartnerD?.taluka}</p></div>
-                    <div><p>Taluka Category</p><p style={{ fontWeight: 400 }}>{trustedPartnerD?.talukaCategory}</p></div>
-                </div>
-                <div className={styles.view_client}>
                     <div><p>Agreement Docs</p><p style={{ fontWeight: 400, textDecoration: 'underline', color: "#fa6130" }}>Docs1.pdf</p></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
                 </div>
+           
             </div>
-            <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end mt-5">
                 <CustomButton
                     height={"3rem"}
                     width={"8rem"}

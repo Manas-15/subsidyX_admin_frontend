@@ -22,6 +22,7 @@ import Pagination from "../../components/Common/Pagination";
 import { FaRupeeSign } from "react-icons/fa";
 
 const Memberships = () => {
+    const memberships = useSelector((state) => state.memberships);
     const dispatch = useDispatch();
     const router = useRouter();
     const [modalShow, setModalShow] = useState(false);
@@ -29,7 +30,6 @@ const Memberships = () => {
     const [action, setAction] = useState(0);
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(5)
-    const memberships = useSelector((state) => state.memberships);
     const addNewMembership = () => {
         router.push("add_membership");
     };
@@ -54,7 +54,7 @@ const Memberships = () => {
 
     useEffect(() => {
         dispatch(membershipManagementActions.getMemberships());
-    }, []);
+    }, [memberships.isUpdated, memberships.isDeleted, memberships.isSucess, memberships.isCreated]);
 
     return (
         <div className={styles.container}>
@@ -109,9 +109,7 @@ const Memberships = () => {
                                 <th className="p-4" scope="col">
                                     Price
                                 </th>
-                                <th className="p-4" scope="col">
-                                    Created Date{" "}
-                                </th>
+
                                 <th className="p-4" scope="col">
                                     Created By
                                 </th>
@@ -126,10 +124,9 @@ const Memberships = () => {
                                 return (
                                     <tr className="text-center" key={index}>
 
-                                        <td>{data?.membershipName}</td>
-                                        <td><FaRupeeSign />{data?.price}</td>
-                                        <td>{data?.createdDate}</td>
-                                        <td>{data?.createdBy}</td>
+                                        <td>{data?.membership_name}</td>
+                                        <td><FaRupeeSign />{data?.pricing}</td>
+                                        <td>{data?.created_by}</td>
                                         <td>
                                             <ul className="d-flex justify-content-center">
                                                 {actions?.map(({ icon: Icon }, idx) => {

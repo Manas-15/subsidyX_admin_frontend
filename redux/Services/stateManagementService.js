@@ -8,8 +8,9 @@ export const stateManagementService = {
   deleteState,
 };
 
-async function getStates() {
-  return await api.get(`state/`, {
+async function getStates(data) {
+  let pagination = data?.pagination ? `?page=${data?.pagination?.page}&page_size=${data?.pagination?.page_size}` : "?page=1&page_size=100"
+  return await api.get(`state/${pagination}`, {
     headers: authHeader(),
   });
 }

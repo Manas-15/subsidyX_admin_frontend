@@ -10,9 +10,10 @@ export function state(
         isSuccess: false,
       };
     case stateManagementConstants.GET_STATE_SUCCESS:
+      console.log(action?.data?.data);
       return {
         isSuccess: true,
-        stateManagementData: action?.data?.data,
+        stateManagementData: action?.data?.data?.states,
       };
     case stateManagementConstants.GET_STATE_FAILURE:
       return { isSuccess: false };

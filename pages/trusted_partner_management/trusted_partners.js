@@ -26,8 +26,10 @@ const TrustedPartners = () => {
     const [type, setType] = useState("");
     const [action, setAction] = useState(0);
     const [page, setPage] = useState(1)
-    const [pageSize, setPageSize] = useState(5)
+    const [pageSize, setPageSize] = useState(20)
     const trustedPartners = useSelector((state) => state.trustedPartners);
+    const { isUpdated, isSuccess, isCreated, isDeleted } = trustedPartners
+
     const addNewTrustedPartner = () => {
         router.push("add_trusted_partner");
     };
@@ -51,8 +53,8 @@ const TrustedPartners = () => {
     ];
 
     useEffect(() => {
-        dispatch(trustedPartnerManagementActions.getTrustedPartners());
-    }, []);
+        dispatch(trustedPartnerManagementActions.getTrustedPartners({ pagination: { page, pageSize } }));
+    }, [isDeleted, isUpdated, isCreated, page, pageSize]);
 
     return (
         <div className={styles.container}>
@@ -111,10 +113,10 @@ const TrustedPartners = () => {
                                     Contact Details{" "}
                                 </th>
                                 <th className="p-4" scope="col">
-                                    Employee
+                                    Address
                                 </th>
                                 <th className="p-4" scope="col">
-                                    Clients
+                                    Client ID
                                 </th>
                                 <th className="p-4" scope="col">
                                     Reports
@@ -125,16 +127,16 @@ const TrustedPartners = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {trustedPartners.trustedPartners?.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize).map((data, index) => {
+                            {trustedPartners.trustedPartners?.trusted_partners?.map((data, index) => {
                                 return (
                                     <tr className="text-center" key={index}>
 
-                                        <td>{data?.trustedPartnerName}</td>
+                                        <td>{data?.first_name + "  " + data?.last_name}</td>
                                         <td>{data?.email}</td>
                                         <td>{data?.contact}</td>
-                                        <td>{data?.id}</td>
-                                        <td>{data?.clients}</td>
-                                        <td>{parseInt(data?.id / data?.clients)}</td>
+                                        <td>{data?.address}</td>
+                                        <td>{data?.client_id}</td>
+                                        <td>{data?.report_count}</td>
                                         <td>
                                             <ul className="d-flex justify-content-center">
                                                 {actions?.map(({ icon: Icon }, idx) => {
@@ -160,7 +162,7 @@ const TrustedPartners = () => {
                     </table>
                 </div>
             </div>
-            <Pagination pageSizeOptions={[5, 10, 20, 50]} pageSize={pageSize} setPageSize={setPageSize} page={page} setPage={setPage} totalItems={trustedPartners?.trustedPartners?.length} />
+            <Pagination pageSizeOptions={[5, 10, 20, 50]} pageSize={pageSize} setPageSize={setPageSize} page={page} setPage={setPage} totalItems={trustedPartners?.trustedPartners?.total} />
 
         </div>
     );

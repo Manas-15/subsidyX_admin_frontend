@@ -12,21 +12,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { membershipManagementActions } from '../../redux/Actions/membershipActions';
 import { useRef } from 'react';
 const AddMembership = () => {
-    const memberships = useSelector(state => state.memberships)
     const router = useRouter()
 
     const dispatch = useDispatch()
     const onSubmit = (values) => {
-        const id = memberships?.memberships[memberships?.memberships?.length - 1]?.id + 1 || 1;
-        const createdDate = '2023-07-18'
-        const createdBy = 'Pallav'
-        dispatch(membershipManagementActions.createMembership({ ...values, id, createdBy, createdDate }));
+        const { descriptions, ...remainingKeys } = values
+        dispatch(membershipManagementActions.createMembership({ ...remainingKeys, description: descriptions.join(";::;") }));
         router.push("memberships");
 
     }
     return (
         <Formik
-            initialValues={{ membershipName: '', price: Number, descriptions: [""] }}
+            initialValues={{ membership_name: '', pricing: '', descriptions: [""] }}
             validationSchema={membershipSchema}
             onSubmit={onSubmit}
         >
@@ -36,46 +33,46 @@ const AddMembership = () => {
                         <h4>Add New Membership</h4>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', height: "75%" }}>
                             <Row>
-                                <Form.Group className="mb-3" controlId="membershipName">
+                                <Form.Group className="mb-3" controlId="membership_name">
                                     <Form.Control
                                         size='sm'
                                         style={{
-                                            padding: "1rem",
+                                            padding: "0.5rem",
                                             border: "2px solid rgba(0,0,0,0.2)",
                                             borderRadius: "10px",
                                         }}
                                         placeholder="Membership Name"
                                         type="text"
-                                        name="membershipName"
-                                        value={values.membershipName}
+                                        name="membership_name"
+                                        value={values.membership_name}
                                         onChange={handleChange}
-                                        isInvalid={touched.membershipName && errors.membershipName}
+                                        isInvalid={touched.membership_name && errors.membership_name}
                                         onBlur={handleBlur}
                                     />
                                     <Form.Control.Feedback type="invalid">
-                                        {errors.membershipName}
+                                        {errors.membership_name}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
                             <Row>
-                                <Form.Group className="mb-3" controlId="price">
+                                <Form.Group className="mb-3" controlId="pricing">
                                     <Form.Control
                                         size='sm'
                                         style={{
-                                            padding: "1rem",
+                                            padding: "0.5rem",
                                             border: "2px solid rgba(0,0,0,0.2)",
                                             borderRadius: "10px",
                                         }}
                                         placeholder="Price (in INR)"
                                         type="number"
-                                        name="price"
-                                        value={values.price}
+                                        name="pricing"
+                                        value={values.pricing}
                                         onChange={handleChange}
-                                        isInvalid={touched.price && errors.price}
+                                        isInvalid={touched.pricing && errors.pricing}
                                         onBlur={handleBlur}
                                     />
                                     <Form.Control.Feedback type="invalid">
-                                        {errors.price}
+                                        {errors.pricing}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
@@ -89,7 +86,7 @@ const AddMembership = () => {
                                                 <div style={{ justifyContent: "space-between", alignItems: "center", width: "100%" }} className='d-flex justify-content-between'>
                                                     <Form.Control
                                                         style={{
-                                                            padding: "1rem",
+                                                            padding: "0.5rem",
                                                             // border: "2px solid rgba(0,0,0,0.2)",
                                                             borderRadius: "10px",
 

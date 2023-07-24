@@ -45,14 +45,14 @@ export const clientSchema = Yup.object().shape({
   associated: Yup.string().required('Associated With is required'),
 })
 export const TrustedPartnerSchema = Yup.object().shape({
-  trustedPartnerName: Yup.string().required("Trusted Partner Name is required!"),
+  first_name: Yup.string().required("First Name is required!"),
   email: Yup.string().required("Email is required!").email("Invalid Email Address"),
-  contact: Yup.string().required("Contact number is required!").matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, "Invalid Contact number!"),
-  district: Yup.string().required("District is required!"),
-  state: Yup.string().required("State is required!"),
-  taluka: Yup.string().required("Taluka is required!"),
-  talukaCategory: Yup.number("Taluka Category must be a number").required("Taluka Category is required!").positive("Taluka Category must be positive!").typeError('Taluka Category must be a number'),
-  clients: Yup.number("Clients must be a number").required("Clients is required!").positive("Clients must be positive!").typeError('Clients must be a number'),
+  phone_number: Yup.string().required("Contact number is required!").matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, "Invalid Contact number!"),
+  district_id: Yup.number().required("District is required!"),
+  state_id: Yup.number().required("State is required!"),
+  taluka_id: Yup.number(),
+  address: Yup.string().required("Address is required"),
+  last_name: Yup.string().required("Last Name is required!"),
 })
 
 export const channelPartnerSchema = Yup.object().shape({
@@ -77,8 +77,8 @@ export const channelPartnerSchema = Yup.object().shape({
 
 export const membershipSchema = Yup.object().shape({
   descriptions: Yup.array().of(Yup.string().required('Fill the description!')).required('Description is required!'),
-  membershipName: Yup.string().required("Membership Name is required!"),
-  price: Yup.number().typeError('Price is required and must be a number').required('Price is required!').positive('Price must be more than 0')
+  membership_name: Yup.string().required("Membership Name is required!"),
+  pricing: Yup.number().typeError('Pricing is required and must be a number').required('Price is required!').positive('Price must be more than 0')
 })
 export const employeeSchema = Yup.object().shape({
   name: Yup.string().required('Name is required!'),

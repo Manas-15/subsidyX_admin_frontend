@@ -7,49 +7,105 @@ import { CustomButton } from "../../components/Common/CustomButton";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { trustedPartnerManagementActions } from "../../redux/Actions/trustedPartnersAction";
+import { useEffect } from "react";
+import { stateManagementAction } from "../../redux/Actions/stateManagementAction";
+import { districtManagementAction } from "../../redux/Actions/districtManagementAction";
+import { talukaManagementAction } from "../../redux/Actions/talukaManagementAction";
 
 const AddTrustedPartner = () => {
     const fileRef = useRef(null)
     const dispatch = useDispatch();
-    const trustedPartners = useSelector((state) => state.trustedPartners);
+    const state = useSelector(state => state.state)
+    const district = useSelector(state => state.district)
+    const taluka = useSelector(state => state.taluka)
+
+    useEffect(() => {
+        const fetchOptions = async () => {
+            await dispatch(stateManagementAction.getStates())
+        }
+        fetchOptions()
+    }, [])
     const router = useRouter();
     const formik = useFormik({
-        initialValues: { trustedPartnerName: "", email: "", contact: "", clients: Number, district: "", state: "", taluka: "", talukaCategory: Number },
+        initialValues: { first_name: "", email: "", phone_number: "", district_id: '', state_id: '', taluka_id: '', address: "", last_name: "" },
         validationSchema: TrustedPartnerSchema,
         onSubmit: (values) => {
+
             submit(values);
         },
     });
     const submit = (values) => {
-        console.log(values);
-        const id = trustedPartners?.trustedPartners[trustedPartners?.trustedPartners?.length - 1]?.id + 1 || 1;
-        dispatch(trustedPartnerManagementActions.createTrustedPartner({ ...values, id }));
+        dispatch(trustedPartnerManagementActions.createTrustedPartner({ ...values }));
         router.push("trusted_partners");
     };
     return (
         <Form onSubmit={formik.handleSubmit}>
-            <div style={{ height: "85vh", justifyContent: "space-between" }} className={styles.add}>
+            <div style={{ height: "auto", justifyContent: "space-between" }} className={styles.add}>
                 <h4>Add New Trusted Partner</h4>
 
                 <Row>
                     <Col>
-                        <Form.Group className="mb-3" controlId="trustedPartnerName">
+                        <Form.Group className="mb-3" controlId="first_name">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
-                                placeholder="Trusted Partner Name"
+                                placeholder="First Name"
                                 type="text"
-                                name="trustedPartnerName"
-                                value={formik.values.trustedPartnerName}
+                                name="first_name"
+                                value={formik.values.first_name}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                isInvalid={formik.touched.trustedPartnerName && formik.errors.trustedPartnerName}
+                                isInvalid={formik.touched.first_name && formik.errors.first_name}
                             />
                             <Form.Control.Feedback type="invalid">
-                                {formik.errors.trustedPartnerName}
+                                {formik.errors.first_name}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+                    <Col>
+                        <Form.Group className="mb-3" controlId="last_name">
+                            <Form.Control
+                                style={{
+                                    padding: "0.5rem",
+                                    border: "2px solid rgba(0,0,0,0.2)",
+                                    borderRadius: "10px",
+                                }}
+                                placeholder="Last Name"
+                                type="text"
+                                name="last_name"
+                                value={formik.values.last_name}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                isInvalid={formik.touched.last_name && formik.errors.last_name}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {formik.errors.last_name}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3" controlId="phone_number">
+                            <Form.Control
+                                style={{
+                                    padding: "0.5rem",
+                                    border: "2px solid rgba(0,0,0,0.2)",
+                                    borderRadius: "10px",
+                                }}
+                                placeholder="Trusted Partner Contact Number"
+                                type="tel"
+                                name="phone_number"
+                                value={formik.values.phone_number}
+                                onChange={formik.handleChange}
+                                isInvalid={formik.touched.phone_number && formik.errors.phone_number}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {formik.errors.phone_number}
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
@@ -57,7 +113,7 @@ const AddTrustedPartner = () => {
                         <Form.Group className="mb-3" controlId="email">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
@@ -76,140 +132,114 @@ const AddTrustedPartner = () => {
                     </Col>
                 </Row>
                 <Row>
+
                     <Col>
-                        <Form.Group className="mb-3" controlId="contact">
+                        <Form.Group className="mb-3" controlId="state_id">
                             <Form.Control
+                                custom
+                                as={'select'}
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
-                                placeholder="Trusted Partner Contact Number"
-                                type="tel"
-                                name="contact"
-                                value={formik.values.contact}
-                                onChange={formik.handleChange}
-                                isInvalid={formik.touched.contact && formik.errors.contact}
-                            />
+                                name="state_id"
+                                value={formik.values.state_id}
+                                onChange={async (e) => { formik.handleChange(e); dispatch(districtManagementAction.getDistricts(e.target.value)); formik.values.district_id = ''; formik.values.taluka_id = "" }}
+                                isInvalid={formik.touched.state_id && formik.errors.state_id}
+                            >
+                                <option value="" disabled>
+                                    {'Select a state...'}
+                                </option>
+                                {state?.stateManagementData?.map(s => (<><option value={s.id}>{s?.name}</option></>))}
+                            </Form.Control>
                             <Form.Control.Feedback type="invalid">
-                                {formik.errors.contact}
+                                {formik.errors.state_id}
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                     <Col>
-                        <Form.Group className="mb-3" controlId="clients">
+                        <Form.Group className="mb-3" controlId="district_id">
                             <Form.Control
+                                disabled={!formik.values.state_id || !district?.districtManagementData?.district}
+                                custom
+                                as={'select'}
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
-                                placeholder="Clients"
-                                type="number"
-                                name="clients"
-                                value={+formik.values.clients}
-                                onChange={formik.handleChange}
-                                isInvalid={
-                                    formik.touched.clients && formik.errors.clients
-                                }
-                            />
+                                name="district_id"
+                                value={formik.values.district_id}
+                                onChange={async (e) => { formik.handleChange(e); dispatch(talukaManagementAction.getTalukas(e.target.value)); formik.values.taluka_id = "" }}
+                                isInvalid={formik.touched.district_id && formik.errors.district_id}
+                            >
+                                <option value="" disabled>
+                                    {'Select a district...'}
+                                </option>
+
+                                {district?.districtManagementData?.district?.map(d => (<><option value={d.id}>{d?.name}</option></>))}
+                            </Form.Control>
                             <Form.Control.Feedback type="invalid">
-                                {formik.errors.clients}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Form.Group className="mb-3" controlId="district">
-                            <Form.Control
-                                style={{
-                                    padding: "1rem",
-                                    border: "2px solid rgba(0,0,0,0.2)",
-                                    borderRadius: "10px",
-                                }}
-                                placeholder="District"
-                                type="text"
-                                name="district"
-                                value={formik.values.district}
-                                onChange={formik.handleChange}
-                                isInvalid={formik.touched.district && formik.errors.district}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {formik.errors.district}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                    <Col>
-                        <Form.Group className="mb-3" controlId="state">
-                            <Form.Control
-                                style={{
-                                    padding: "1rem",
-                                    border: "2px solid rgba(0,0,0,0.2)",
-                                    borderRadius: "10px",
-                                }}
-                                placeholder="State"
-                                type="text"
-                                name="state"
-                                value={formik.values.state}
-                                onChange={formik.handleChange}
-                                isInvalid={
-                                    formik.touched.state && formik.errors.state
-                                }
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {formik.errors.state}
+                                {formik.errors.district_id}
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Group className="mb-3" controlId="taluka">
+                        <Form.Group className="mb-3" controlId="taluka_id">
                             <Form.Control
+                                disabled={!formik.values.district_id || !taluka?.talukaManagementData?.talukas}
+                                custom
+                                as={'select'}
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
-                                placeholder="Taluka"
-                                type="text"
-                                name="taluka"
-                                value={formik.values.taluka}
+                                name="taluka_id"
+                                value={formik.values.taluka_id}
                                 onChange={formik.handleChange}
-                                isInvalid={formik.touched.taluka && formik.errors.taluka}
-                            />
+                                isInvalid={formik.touched.taluka_id && formik.errors.taluka_id}
+                            >
+                                <option value="" disabled>
+                                    {'Select a taluka...'}
+                                </option>
+                                {taluka?.talukaManagementData?.talukas?.map(d => (<><option value={d.id}>{d?.name}</option></>))}
+
+                            </Form.Control>
                             <Form.Control.Feedback type="invalid">
-                                {formik.errors.taluka}
+                                {formik.errors.taluka_id}
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                     <Col>
-                        <Form.Group className="mb-3" controlId="talukaCategory">
+                        <Form.Group className="mb-3" controlId="address">
                             <Form.Control
                                 style={{
-                                    padding: "1rem",
+                                    padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
-                                placeholder="Taluka Category"
-                                type="number"
-                                name="talukaCategory"
-                                value={+formik?.values?.talukaCategory}
+                                placeholder="Address"
+                                type="text"
+                                name="address"
+                                value={formik?.values?.address}
                                 onChange={formik.handleChange}
                                 isInvalid={
-                                    formik.touched.talukaCategory && formik.errors.talukaCategory
+                                    formik.touched.address && formik.errors.address
                                 }
                             />
                             <Form.Control.Feedback type="invalid">
-                                {formik.errors.talukaCategory}
+                                {formik.errors.address}
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                 </Row>
-                
+
                 <h5 style={{ fontWeight: 700, color: "#000" }}>Upload Agreement Documents</h5>
-                <Row style={{ height: "15vh" }}>
+                <Row style={{ height: "25vh" }}>
                     <Col style={{ height: "100%", width: "100%", padding: "0.8rem" }}>
                         <div style={{ border: "2px dashed rgba(0,0,0,0.5)", height: "100%", width: "100%", borderRadius: "0.3rem", backgroundColor: "rgba(0,0,0,0.1)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
                             <p style={{ color: "black" }}>Drag & drop your files here or <span onClick={() => { fileRef.current.click() }} style={{ textDecoration: "underline", fontWeight: "700", cursor: "pointer" }}>browse</span> <input ref={fileRef} type="file" style={{ display: "none" }}></input> </p>
@@ -220,7 +250,7 @@ const AddTrustedPartner = () => {
 
 
 
-                <div className="d-flex justify-content-start">
+                <div className="d-flex justify-content-start mt-3">
                     <CustomButton
                         height={"3rem"}
                         width={"8rem"}

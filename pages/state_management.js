@@ -106,7 +106,7 @@ function StateManagement() {
               </tr>
             </thead>
             <tbody>
-              {stateManagement?.stateManagementData?.map((data, index) => {
+              {stateManagement?.stateManagementData && stateManagement?.stateManagementData?.map((data, index) => {
                 return (
                   <tr key={index}>
                     <th scope="row">{data?.id}</th>

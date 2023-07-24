@@ -2,18 +2,24 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/Home.module.css";
 import { CustomButton } from "../../components/Common/CustomButton";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MembershipModal } from "../../components/Common/Modal";
 import { FaRupeeSign } from 'react-icons/fa';
+import { membershipManagementActions } from "../../redux/Actions/membershipActions";
 
 const Membership = () => {
-    const membershipsData = useSelector((state) => state.memberships.memberships);
+    const membershipD = useSelector((state) => state.memberships.currentMembership);
+
+    const dispatch = useDispatch()
     const [modalShow, setModalShow] = useState(false);
     const router = useRouter();
     const c = router.query.membership;
-    const [membershipD, setMembershipD] = useState({});
     useEffect(() => {
-        setMembershipD(membershipsData.find((x) => x.id === +c));
+        const fetch = async () => {
+            const c = await router.query.membership;
+            dispatch(membershipManagementActions.getSingleMembership(+c))
+        }
+        fetch()
     }, []);
     return (
         <div style={{ height: "60vh" }} className={styles.add}>
@@ -30,8 +36,8 @@ const Membership = () => {
             <h4>Membership Details #{c}</h4>
             <div style={{ height: "30vh", justifyContent: 'space-around' }} className={styles.view_client_body}>
                 <div className={styles.view_client}>
-                    <div><p>Membership</p><p style={{ fontWeight: 400 }}>{membershipD?.membershipName}</p></div>
-                    <div><p>Price</p><p style={{ fontWeight: 400 }}><FaRupeeSign />{membershipD?.price}</p></div>
+                    <div><p>Membership</p><p style={{ fontWeight: 400 }}>{membershipD?.membership_name}</p></div>
+                    <div><p>Price</p><p style={{ fontWeight: 400 }}><FaRupeeSign />{membershipD?.pricing}</p></div>
                     <div ></div>
                     <div ></div>
 
@@ -39,7 +45,7 @@ const Membership = () => {
                 <div className={styles.view_client}>
                     <div><p style={{ color: "black", fontWeight: 700 }}>Descriptions</p>
                         <p><ul style={{ listStyle: 'disc', color: 'red' }}>
-                            {membershipD.descriptions?.map(m => (<><li className={styles.marker} style={{ color: "black", fontWeight: 400 }}>{m}</li></>))}
+                            {membershipD?.description?.split(";::;").map(m => (<><li className={styles.marker} style={{ color: "black", fontWeight: 400 }}>{m}</li></>))}
                         </ul></p></div>
                     <div ></div>
                     <div ></div>
