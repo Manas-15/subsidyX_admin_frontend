@@ -16,6 +16,7 @@ import {
   districtManagementAction,
   getDistrictManagementLists,
 } from "../redux/Actions/districtManagementAction";
+import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
 
 function DistrictManagement() {
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ function DistrictManagement() {
 
   const actions = [{ icon: MdModeEdit }, { icon: RiDeleteBin5Fill }];
   const districtManagement = useSelector((state) => state?.district);
-
+  const [search, setSearch] = useState('')
   const addNewDistrict = () => {
     setModalShow(true);
     setType("add");
@@ -70,16 +71,36 @@ function DistrictManagement() {
           className={`d-flex justify-content-between align-items-center ${styles.tableHeader}`}
         >
           <div className="d-flex justify-content-evenly ">
-            {/* <div className={`mx-2 ${styles.search_box}`}>
-              <div className={styles.search_icon}>
-                <CiSearch />
-              </div>
-              <input
-                type="text"
-                className={styles.search_bar}
-                placeholder="Search District"
-              />
-            </div> */}
+            <div className={`mx-2 ${styles.search_box}`}>
+              <Form.Group className="mb-3" controlId="search">
+                <InputGroup>
+                  <Button disabled style={{
+                    color: "black", background: "white", borderColor: "white", borderTopLeftRadius: "10px",
+                    borderBottomLeftRadius: "10px", border: "2px solid rgba(0,0,0,0.2)", borderRight: "none"
+                  }}   >
+                    {<CiSearch />}
+                  </Button>
+                  <Form.Control
+                    autoComplete="off"
+                    style={{
+                      padding: "0.5rem",
+                      border: "2px solid rgba(0,0,0,0.2)",
+                      borderTopRightRadius: "10px",
+                      borderBottomRightRadius: "10px",
+                      borderTopLeftRadius: "0px",
+                      borderBottomLeftRadius: "0px",
+                      borderLeft: "none"
+                    }}
+                    placeholder="Search..."
+                    type={'text'}
+                    name="search"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+
+                  />
+                </InputGroup>
+              </Form.Group>
+            </div>
           </div>
           <div className="d-flex">
             <div className={styles.add_new_btn}>
@@ -107,7 +128,7 @@ function DistrictManagement() {
               </tr>
             </thead>
             <tbody>
-              {districtManagement?.districtManagementData?.district?.map(
+              {districtManagement?.districtManagementData?.district?.filter(x => (x?.name?.toLowerCase().includes(search.toLowerCase()))).map(
                 (data, index) => {
                   return (
                     <tr key={index}>

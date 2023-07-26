@@ -53,8 +53,8 @@ const Memberships = () => {
     ];
 
     useEffect(() => {
-        dispatch(membershipManagementActions.getMemberships());
-    }, [memberships.isUpdated, memberships.isDeleted, memberships.isSucess, memberships.isCreated]);
+        dispatch(membershipManagementActions.getMemberships({ pagination: { page, pageSize } }));
+    }, [memberships.isUpdated, memberships.isDeleted, memberships.isSucess, memberships.isCreated, page, pageSize]);
 
     return (
         <div className={styles.container}>
@@ -110,9 +110,6 @@ const Memberships = () => {
                                     Price
                                 </th>
 
-                                <th className="p-4" scope="col">
-                                    Created By
-                                </th>
 
                                 <th className="p-4" scope="col">
                                     Actions
@@ -120,13 +117,12 @@ const Memberships = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {memberships.memberships?.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize).map((data, index) => {
+                            {memberships?.memberships?.members?.map((data, index) => {
                                 return (
                                     <tr className="text-center" key={index}>
 
                                         <td>{data?.membership_name}</td>
                                         <td><FaRupeeSign />{data?.pricing}</td>
-                                        <td>{data?.created_by}</td>
                                         <td>
                                             <ul className="d-flex justify-content-center">
                                                 {actions?.map(({ icon: Icon }, idx) => {
@@ -152,7 +148,7 @@ const Memberships = () => {
                     </table>
                 </div>
             </div>
-            <Pagination pageSizeOptions={[5, 10, 20, 50]} pageSize={pageSize} setPageSize={setPageSize} page={page} setPage={setPage} totalItems={memberships?.memberships?.length} />
+            <Pagination pageSizeOptions={[5, 10, 20, 50]} pageSize={pageSize} setPageSize={setPageSize} page={page} setPage={setPage} totalItems={memberships?.memberships?.total_items} />
 
         </div>
     );

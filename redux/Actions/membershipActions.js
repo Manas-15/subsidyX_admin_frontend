@@ -8,10 +8,10 @@ export const membershipManagementActions = {
     deleteMembership,
     getSingleMembership
 };
-function getMemberships() {
+function getMemberships(data) {
     return (dispatch) => {
         dispatch(request());
-        membershipService.getMemberships().then(
+        membershipService.getMemberships(data).then(
             (res) => {
                 dispatch(success(res));
             },

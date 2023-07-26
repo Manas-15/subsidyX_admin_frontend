@@ -1,7 +1,7 @@
 import { membershipData } from "../../static/membershipData";
 import { membershipConstants } from "../Constants/membershipConstants";
 
-export function memberships(state = { isSuccess: false, memberships: [], currentMembership: {}, isUpdated: false, isDeleted: false, isCreated: false }, action) {
+export function memberships(state = { isSuccess: false, memberships: {}, currentMembership: {}, isUpdated: false, isDeleted: false, isCreated: false }, action) {
     console.log(action);
     switch (action.type) {
         case membershipConstants.GET_MEMBERSHIP_REQUEST:

@@ -31,7 +31,7 @@ const EditMembership = () => {
     }
     return (
         <Formik
-            initialValues={{ pricing: memberships?.memberships?.find(x => x.id === +m)?.pricing, membership_name: memberships?.memberships?.find(x => x.id === +m)?.membership_name, descriptions: memberships?.memberships?.find(x => x.id === +m)?.description.split(";::;") }}
+            initialValues={{ pricing: memberships?.memberships?.members.find(x => x.id === +m)?.pricing, membership_name: memberships?.memberships?.members.find(x => x.id === +m)?.membership_name, descriptions: memberships?.memberships?.members.find(x => x.id === +m)?.description.split(";::;") }}
             validationSchema={membershipSchema}
             onSubmit={onSubmit}
         >

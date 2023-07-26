@@ -9,14 +9,14 @@ export const membershipService = {
     getSingleMembership,
 };
 
-async function getMemberships() {
+async function getMemberships(data) {
 
-    // return await api.get(`/membership/?page=${data?.pagination?.page || 1}&page_size=${data?.pagination?.pageSize || 300000000000}`, {
-    //     headers: authHeader(),
-    // });
-    return await api.get(`membership/`, {
+    return await api.get(`/membership/?page=${data?.pagination?.page || 1}&page_size=${data?.pagination?.pageSize || 300000000000}`, {
         headers: authHeader(),
     });
+    //     return await api.get(`membership/`, {
+    //         headers: authHeader(),
+    //     });
 }
 async function getSingleMembership(id) {
 
