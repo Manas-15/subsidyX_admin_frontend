@@ -17,6 +17,7 @@ import {
   getDistrictManagementLists,
 } from "../redux/Actions/districtManagementAction";
 import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
+import { IoMdArrowDown, IoMdArrowUp } from "react-icons/io";
 
 function DistrictManagement() {
   const dispatch = useDispatch();
@@ -52,6 +53,25 @@ function DistrictManagement() {
       setAction(item?.id);
     }
   };
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortedColumn, setSortedColumn] = useState("");
+
+  function sortData(column) {
+    if (sortedColumn === column) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortOrder("asc");
+    }
+    setSortedColumn(column);
+  }
+  const sortedDistricts = districtManagement?.districtManagementData?.district?.slice();
+  if (sortedColumn) {
+    sortedDistricts?.sort((a, b) => {
+      const aValue = a[sortedColumn].toString();
+      const bValue = b[sortedColumn].toString();
+      return sortOrder === "asc" ? aValue?.localeCompare(bValue) : bValue?.localeCompare(aValue);
+    });
+  }
 
   return (
     <div className={styles.container}>
@@ -118,27 +138,28 @@ function DistrictManagement() {
         <div className={styles.tableBody}>
           <table className="table table-hover">
             <thead>
-              <tr>
-                <th scope="col">ID</th>
-                <th scope="col">District</th>
-                <th scope="col">State</th>
-                <th scope="col"></th>
-                <th scope="col"> </th>
-                <th scope="col">Actions</th>
+              <tr className="text-center">
+                <th style={{ cursor: 'pointer' }} scope="col" className='p-4' onClick={() => sortData("id")}>
+                  ID <span style={{ cursor: 'pointer' }}> {sortedColumn === "id" && (sortOrder === "asc" ? <IoMdArrowUp fontSize={'1rem'} /> : <IoMdArrowDown fontSize={'1rem'} />)}</span>
+                </th>
+                <th style={{ cursor: 'pointer' }} scope="col" className='p-4' onClick={() => sortData("name")}>
+                  District Name<span style={{ cursor: 'pointer' }}> {sortedColumn === "name" && (sortOrder === "asc" ? <IoMdArrowUp fontSize={'1rem'} /> : <IoMdArrowDown fontSize={'1rem'} />)}</span>
+                </th>
+                <th style={{ cursor: 'pointer' }} scope="col" className='p-4' onClick={() => sortData("state_name")}>
+                  State Name <span style={{ cursor: 'pointer' }}> {sortedColumn === "state_name" && (sortOrder === "asc" ? <IoMdArrowUp fontSize={'1rem'} /> : <IoMdArrowDown fontSize={'1rem'} />)}</span>
+                </th>                <th className="p-4" scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {districtManagement?.districtManagementData?.district?.filter(x => (x?.name?.toLowerCase().includes(search.toLowerCase()))).map(
+              {sortedDistricts?.filter(x => (x?.name?.toLowerCase().includes(search.toLowerCase()))).map(
                 (data, index) => {
                   return (
-                    <tr key={index}>
+                    <tr className="text-center" key={index}>
                       <th scope="row">{data?.id}</th>
                       <td>{data?.name}</td>
                       <td>{data?.state_name}</td>
-                      <td></td>
-                      <td></td>
                       <td>
-                        <ul className="d-flex justify-content-end">
+                        <ul className="d-flex justify-content-center">
                           {actions?.map(({ icon: Icon }, idx) => {
                             return (
                               <li

@@ -16,6 +16,8 @@ import {
 } from "../redux/Actions/stateManagementAction";
 import { StateManagementModal } from "../components/Common/Modal";
 import { Button, Form, InputGroup } from "react-bootstrap";
+import { ArrowUpLine } from "@rsuite/icons";
+import { IoMdArrowDown, IoMdArrowUp } from "react-icons/io";
 
 function StateManagement() {
   const dispatch = useDispatch();
@@ -39,7 +41,8 @@ function StateManagement() {
     stateManagement?.isUpdated,
     stateManagement?.isDeleted,
   ]);
-
+  const [stateName, setStateName] = useState(1)
+  const [sortHeader, setSortHeader] = useState('name')
   const handleClick = (e, item, idx) => {
     console.log(e, item, idx);
     if (idx === 0) {
@@ -118,26 +121,20 @@ function StateManagement() {
         <div className={styles.tableBody}>
           <table className="table table-hover">
             <thead>
-              <tr>
-                <th scope="col">ID</th>
-                <th scope="col">State</th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-                <th scope="col"> </th>
+              <tr className="text-center">
+                <th className="p-4" scope="col">ID </th>
+                <th className="p-4" scope="col">State{" "}<span style={{ cursor: 'pointer', fontSize: '1rem' }} onClick={() => { setStateName(stateName * -1) }} >{stateName === -1 ? <IoMdArrowUp /> : <IoMdArrowDown />}</span> </th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {stateManagement?.stateManagementData && stateManagement?.stateManagementData?.filter(x => (x?.name?.toLowerCase().includes(search.toLowerCase()))).map((data, index) => {
+              {stateManagement?.stateManagementData && stateManagement?.stateManagementData?.filter(x => (x?.name?.toLowerCase().includes(search.toLowerCase()))).sort((a, b) => (a?.[sortHeader] > b?.[sortHeader] ? stateName : -stateName)).map((data, index) => {
                 return (
-                  <tr key={index}>
+                  <tr className="text-center" key={index}>
                     <th scope="row">{data?.id}</th>
-                    <td>{data?.name}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{data?.name} </td>
                     <td>
-                      <ul className="d-flex justify-content-end">
+                      <ul className="d-flex justify-content-center">
                         {actions?.map(({ icon: Icon }, idx) => {
                           return (
                             <li

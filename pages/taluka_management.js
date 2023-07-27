@@ -16,6 +16,7 @@ import {
 } from "../redux/Actions/talukaManagementAction";
 import { TalukaManagementModal } from "../components/Common/Modal";
 import { Button, Form, InputGroup } from "react-bootstrap";
+import { IoMdArrowDown, IoMdArrowUp } from "react-icons/io";
 
 function TalukaManagement() {
   const dispatch = useDispatch();
@@ -52,7 +53,25 @@ function TalukaManagement() {
       setAction(item?.id);
     }
   };
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortedColumn, setSortedColumn] = useState("");
 
+  function sortData(column) {
+    if (sortedColumn === column) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortOrder("asc");
+    }
+    setSortedColumn(column);
+  }
+  const sortedTalukas = talukaManagement?.talukaManagementData?.talukas?.slice();
+  if (sortedColumn) {
+    sortedTalukas?.sort((a, b) => {
+      const aValue = a[sortedColumn].toString();
+      const bValue = b[sortedColumn].toString();
+      return sortOrder === "asc" ? aValue?.localeCompare(bValue) : bValue?.localeCompare(aValue);
+    });
+  }
   return (
     <div className={styles.container}>
       {modalShow && (
@@ -118,29 +137,38 @@ function TalukaManagement() {
         <div className={styles.tableBody}>
           <table className="table table-hover">
             <thead>
-              <tr>
-                <th scope="col">Taluka ID</th>
-                <th scope="col">Taluka Name</th>
-                <th scope="col">Taluka Category</th>
-                <th scope="col">District</th>
-                <th scope="col">State</th>
-                <th scope="col"> </th>
-                <th scope="col">Actions</th>
+              <tr className="text-center">
+                <th style={{cursor:'pointer'}}scope="col" className='p-4' onClick={() => sortData("id")}>
+                  Taluka ID <span style={{cursor:'pointer'}}> {sortedColumn === "id" && (sortOrder === "asc" ? <IoMdArrowUp fontSize={'1rem'} /> : <IoMdArrowDown fontSize={'1rem'} />)}</span>
+                </th>
+                <th style={{cursor:'pointer'}}scope="col" className='p-4' onClick={() => sortData("name")}>
+                  Taluka Name <span style={{cursor:'pointer'}}>{sortedColumn === "name" && (sortOrder === "asc" ? <IoMdArrowUp fontSize={'1rem'} /> : <IoMdArrowDown fontSize={'1rem'} />)}</span>
+                </th>
+                <th style={{cursor:'pointer'}}scope="col" className='p-4' onClick={() => sortData("category_id")}>
+                  Taluka Category <span style={{cursor:'pointer'}}>{sortedColumn === "category_id" && (sortOrder === "asc" ? <IoMdArrowUp fontSize={'1rem'} /> : <IoMdArrowDown fontSize={'1rem'} />)}</span>
+                </th>
+                <th style={{cursor:'pointer'}}scope="col" className='p-4' onClick={() => sortData("district")}>
+                  District <span style={{cursor:'pointer'}}>{sortedColumn === "district" && (sortOrder === "asc" ? <IoMdArrowUp fontSize={'1rem'} /> : <IoMdArrowDown fontSize={'1rem'} />)}</span>
+                </th>
+                <th style={{cursor:'pointer'}}scope="col" className='p-4' onClick={() => sortData("state")}>
+                  State <span style={{cursor:'pointer'}}>{sortedColumn === "state" && (sortOrder === "asc" ? <IoMdArrowUp fontSize={'1rem'} /> : <IoMdArrowDown fontSize={'1rem'} />)}</span>
+                </th>
+                <th scope="col" className='p-4'>Actions</th>
+
               </tr>
             </thead>
             <tbody>
-              {talukaManagement?.talukaManagementData?.talukas?.filter(x => (x?.name?.toLowerCase().includes(search.toLowerCase()))).map(
+              {sortedTalukas?.filter(x => (x?.name?.toLowerCase().includes(search.toLowerCase()))).map(
                 (data, index) => {
                   return (
-                    <tr key={index}>
+                    <tr key={index} className="text-center">
                       <th scope="row">{data?.id}</th>
                       <td>{data?.name}</td>
                       <td>{data?.category_id}</td>
                       <td>{data?.district}</td>
                       <td>{data?.state}</td>
-                      <td></td>
                       <td>
-                        <ul className="d-flex justify-content-end">
+                        <ul className="d-flex justify-content-center">
                           {actions?.map(({ icon: Icon }, idx) => {
                             return (
                               <li
