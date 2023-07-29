@@ -13,6 +13,12 @@ export function user(state = {}, action) {
       };
     case userConstants.USER_LOGIN_FAILURE:
       return { loggingIn: false };
+    case userConstants.USER_SET_CREDENTIALS:
+
+      return {
+        loggedIn: true,
+        user: action?.data?.data,
+      };
 
     default:
       return state;

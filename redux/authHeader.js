@@ -1,9 +1,13 @@
+import { store } from "./Store"
 export function authHeader() {
   // return authorization header with jwt token
-  let accessToken = JSON.parse(localStorage.getItem("accessToken"));
+  const state = store.getState()
+  let accessToken = state.user.access_token
 
   if (accessToken) {
-    return { Authorization: `Bearer ${accessToken}` };
+    return {
+      Authorization: `Bearer ${accessToken}`
+    };
   } else {
     return {};
   }

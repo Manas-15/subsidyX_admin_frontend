@@ -5,6 +5,7 @@ import { alertActions } from "./alertAction";
 export const userActions = {
   login,
   logout,
+  setCredentials,
 };
 function login(data, from) {
   return (dispatch) => {
@@ -13,7 +14,11 @@ function login(data, from) {
       (res) => {
         dispatch(success(res));
         const result = JSON.stringify(res?.data?.access_token);
+        const refreshToken = JSON.stringify(res?.data?.refresh_token);
+
         localStorage.setItem("accessToken", result);
+        localStorage.setItem("refreshToken", refreshToken);
+
         console.log("login action called");
         dispatch(alertActions.success("User loggedin successfully"));
       },
@@ -34,6 +39,15 @@ function login(data, from) {
   }
 }
 
+function setCredentials(data) {
+  const result = JSON.stringify(data?.access_token);
+  const refreshToken = JSON.stringify(data?.refresh_token);
+
+  localStorage.setItem("accessToken", result);
+  localStorage.setItem("refreshToken", refreshToken);
+
+  return { type: userConstants.USER_SET_CREDENTIALS, data }
+}
 function logout() {
   // toast("Logged out successfully", {
   //   hideProgressBar: true,
