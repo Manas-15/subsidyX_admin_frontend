@@ -8,8 +8,8 @@ dotenv.config()
 
 const region = "ap-south-1"
 const bucketName = "sub-staging"
-const accessKeyId = process.env.AWS_ACCESS_KEY_ID
-const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
+const accessKeyId = "AKIAYRZ7OBLRNIGJXZDK"
+const secretAccessKey = "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"
 
 const s3 = new aws.S3({
     region,

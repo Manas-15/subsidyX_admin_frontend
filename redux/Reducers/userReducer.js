@@ -7,6 +7,7 @@ export function user(state = {}, action) {
         loggingIn: true,
       };
     case userConstants.USER_LOGIN_SUCCESS:
+      console.log(action?.data?.data);
       return {
         loggedIn: true,
         user: action?.data?.data,

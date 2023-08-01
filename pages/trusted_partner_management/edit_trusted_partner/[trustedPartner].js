@@ -56,7 +56,7 @@ const EditTrustedPartner = () => {
                 placeholder="First Name"
                 type="text"
                 name="first_name"
-                value={formik.values.first_name}
+                value={formik?.values?.first_name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 isInvalid={formik.touched.first_name && formik.errors.first_name}
@@ -77,7 +77,7 @@ const EditTrustedPartner = () => {
                 placeholder="Last Name"
                 type="text"
                 name="last_name"
-                value={formik.values.last_name}
+                value={formik?.values?.last_name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 isInvalid={formik.touched.last_name && formik.errors.last_name}
@@ -101,7 +101,7 @@ const EditTrustedPartner = () => {
                 placeholder="Trusted Partner Contact Number"
                 type="tel"
                 name="phone_number"
-                value={formik.values.phone_number}
+                value={formik?.values?.phone_number}
                 onChange={formik.handleChange}
                 isInvalid={formik.touched.phone_number && formik.errors.phone_number}
               />
@@ -121,7 +121,7 @@ const EditTrustedPartner = () => {
                 placeholder="Trusted Partner Email"
                 type="email"
                 name="email"
-                value={formik.values.email}
+                value={formik?.values?.email}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 isInvalid={formik.touched.email && formik.errors.email}
@@ -145,7 +145,7 @@ const EditTrustedPartner = () => {
                   borderRadius: "10px",
                 }}
                 name="state_id"
-                value={formik.values.state_id}
+                value={formik?.values?.state_id}
                 onChange={async (e) => { formik.handleChange(e); dispatch(districtManagementAction.getDistricts(e.target.value)); formik.values.district_id = ''; formik.values.taluka_id = "" }}
                 isInvalid={formik.touched.state_id && formik.errors.state_id}
               >
@@ -162,7 +162,7 @@ const EditTrustedPartner = () => {
           <Col>
             <Form.Group className="mb-3" controlId="district_id">
               <Form.Control
-                disabled={!formik.values.state_id || !district?.districtManagementData?.district}
+                disabled={!formik?.values?.state_id || !district?.districtManagementData?.district}
                 custom
                 as={'select'}
                 style={{
@@ -171,7 +171,7 @@ const EditTrustedPartner = () => {
                   borderRadius: "10px",
                 }}
                 name="district_id"
-                value={formik.values.district_id}
+                value={formik?.values?.district_id}
                 onChange={async (e) => { formik.handleChange(e); dispatch(talukaManagementAction.getTalukas(e.target.value)); formik.values.taluka_id = "" }}
                 isInvalid={formik.touched.district_id && formik.errors.district_id}
               >
@@ -191,7 +191,7 @@ const EditTrustedPartner = () => {
           <Col>
             <Form.Group className="mb-3" controlId="taluka_id">
               <Form.Control
-                disabled={!formik.values.district_id || !taluka?.talukaManagementData?.talukas}
+                disabled={!formik?.values?.district_id || !taluka?.talukaManagementData?.talukas}
                 custom
                 as={'select'}
                 style={{
@@ -200,7 +200,7 @@ const EditTrustedPartner = () => {
                   borderRadius: "10px",
                 }}
                 name="taluka_id"
-                value={formik.values.taluka_id}
+                value={formik?.values?.taluka_id}
                 onChange={formik.handleChange}
                 isInvalid={formik.touched.taluka_id && formik.errors.taluka_id}
               >

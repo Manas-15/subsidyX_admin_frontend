@@ -41,7 +41,7 @@ const AddClient = () => {
                 placeholder="Client Name"
                 type="text"
                 name="name"
-                value={formik.values.name}
+                value={formik?.values?.name}
                 onChange={formik.handleChange}
                 isInvalid={formik.touched.name && formik.errors.name}
               />
@@ -61,7 +61,7 @@ const AddClient = () => {
                 placeholder="Client Email"
                 type="text"
                 name="email"
-                value={formik.values.email}
+                value={formik?.values?.email}
                 onChange={formik.handleChange}
                 isInvalid={formik.touched.email && formik.errors.email}
               />
@@ -83,7 +83,7 @@ const AddClient = () => {
                 placeholder="Client Contact Number"
                 type="text"
                 name="number"
-                value={formik.values.number}
+                value={formik?.values?.number}
                 onChange={formik.handleChange}
                 isInvalid={formik.touched.number && formik.errors.number}
               />
@@ -103,7 +103,7 @@ const AddClient = () => {
                 placeholder="Associate With"
                 type="text"
                 name="associated"
-                value={formik.values.associated}
+                value={formik?.values?.associated}
                 onChange={formik.handleChange}
                 isInvalid={
                   formik.touched.associated && formik.errors.associated

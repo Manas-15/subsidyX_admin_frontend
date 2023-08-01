@@ -110,13 +110,13 @@ const ChannelPartners = () => {
                                     Contact Details{" "}
                                 </th>
                                 <th className="p-4" scope="col">
-                                    Employee
+                                    Report Count
                                 </th>
                                 <th className="p-4" scope="col">
-                                    Clients
+                                    Client ID
                                 </th>
                                 <th className="p-4" scope="col">
-                                    Reports
+                                    Address
                                 </th>
                                 <th className="p-4" scope="col">
                                     Actions
@@ -124,16 +124,16 @@ const ChannelPartners = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {channelPartners.channelPartners?.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize).map((data, index) => {
+                            {channelPartners.channelPartners?.channel_partners.map((data, index) => {
                                 return (
                                     <tr className="text-center" key={index}>
 
-                                        <td>{data?.channelPartnerName}</td>
+                                        <td>{data?.first_name}{" "}{data?.last_name}</td>
                                         <td>{data?.email}</td>
                                         <td>{data?.contact}</td>
-                                        <td>{data?.id}</td>
-                                        <td>{data?.clients}</td>
-                                        <td>{parseInt(data?.id / data?.clients)}</td>
+                                        <td>{data?.report_count}</td>
+                                        <td>{data?.client_id || 'NA'}</td>
+                                        <td>{data?.address}</td>
                                         <td>
                                             <ul className="d-flex justify-content-center">
                                                 {actions?.map(({ icon: Icon }, idx) => {
@@ -159,7 +159,7 @@ const ChannelPartners = () => {
                     </table>
                 </div>
             </div>
-            <Pagination pageSizeOptions={[5, 10, 20, 50]} pageSize={pageSize} setPageSize={setPageSize} page={page} setPage={setPage} totalItems={channelPartners?.channelPartners.length} />
+            <Pagination pageSizeOptions={[5, 10, 20, 50]} pageSize={pageSize} setPageSize={setPageSize} page={page} setPage={setPage} totalItems={channelPartners?.channelPartners?.total} />
         </div>
     );
 };

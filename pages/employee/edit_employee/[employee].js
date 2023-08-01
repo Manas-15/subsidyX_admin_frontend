@@ -46,7 +46,7 @@ const EditEmployee = () => {
                                 placeholder="Employee Name"
                                 type="text"
                                 name="name"
-                                value={formik.values.name}
+                                value={formik?.values?.name}
                                 onChange={formik.handleChange}
                                 isInvalid={formik.touched.name && formik.errors.name}
                             />
@@ -67,7 +67,7 @@ const EditEmployee = () => {
                                 placeholder="Employee Email"
                                 type="email"
                                 name="email"
-                                value={formik.values.email}
+                                value={formik?.values?.email}
                                 onChange={formik.handleChange}
                                 isInvalid={formik.touched.email && formik.errors.email}
                             />
@@ -89,7 +89,7 @@ const EditEmployee = () => {
                                 placeholder="Contact Number"
                                 type="text"
                                 name="contact"
-                                value={formik.values.contact}
+                                value={formik?.values?.contact}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 isInvalid={formik.touched.contact && formik.errors.contact}
@@ -115,7 +115,7 @@ const EditEmployee = () => {
                                     placeholder="Password"
                                     type={showPassword ? 'text' : 'password'}
                                     name="password"
-                                    value={formik.values.password}
+                                    value={formik?.values?.password}
                                     onChange={formik.handleChange}
                                     isInvalid={
                                         formik.touched.password && formik.errors.password
@@ -146,7 +146,7 @@ const EditEmployee = () => {
                                 placeholder="Role"
                                 type="text"
                                 name="role"
-                                value={formik.values.role}
+                                value={formik?.values?.role}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 isInvalid={formik.touched.role && formik.errors.role}
@@ -175,7 +175,7 @@ const EditEmployee = () => {
                                 }
                             }}
                             onBlur={formik.handleBlur}
-                            checked={formik.values.associatedWith || formik.values.isAssociated === 'yes'}
+                            checked={formik?.values?.associatedWith || formik?.values?.isAssociated === 'yes'}
                         />
                         <Form.Check
                             style={{ marginLeft: "2rem" }}
@@ -191,7 +191,7 @@ const EditEmployee = () => {
                                 }
                             }}
                             onBlur={formik.handleBlur}
-                            checked={!formik.values.associatedWith || formik.values.isAssociated === 'no'}
+                            checked={!formik?.values?.associatedWith || formik?.values?.isAssociated === 'no'}
 
                         />
                         <Form.Control.Feedback type="invalid">
@@ -204,24 +204,24 @@ const EditEmployee = () => {
                         <Form.Group className="mb-3 mt-3" controlId="associatedWith">
                             <Form.Label style={{ color: "black", fontSize: "1.25rem", fontWeight: 600 }}>Associated With</Form.Label>
                             <Form.Control
-                                disabled={formik.values.isAssociated === 'no'}
+                                disabled={formik?.values?.isAssociated === 'no'}
                                 style={{
                                     padding: "0.8rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
-                                    cursor: formik.values.isAssociated === 'no' ? "not-allowed" : "pointer"
+                                    cursor: formik?.values?.isAssociated === 'no' ? "not-allowed" : "pointer"
                                 }}
                                 as="select"
                                 name="associatedWith"
-                                value={formik.values?.associatedWith}
+                                value={formik?.values?.associatedWith}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                isInvalid={formik.values.isAssociated === 'yes' && formik.touched.associatedWith && formik.errors.associatedWith}
+                                isInvalid={formik?.values?.isAssociated === 'yes' && formik.touched.associatedWith && formik.errors.associatedWith}
                             ><option key={0} value={""}>{"Select an Option"}</option>
                                 {companies.map(c => (<><option key={c.id} value={c.name}>{c.name}</option></>))}
                             </Form.Control>
                             <Form.Control.Feedback type="invalid">
-                                {formik.values.isAssociated === 'yes' && formik.errors.associatedWith}
+                                {formik?.values?.isAssociated === 'yes' && formik.errors.associatedWith}
                             </Form.Control.Feedback>
                         </Form.Group>
 

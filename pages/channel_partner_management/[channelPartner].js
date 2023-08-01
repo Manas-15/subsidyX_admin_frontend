@@ -2,18 +2,19 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/Home.module.css";
 import { CustomButton } from "../../components/Common/CustomButton";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ChannelPartnerModal } from "../../components/Common/Modal";
 import Link from "next/link";
+import { channelPartnerManagementActions } from "../../redux/Actions/channelPartnersAction";
 
 const ChannelPartner = () => {
-    const channelPartnersData = useSelector((state) => state.channelPartners.channelPartners);
+    const dispatch = useDispatch()
     const [modalShow, setModalShow] = useState(false);
     const router = useRouter();
-    const c = router.query.channelPartner;
-    const [channelPartnerD, setChannelPartnerD] = useState({});
+    const c = router?.query?.channelPartner;
+    const channelPartnerD = useSelector(state => state?.channelPartners?.singleChannelPartner)
     useEffect(() => {
-        setChannelPartnerD(channelPartnersData.find((x) => x.id === +c));
+        (dispatch(channelPartnerManagementActions.getSingleChannelPartner(+c)));
     }, []);
     return (
         <div style={{ height: "60vh" }} className={styles.add}>
@@ -30,25 +31,20 @@ const ChannelPartner = () => {
             <h4>Channel Partners Details #{c}</h4>
             <div style={{ height: "30vh", justifyContent: 'space-around' }} className={styles.view_client_body}>
                 <div className={styles.view_client}>
-                    <div><p>Channel Partner Name</p><p style={{ fontWeight: 400 }}>{channelPartnerD?.channelPartnerName}</p></div>
+                    <div><p>Channel Partner Name</p><p style={{ fontWeight: 400 }}>{channelPartnerD?.first_name} {" "}{channelPartnerD?.last_name}</p></div>
                     <div><p>Email</p><p style={{ fontWeight: 400 }}>{channelPartnerD?.email}</p></div>
                     <div><p>Contact Details</p><p style={{ fontWeight: 400 }}>{channelPartnerD?.contact}</p></div>
-                    <div><p>Clients</p><p style={{ fontWeight: 400 }}>{channelPartnerD?.clients}</p></div>
+                    <div><p>Address</p><p style={{ fontWeight: 400 }}>{channelPartnerD?.address}</p></div>
                 </div>
                 <div className={styles.view_client}>
                     <div><p>District</p><p style={{ fontWeight: 400 }}>{channelPartnerD?.district}</p></div>
                     <div><p>State</p><p style={{ fontWeight: 400 }}>{channelPartnerD?.state}</p></div>
                     <div><p>Taluka</p><p style={{ fontWeight: 400 }}>{channelPartnerD?.taluka}</p></div>
-                    <div><p>Taluka Category</p><p style={{ fontWeight: 400 }}>{channelPartnerD?.talukaCategory}</p></div>
-                </div>
-                <div className={styles.view_client}>
                     <div >
                         <p>Agreement Docs</p><Link onClick={(e) => e.target.style.backgroundColor = 'white'} onMouseOver={(e) => e.target.style.backgroundColor = 'white'} href={`${channelPartnerD?.agreementDoc}`} style={{ fontWeight: 400, textDecoration: 'underline', color: "#fa6130" }}>{channelPartnerD?.agreementDoc?.split(".com/")[1]?.slice(32) ?? "NA"}</Link >
                     </div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
                 </div>
+            
             </div>
             <div className="d-flex justify-content-end">
                 <CustomButton

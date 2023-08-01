@@ -8,6 +8,6 @@ export const reportManagementService = {
 async function getAllReportBasedOnUser() {
   //   let params = ID ? "?state_id=" + ID : "";
   return await api.get(`subsidy/reports?page=1&page_size=200`, {
-    headers: authHeader(),
+    // headers: authHeader(),
   });
 }

@@ -10,24 +10,24 @@ export const industryCategoryService = {
 
 async function getCategories() {
   return await api.get(`industry/industries`, {
-    headers: authHeader(),
+    // headers: authHeader(),
   });
 }
 
 async function createCategory(iData) {
   return await api.post(`industry/create`, iData, {
-    headers: authHeader(),
+    // headers: authHeader(),
   });
 }
 
 async function updateCategory({ id, state }) {
   return await api.patch(`industry/edit?industry_id=${id}`, state, {
-    headers: authHeader(),
+    // headers: authHeader(),
   });
 }
 
 async function deleteCategory(ID) {
   return await api.delete(`industry/delete?industry_id=${ID}`, {
-    headers: authHeader(),
+    // headers: authHeader(),
   });
 }

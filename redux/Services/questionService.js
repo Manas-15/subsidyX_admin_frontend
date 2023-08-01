@@ -16,24 +16,24 @@ async function getQuestions(data) {
     data?.industry_category_id
     : "";
   return await api.get(`question/?page=${data?.pagination?.page || 1}&page_size=${data?.pagination?.pageSize || 300000000000}${params}`, {
-    headers: authHeader(),
+    // headers: authHeader(),
   });
 }
 
 async function createQuestion(questionData) {
   return await api.post(`question/Create`, questionData, {
-    headers: authHeader(),
+    // headers: authHeader(),
   });
 }
 
 async function updateQuestion({ id, data }) {
   return await api.patch(`question/update?question_id=${id}`, data, {
-    headers: authHeader(),
+    // headers: authHeader(),
   });
 }
 
 async function deleteQuestion(ID) {
   return await api.delete(`question/?question_id=${ID}`, {
-    headers: authHeader(),
+    // headers: authHeader(),
   });
 }

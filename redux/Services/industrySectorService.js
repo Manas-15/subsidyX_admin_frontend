@@ -11,13 +11,13 @@ export const industrySectorService = {
 async function getSectors(ID) {
   let params = ID ? "&industry_category_id=" + ID : "";
   return await api.get(`industry_sector/?page=1&page_size=100${params}`, {
-    headers: authHeader(),
+    // headers: authHeader(),
   });
 }
 
 async function createSector(iData) {
   return await api.post(`industry_sector/create`, iData, {
-    headers: authHeader(),
+    // headers: authHeader(),
   });
 }
 
@@ -26,13 +26,13 @@ async function updateSector({ id, industrySectorData }) {
     `industry_sector/update?sector_id=${id}`,
     industrySectorData,
     {
-      headers: authHeader(),
+      // headers: authHeader(),
     }
   );
 }
 
 async function deleteSector(ID) {
   return await api.delete(`industry_sector/delete?sector_id=${ID}`, {
-    headers: authHeader(),
+    // headers: authHeader(),
   });
 }

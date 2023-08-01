@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styles from "../styles/Home.module.css";
 import { CiSearch } from "react-icons/ci";
 import {
@@ -17,6 +18,7 @@ import {
   getIndustryCategoryLists,
   industryCategoryActions,
 } from "../redux/Actions/industryCategoryAction";
+import { useRouter } from "next/router";
 
 function IndustryCategory() {
   const dispatch = useDispatch();
@@ -31,14 +33,15 @@ function IndustryCategory() {
     { icon: RiDeleteBin5Fill },
   ];
   const industryCategory = useSelector((state) => state?.industryCategory);
-
+  const user = useSelector(state => state.user.user)
   const addNewIndustryCategory = () => {
     setModalShow(true);
     setType("add");
   };
-
+  const router = useRouter()
   useEffect(() => {
-    dispatch(industryCategoryActions?.getCategories());
+      dispatch(industryCategoryActions?.getCategories()), 1000
+    if (!user?.access_token) { router.push("/") }
   }, [dispatch]);
 
   const handleClick = (item, idx) => {

@@ -11,6 +11,10 @@ import { useDropzone } from "react-dropzone";
 import { BiCloudUpload } from "react-icons/bi";
 import { generateUploadURL } from "../../config/s3";
 import LoadingSpinner from "../../components/Common/LoadingSpinner";
+import { stateManagementAction } from "../../redux/Actions/stateManagementAction";
+import { useEffect } from "react";
+import { districtManagementAction } from "../../redux/Actions/districtManagementAction";
+import { talukaManagementAction } from "../../redux/Actions/talukaManagementAction";
 const AddChannelPartner = () => {
     const [additionalErrorMessage, setAdditionalErrorMessage] = useState('')
     const [emptyDocs, setEmptyDocs] = useState({
@@ -39,9 +43,13 @@ const AddChannelPartner = () => {
     ));
     const dispatch = useDispatch();
     const channelPartners = useSelector((state) => state.channelPartners);
+    const state = useSelector(state => state.state)
+    const district = useSelector(state => state.district)
+    const taluka = useSelector(state => state.taluka)
+
     const router = useRouter();
     const formik = useFormik({
-        initialValues: { channelPartnerName: "", email: "", contact: "", clients: Number, district: "", state: "", taluka: "", talukaCategory: Number, amount: Number, type: "" },
+        initialValues: { first_name: "", email: "", phone_number: "", district_id: '', state_id: '', taluka_id: '', address: "", last_name: "", amount: Number, type: "" },
         validationSchema: channelPartnerSchema,
         onSubmit: (values) => {
             submit(values);
@@ -67,14 +75,20 @@ const AddChannelPartner = () => {
         }).then(res => {
             const fileURL = uploadURL.split('?')[0]
             console.log(fileURL);
-            const id = channelPartners?.channelPartners[channelPartners?.channelPartners?.length - 1]?.id + 1 || 1;
-            dispatch(channelPartnerManagementActions.createChannelPartner({ ...values, id, agreementDoc: fileURL }));
+            const { amount, type, ...remaining } = values
+            dispatch(channelPartnerManagementActions.createChannelPartner({ ...remaining })); //add agreement doc link here when API supports
         }).catch(err => console.log('An error occurred')).finally(x => {
             setLoading(false)
             router.push("channel_partners");
 
         })
     };
+    useEffect(() => {
+        const fetchOptions = async () => {
+            await dispatch(stateManagementAction.getStates())
+        }
+        fetchOptions()
+    }, [])
     return (
         <Form onSubmit={formik.handleSubmit}>
             <LoadingSpinner show={loading} />
@@ -82,33 +96,75 @@ const AddChannelPartner = () => {
             <div style={{ height: "auto", justifyContent: "space-between" }} className={styles.add}>
                 <h4>Add New channel Partner</h4>
 
-                <Row className="mt-3">
+                <Row>
                     <Col>
-                        <Form.Group className="mb-3" controlId="channelPartnerName">
+                        <Form.Group className="mb-3" controlId="first_name">
                             <Form.Control
-                                size="sm"
                                 style={{
                                     padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
-                                placeholder="Channel Partner Name"
+                                placeholder="First Name"
                                 type="text"
-                                name="channelPartnerName"
-                                value={formik.values.channelPartnerName}
+                                name="first_name"
+                                value={formik?.values?.first_name}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                isInvalid={formik.touched.channelPartnerName && formik.errors.channelPartnerName}
+                                isInvalid={formik.touched.first_name && formik.errors.first_name}
                             />
                             <Form.Control.Feedback type="invalid">
-                                {formik.errors.channelPartnerName}
+                                {formik.errors.first_name}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+                    <Col>
+                        <Form.Group className="mb-3" controlId="last_name">
+                            <Form.Control
+                                style={{
+                                    padding: "0.5rem",
+                                    border: "2px solid rgba(0,0,0,0.2)",
+                                    borderRadius: "10px",
+                                }}
+                                placeholder="Last Name"
+                                type="text"
+                                name="last_name"
+                                value={formik?.values?.last_name}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                isInvalid={formik.touched.last_name && formik.errors.last_name}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {formik.errors.last_name}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3" controlId="phone_number">
+                            <Form.Control
+                                style={{
+                                    padding: "0.5rem",
+                                    border: "2px solid rgba(0,0,0,0.2)",
+                                    borderRadius: "10px",
+                                }}
+                                placeholder="Channel Partner Contact Number"
+                                type="tel"
+                                name="phone_number"
+                                value={formik?.values?.phone_number}
+                                onChange={formik.handleChange}
+                                isInvalid={formik.touched.phone_number && formik.errors.phone_number}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {formik.errors.phone_number}
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                     <Col>
                         <Form.Group className="mb-3" controlId="email">
                             <Form.Control
-                                size="sm"
                                 style={{
                                     padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
@@ -117,7 +173,7 @@ const AddChannelPartner = () => {
                                 placeholder="Channel Partner Email"
                                 type="email"
                                 name="email"
-                                value={formik.values.email}
+                                value={formik?.values?.email}
                                 onBlur={formik.handleBlur}
                                 onChange={formik.handleChange}
                                 isInvalid={formik.touched.email && formik.errors.email}
@@ -129,139 +185,107 @@ const AddChannelPartner = () => {
                     </Col>
                 </Row>
                 <Row>
+
                     <Col>
-                        <Form.Group className="mb-3" controlId="contact">
+                        <Form.Group className="mb-3" controlId="state_id">
                             <Form.Control
-                                size="sm"
+                                custom
+                                as={'select'}
                                 style={{
                                     padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
-                                placeholder="Channel Partner Contact Number"
-                                type="tel"
-                                name="contact"
-                                value={formik.values.contact}
-                                onChange={formik.handleChange}
-                                isInvalid={formik.touched.contact && formik.errors.contact}
-                            />
+                                name="state_id"
+                                value={formik?.values?.state_id}
+                                onChange={async (e) => { formik.handleChange(e); dispatch(districtManagementAction.getDistricts(e.target.value)); formik.values.district_id = ''; formik.values.taluka_id = "" }}
+                                isInvalid={formik.touched.state_id && formik.errors.state_id}
+                            >
+                                <option value="" disabled>
+                                    {'Select a state...'}
+                                </option>
+                                {state?.stateManagementData?.map(s => (<><option value={s.id}>{s?.name}</option></>))}
+                            </Form.Control>
                             <Form.Control.Feedback type="invalid">
-                                {formik.errors.contact}
+                                {formik.errors.state_id}
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                     <Col>
-                        <Form.Group className="mb-3" controlId="clients">
+                        <Form.Group className="mb-3" controlId="district_id">
                             <Form.Control
-                                size="sm"
+                                disabled={!formik?.values?.state_id || !district?.districtManagementData?.district}
+                                custom
+                                as={'select'}
                                 style={{
                                     padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
-                                placeholder="Clients"
-                                type="number"
-                                name="clients"
-                                value={+formik.values.clients}
-                                onChange={formik.handleChange}
-                                isInvalid={
-                                    formik.touched.clients && formik.errors.clients
-                                }
-                            />
+                                name="district_id"
+                                value={formik?.values?.district_id}
+                                onChange={async (e) => { formik.handleChange(e); dispatch(talukaManagementAction.getTalukas(e.target.value)); formik.values.taluka_id = "" }}
+                                isInvalid={formik.touched.district_id && formik.errors.district_id}
+                            >
+                                <option value="" disabled>
+                                    {'Select a district...'}
+                                </option>
+
+                                {district?.districtManagementData?.district?.map(d => (<><option value={d.id}>{d?.name}</option></>))}
+                            </Form.Control>
                             <Form.Control.Feedback type="invalid">
-                                {formik.errors.clients}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Form.Group className="mb-3" controlId="district">
-                            <Form.Control
-                                size="sm"
-                                style={{
-                                    padding: "0.5rem",
-                                    border: "2px solid rgba(0,0,0,0.2)",
-                                    borderRadius: "10px",
-                                }}
-                                placeholder="District"
-                                type="text"
-                                name="district"
-                                value={formik.values.district}
-                                onChange={formik.handleChange}
-                                isInvalid={formik.touched.district && formik.errors.district}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {formik.errors.district}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
-                    <Col>
-                        <Form.Group className="mb-3" controlId="state">
-                            <Form.Control
-                                size="sm"
-                                style={{
-                                    padding: "0.5rem",
-                                    border: "2px solid rgba(0,0,0,0.2)",
-                                    borderRadius: "10px",
-                                }}
-                                placeholder="State"
-                                type="text"
-                                name="state"
-                                value={formik.values.state}
-                                onChange={formik.handleChange}
-                                isInvalid={
-                                    formik.touched.state && formik.errors.state
-                                }
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {formik.errors.state}
+                                {formik.errors.district_id}
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Form.Group className="mb-3" controlId="taluka">
+                        <Form.Group className="mb-3" controlId="taluka_id">
                             <Form.Control
-                                size="sm"
+                                disabled={!formik?.values?.district_id || !taluka?.talukaManagementData?.talukas}
+                                custom
+                                as={'select'}
                                 style={{
                                     padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
-                                placeholder="Taluka"
-                                type="text"
-                                name="taluka"
-                                value={formik.values.taluka}
+                                name="taluka_id"
+                                value={formik?.values?.taluka_id}
                                 onChange={formik.handleChange}
-                                isInvalid={formik.touched.taluka && formik.errors.taluka}
-                            />
+                                isInvalid={formik.touched.taluka_id && formik.errors.taluka_id}
+                            >
+                                <option value="" disabled>
+                                    {'Select a taluka...'}
+                                </option>
+                                {taluka?.talukaManagementData?.talukas?.map(d => (<><option value={d.id}>{d?.name}</option></>))}
+
+                            </Form.Control>
                             <Form.Control.Feedback type="invalid">
-                                {formik.errors.taluka}
+                                {formik.errors.taluka_id}
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                     <Col>
-                        <Form.Group className="mb-3" controlId="talukaCategory">
+                        <Form.Group className="mb-3" controlId="address">
                             <Form.Control
-                                size="sm"
                                 style={{
                                     padding: "0.5rem",
                                     border: "2px solid rgba(0,0,0,0.2)",
                                     borderRadius: "10px",
                                 }}
-                                placeholder="Taluka Category"
-                                type="number"
-                                name="talukaCategory"
-                                value={+formik?.values?.talukaCategory}
+                                placeholder="Address"
+                                type="text"
+                                name="address"
+                                value={formik?.values?.address}
                                 onChange={formik.handleChange}
                                 isInvalid={
-                                    formik.touched.talukaCategory && formik.errors.talukaCategory
+                                    formik.touched.address && formik.errors.address
                                 }
                             />
                             <Form.Control.Feedback type="invalid">
-                                {formik.errors.talukaCategory}
+                                {formik.errors.address}
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
@@ -300,13 +324,13 @@ const AddChannelPartner = () => {
                 <Row className="mt-2">
                     <Form.Group className="mb-3" controlId="amount">
                         <Form.Control
-                            disabled={!formik.values.type}
+                            disabled={!formik?.values?.type}
                             style={{
                                 padding: "0.5rem",
                                 border: "2px solid rgba(0,0,0,0.2)",
                                 borderRadius: "10px",
                             }}
-                            placeholder={!formik.values.type ? "Select a payment basis first" : formik.values.type === "fixed" ? "Enter the fixed amount" : "Enter Percentage (don't include %)"}
+                            placeholder={!formik?.values?.type ? "Select a payment basis first" : formik?.values?.type === "fixed" ? "Enter the fixed amount" : "Enter Percentage (don't include %)"}
                             type="number"
                             name="amount"
                             value={+formik?.values?.amount}

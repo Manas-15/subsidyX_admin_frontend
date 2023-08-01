@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useMemo } from "react";
 import styles from "../styles/Login.module.css";
 import { CustomButton } from "../components/Common/CustomButton";
@@ -19,10 +20,7 @@ function Login() {
 
   const user = useSelector((state) => state?.user);
 
-  const accessToken = useMemo(
-    () => user?.user?.access_token,
-    [user?.user?.access_token]
-  );
+  const accessToken = useSelector(state => state?.user?.user?.access_token)
 
   function decodeAccessToken(accessToken) {
     try {
@@ -40,6 +38,7 @@ function Login() {
 
   useEffect(() => {
     if (accessToken !== undefined) {
+      console.log('here')
       router.push("/industry_category");
       setIsLoading(false);
     } else {

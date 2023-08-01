@@ -1,8 +1,8 @@
 import axios from "axios";
 import { store } from "./Store"
-import { userConstants } from "./Constants/userConstants";
 import { userActions } from "./Actions/userAction";
 const state = store.getState()
+import { userConstants } from "./Constants/userConstants";
 const instance = axios.create({
   baseURL: "https://staging-api.subsidyx.com",
   headers: {
@@ -13,7 +13,8 @@ const instance = axios.create({
 instance.interceptors.request.use(
   async (config) => {
     console.log(state.user);
-    const token = state.user.user.access_token;
+    // const token = state?.user?.user?.access_token
+    const token  = JSON.parse(localStorage.getItem("accessToken"))
     config.headers['Authorization'] = `Bearer ${token}`
 
     return config;
@@ -25,13 +26,20 @@ instance.interceptors.request.use(
 );
 instance.interceptors.response.use(response => response, async (err) => {
   const prevRequest = err?.config;
+  console.log(err?.response?.status);
   if (err?.response?.status === 403 && !prevRequest?.sent) {
     prevRequest.sent = true;
+    console.log("here");
     const newAccessToken = await refresh();
     prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
+
+
     return instance(prevRequest);
-  } else if (err?.response?.status == 401) {
+  } else if (err?.response?.status === 401) {
+    //console.log('here');
     store.dispatch(userActions.logout())
+    //console.log('here');
+
   }
   return Promise.reject(err)
 });
