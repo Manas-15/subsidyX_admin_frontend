@@ -6,7 +6,7 @@ import { store } from "../redux/Store";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
-
+import Head from "next/head";
 function MyApp({ Component, pageProps }) {
   const [showChild, setShowChild] = useState(false);
 
@@ -23,7 +23,11 @@ function MyApp({ Component, pageProps }) {
   } else {
     return (
       <>
+
         <Provider store={store}>
+          <Head>
+            <title>SubsidyX Admin</title>
+          </Head>
           <BaseLayout>
             <Component  {...pageProps} />
             <ToastContainer theme="colored" />

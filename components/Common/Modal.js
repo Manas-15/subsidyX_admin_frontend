@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 import { channelPartnerManagementActions } from "../../redux/Actions/channelPartnersAction";
 import { membershipManagementActions } from "../../redux/Actions/membershipActions";
 import { employeeManagementAction } from "../../redux/Actions/employeeActions";
+import { departmentData } from "../../static/departmentData";
 
 export const IndustryCategoryModal = (props) => {
   const dispatch = useDispatch();
@@ -868,7 +869,155 @@ export const TalukaManagementModal = (props) => {
     </Modal>
   );
 };
+export const DepartmentManagementModal = (props) => {
+  console.log(props.action);
+  const dispatch = useDispatch();
+  const [department, setDepartment] = useState(
+    props.action?.departmentName ? props.action?.departmentName : ""
+  );
 
+  const departmentSubmit = () => {
+    const data = {
+      name: department,
+    };
+
+    if (props?.action?.id) {
+      // const id = props?.action?.id;
+      // dispatch(
+      //   talukaManagementAction?.updateTaluka({
+      //     id: id,
+      //     editData: data,
+      //   })
+      // );
+    } else {
+      // dispatch(talukaManagementAction?.createTaluka(data));
+    }
+    props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
+  };
+  const departmentManagementDelete = () => {
+    // dispatch(talukaManagementAction?.deleteTaluka(props.action));
+    props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
+  };
+  const departmentManagementCancel = () => {
+    props.setModalShow(false);
+    props.setType("");
+    props.setAction({});
+  };
+  const handleDepartmentChange = (e) => {
+    const department = e.target.value;
+    setDepartment(department);
+  };
+
+
+  return (
+    <Modal
+      {...props}
+      size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      backdrop="static"
+    >
+      <Modal.Header>
+        <Modal.Title id="contained-modal-title-vcenter">
+          {props.type === "add"
+            ? "Add New Department"
+            : props.type === "delete"
+              ? "Delete Department"
+              : props.type === "edit" && "Edit Department"}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {props.type === "add" || props.type === "edit" ? (
+          <Form>
+            <select
+              onChange={handleDepartmentChange}
+              className="form-control mb-3"
+            >
+              <option value="none">
+                {props.action?.id ? props.action?.departmentName : "Select department"}
+              </option>
+              {departmentData.map((x, index) => {
+                return (
+                  <option
+                    className="form-control"
+                    key={index}
+                    value={x?.departmentName}
+                  >
+                    {x?.departmentName}
+                  </option>
+                );
+              })}
+            </select>
+
+
+
+          </Form>
+        ) : props.type === "delete" ? (
+          "Do you want to delete this department, this can't be undone, department will removed from list."
+        ) : (
+          "Edit Taluka"
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        {props.type === "add" ? (
+          <>
+            <CustomButton
+              name="Submit"
+              color="#FFFFFF"
+              bgColor="#FA6130"
+              onClick={() => departmentSubmit()}
+            />
+            <CustomButton
+              name="Cancel"
+              color="#000000"
+              bgColor="#FFFFFF"
+              border="1px solid #000000"
+              onClick={() => departmentManagementCancel()}
+            />
+          </>
+        ) : props.type === "delete" ? (
+          <>
+            <CustomButton
+              name="Delete"
+              color="#FFFFFF"
+              bgColor="#FA6130"
+              onClick={() => departmentManagementDelete()}
+            />
+            <CustomButton
+              name="Cancel"
+              color="#000000"
+              bgColor="#FFFFFF"
+              border="1px solid #000000"
+              onClick={() => departmentManagementCancel()}
+            />
+          </>
+        ) : (
+          props.type === "edit" && (
+            <>
+              <CustomButton
+                name="Update"
+                color="#FFFFFF"
+                bgColor="#FA6130"
+                onClick={() => departmentSubmit()}
+              />
+              <CustomButton
+                name="Cancel"
+                color="#000000"
+                bgColor="#FFFFFF"
+                border="1px solid #000000"
+                onClick={() => departmentManagementCancel()}
+              />
+            </>
+          )
+        )}
+      </Modal.Footer>
+    </Modal>
+  );
+};
 export const QuestionManagementModal = (props) => {
   const dispatch = useDispatch();
 
@@ -1027,6 +1176,59 @@ export const MembershipModal = (props) => {
     </Modal>
   );
 };
+export const QuotationModal = (props) => {
+  const router = useRouter()
+  const dispatch = useDispatch();
+  const quotationDelete = () => {
+    // dispatch(membershipManagementActions.deleteMembership(props.action));
+    // props.setModalShow(false);
+    // if (props?.redirect) router.push(props?.redirect);
+    console.log('quote delete');
+  };
+  const quotationCancel = () => {
+    props.setModalShow(false);
+  };
+  return (
+    <Modal
+      {...props}
+      size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      backdrop="static"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title
+          style={{ color: "#000" }}
+          id="contained-modal-title-vcenter"
+        >
+          Delete  Quotation
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body style={{ color: "#000" }}>
+        {
+          "Do you want to delete this quotation , this can't be undone, quotation  will removed from list."
+        }
+      </Modal.Body>
+      <Modal.Footer>
+        <>
+          <CustomButton
+            name="Delete"
+            color="#FFFFFF"
+            bgColor="#FA6130"
+            onClick={() => quotationDelete()}
+          />
+          <CustomButton
+            name="Cancel"
+            color="#000000"
+            bgColor="#FFFFFF"
+            border="1px solid #000000"
+            onClick={() => quotationCancel()}
+          />
+        </>
+      </Modal.Footer>
+    </Modal>
+  );
+};
 export const EmployeeModal = (props) => {
   const router = useRouter()
   const dispatch = useDispatch();
@@ -1177,6 +1379,56 @@ export const ChannelPartnerModal = (props) => {
             bgColor="#FFFFFF"
             border="1px solid #000000"
             onClick={() => channelPartnerCancel()}
+          />
+        </>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+export const DepartmentModal = (props) => {
+  const router = useRouter()
+  const dispatch = useDispatch();
+  const departmentDelete = () => {
+    console.log('department delete!');
+  };
+  const departmentDeleteCancel = () => {
+    props.setModalShow(false);
+  };
+  return (
+    <Modal
+      {...props}
+      size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      backdrop="static"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title
+          style={{ color: "#000" }}
+          id="contained-modal-title-vcenter"
+        >
+          Delete Department
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body style={{ color: "#000" }}>
+        {
+          "Do you want to delete this Department, this can't be undone, Department will removed from list."
+        }
+      </Modal.Body>
+      <Modal.Footer>
+        <>
+          <CustomButton
+            name="Delete"
+            color="#FFFFFF"
+            bgColor="#FA6130"
+            onClick={() => departmentDelete()}
+          />
+          <CustomButton
+            name="Cancel"
+            color="#000000"
+            bgColor="#FFFFFF"
+            border="1px solid #000000"
+            onClick={() => departmentDeleteCancel()}
           />
         </>
       </Modal.Footer>
